@@ -1,30 +1,30 @@
 [
   {
     "name": "PHPSESSID",
-    "value": "a2c85b2e3f7f9228063fb04e452ae0c7",
+    "value": "4814566341be84eb0e7768995532c76e",
     "domain": ".xgame-online.com",
     "path": "/",
-    "expires": 1780846718.272668,
+    "expires": 1782375094.652849,
     "httpOnly": true,
     "secure": true,
     "sameSite": "None"
   },
   {
     "name": "_ga",
-    "value": "GA1.1.1233821893.1778254724",
+    "value": "GA1.1.2083206424.1779783096",
     "domain": ".xgame-online.com",
     "path": "/",
-    "expires": 1812814724.059782,
+    "expires": 1814343096.11834,
     "httpOnly": false,
     "secure": false,
     "sameSite": "Lax"
   },
   {
     "name": "_ga_DZ93YRZXD9",
-    "value": "GS2.1.s1778254724$o1$g0$t1778254725$j59$l0$h0",
+    "value": "GS2.1.s1779783096$o1$g0$t1779783096$j60$l0$h0",
     "domain": ".xgame-online.com",
     "path": "/",
-    "expires": 1812814725.984173,
+    "expires": 1814343096.143353,
     "httpOnly": false,
     "secure": false,
     "sameSite": "Lax"

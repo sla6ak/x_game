@@ -1,6 +1,6 @@
 const { chromium } = require("playwright");
-const { ensureLoggedIn } = require("./session-manager");
-const { watchMissions } = require("./bot-missions");
+const { ensureLoggedIn } = require("./app/session-manager");
+const { watchMissions } = require("./app/bot-missions");
 
 async function main() {
   console.log("🚀 [server] Запускаем...");
