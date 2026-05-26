@@ -1,0 +1,123 @@
+<div id="modal-content">
+			<div class="modal_header" id="modal_header">
+
+		    	<a title="⇐ Назад" class="modal_header_back"></a><!--
+		     --><a onclick="anchorOffset('modalDown')" title="Вниз ▼" id="modal_header_left"></a><!--
+		     --><div id="modal_header_center">Флот</div><!--
+		     --><a onclick="modalClose()" title="Закрыть ×" id="modal_header_right"></a><!--
+		     --><a title="Вперед ⇒" class="modal_header_forward"></a>
+
+			</div>
+			<span id="modal-header-fix"></span>
+
+			<center>
+			<div id="modalUp"></div>
+				<form action="floten1.php" method="post" name="floten1"><input type="hidden" name="aqDdqqdDd" value="0"><table width="570" class="th-hover shadow-hover"><tbody><tr><th colspan="8" class="c"></th></tr><tr><td class="c"><a onmouseover="return overlib('&lt;table width=225&gt;&lt;tr&gt;&lt;td class=h style=\'color: #CDB5CD\'&gt;Сейчас всех флотов в полете: &lt;span style=\'color: white\'&gt;0&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=h style=\'color: #CDB5CD\'&gt;&lt;span style=\'color: #DCDCDC\'&gt;Максимальное кол-во одновременно запущенных флотов в полете&lt;/span&gt; = &lt;span style=\'color: white\'&gt;1&lt;/span&gt; + Навигационная технология &lt;span style=\'color: white\'&gt;41&lt;/span&gt; + Аэродромы + Командир &lt;span style=\'color: white\'&gt;2&lt;/span&gt; + Летчик&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;', STICKY, MOUSEOFF, DELAY, 300);" onmouseout="return nd();" style="cursor: help; color: #CDB5CD;">Флоты <span style="color: #E6EBFB">0</span> из 44</a></td><td class="c"><a onmouseover="return overlib('&lt;table width=225&gt;&lt;tr&gt;&lt;td class=h style=\'color: #CDB5CD\'&gt;Сейчас экспедиций в полете: &lt;span style=\'color: white\'&gt;0&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=h style=\'color: #CDB5CD\'&gt;&lt;span style=\'color: #DCDCDC\'&gt;Максимальное кол-во одновременно запущенных экспедиций&lt;/span&gt; = округлить вниз ( корень квадратный уровня Экспедиционной технологии &lt;span style=\'color: white\'&gt;35&lt;/span&gt; )&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;', STICKY, MOUSEOFF, DELAY, 300);" onmouseout="return nd();" style="cursor: help; color: #CDB5CD;">Экспедиции <span style="color: #E6EBFB">0</span> из 5</a></td><td class="c" colspan="2"><a onmouseover="return overlib('&lt;table width=232&gt;&lt;tr&gt;&lt;td class=h style=\'color: #CDB5CD\'&gt;Сейчас добывают ТМ в полете: &lt;span style=\'color: white\'&gt;0&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=h style=\'color: #CDB5CD\'&gt;&lt;span style=\'color: #DCDCDC\'&gt;Максимальное кол-во одновременно запущенных флотов по добыче ТМ&lt;/span&gt; = округлить вниз ( корень квадратный уровня Сферы геологии &lt;span style=\'color: white\'&gt;38&lt;/span&gt; )&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;', STICKY, MOUSEOFF, DELAY, 300);" onmouseout="return nd();" style="cursor: help; color: #CDB5CD;">Добыча ТМ <span style="color: #E6EBFB">0</span> из 6</a></td><td class="c" colspan="4"><a onmouseover="return overlib('&lt;table width=225&gt;&lt;tr&gt;&lt;td class=h colspan=2 style=\'color: #CDB5CD\'&gt;Количество уже проведенных атак по неактивным на этой неделе: &lt;span style=\'color: white\'&gt;0&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=h colspan=2 style=\'color: #CDB5CD\'&gt;&lt;span style=\'color: #DCDCDC\'&gt;Кол-во атак по неактивным в неделю&lt;/span&gt; = округлить вверх ( кол-во слотов * 35 * корень квадратный Х скорости полетов ) &lt;br&gt;&lt;span style=\'color: #999999\'&gt;[или * 49 с VIP]&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=h colspan=2 style=\'color: #CDB5CD\'&gt;VIP добавит 1067 атак по неактивным&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=h style=\'color: #CDB5CD; padding: 0; margin: 0\'&gt;VIP не заказан&lt;/td&gt;&lt;td class=h rowspan=3 width=20&gt;&lt;a class=\'quests_icons\' href=\'#vip.php\' id=\'vip\'&gt;&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=h style=\'color: #CDB5CD; padding: 0; margin: 0\'&gt;AUTO-VIP не заказан&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=h style=\'color: #CDB5CD; padding: 0; margin: 0\'&gt;SUPER-VIP не заказан&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=h colspan=2 style=\'color: #CDB5CD\'&gt;За все время Вами было проведено атак на неактивных игроков: &lt;span style=\'color: white\'&gt;10&nbsp;915&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=h colspan=2 style=\'color: #CDB5CD\'&gt;Кол-во доступных атак по неактивным обнуляется каждую неделю в первое обновление статистики (GMT +00:00)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=h colspan=2 style=\'color: #CDB5CD\'&gt;Неактивным называется игрок (i), который отсутствует более 7-ми дней&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;', STICKY, MOUSEOFF, DELAY, 300, LEFT, OFFSETX, 130);" onmouseout="return nd();" style="cursor: help; color: #CDB5CD;">Ишкофарм <span style="color: #E6EBFB">0</span> из 2668</a></td></tr><tr><th colspan="8" class="c"></th></tr><tr><td class="c" colspan="2" title="Количество кораблей">Тип корабля</td><td class="c" width="90">Всего</td><td class="c" width="130" colspan="4"><span class="anti-help">Взять</span><span onmouseover="return overlib('&lt;table width=225&gt;&lt;tr&gt;&lt;td class=h style=\'color: #CDB5CD\'&gt;Выберите количество флотов, которые хотите запустить и нажмите [ Далее ]&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=h style=\'color: #CDB5CD\'&gt;На выбранный % справа можно взять больше флотов от необходимых, чтобы учесть добычу за время полета, но только при клике на [ Атаковать ] со Шпионских докладов в меню Сообщения&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=h style=\'color: #CDB5CD\'&gt;Кликните сверху по количеству флотов для получения подробной информации&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;', STICKY, MOUSEOFF, DELAY, 300, LEFT, OFFSETX, 130);" onmouseout="return nd();" class="td-help">[?]</span></td><td class="c" width="41" align="center" style="padding-left: 1px;">
+<select size="1" name="moreFL">
+    <option value="0" title="Не брать запасные флоты">0</option>
+    <option value="1" title="Взять на 1% больше запасных флотов">1%</option>
+    <option value="2" title="Взять на 2% больше запасных флотов">2%</option>
+    <option value="3" title="Взять на 3% больше запасных флотов">3%</option>
+    <option value="4" title="Взять на 4% больше запасных флотов">4%</option>
+    <option selected="" value="5" title="Взять на 5% больше запасных флотов">5%</option>
+    <option value="6" title="Взять на 6% больше запасных флотов">6%</option>
+    <option value="7" title="Взять на 7% больше запасных флотов">7%</option>
+    <option value="8" title="Взять на 8% больше запасных флотов">8%</option>
+	<option value="9" title="Взять на 9% больше запасных флотов">9%</option>
+	<option value="10" title="Взять на 10% больше запасных флотов">10%</option>
+	<option value="15" title="Взять на 15% больше запасных флотов">15%</option>
+	<option value="20" title="Взять на 20% больше запасных флотов">20%</option>
+	<option value="25" title="Взять на 25% больше запасных флотов">25%</option>
+	<option value="30" title="Взять на 30% больше запасных флотов">30%</option>
+	<option value="35" title="Взять на 35% больше запасных флотов">35%</option>
+	<option value="40" title="Взять на 40% больше запасных флотов">40%</option>
+	<option value="45" title="Взять на 45% больше запасных флотов">45%</option>
+	<option value="50" title="Взять на 50% больше запасных флотов">50%</option>
+	<option value="60" title="Взять на 60% больше запасных флотов">60%</option>
+	<option value="70" title="Взять на 70% больше запасных флотов">70%</option>
+	<option value="80" title="Взять на 80% больше запасных флотов">80%</option>
+	<option value="90" title="Взять на 90% больше запасных флотов">90%</option>
+	<option value="100" title="Взять в 2 раза больше запасных флотов">x2</option>
+	<option value="200" title="Взять в 3 раза больше запасных флотов">x3</option>
+	<option value="300" title="Взять в 4 раза больше запасных флотов">x4</option>
+	<option value="400" title="Взять в 5 раз больше запасных флотов">x5</option>
+	<option value="500" title="Взять в 6 раз больше запасных флотов">x6</option>
+	<option value="600" title="Взять в 7 раз больше запасных флотов">x7</option>
+	<option value="700" title="Взять в 8 раз больше запасных флотов">x8</option>
+	<option value="800" title="Взять в 9 раз больше запасных флотов">x9</option>
+	<option value="900" title="Взять в 10 раз больше запасных флотов">x10</option>
+</select>
+</td></tr><tr>
+<th width="234" colspan="2" style="color: #CDB5CD">—</th><th style="color: #CDB5CD">—</th><th width="35" height="20" style="color: #CDB5CD">—</th><th colspan="3" style="width: 120px; color: #CDB5CD">—</th><th style="color: #CDB5CD">—</th></tr>
+</tbody></table><table width="570" class="shadow-hover"><tbody><tr><th colspan="6" class="c"></th></tr><tr><td class="c" width="160"><div id="totalfleets">-</div><div id="allspeed" style="display: none">-</div></td><td class="c" width="85">Количество</td><td class="c" width="40"><a href="?cp=31694#buildings.php?gid=43" title="Звездные Врата на Луне" class="quests_icons" id="star_gate"></a></td><td class="c" width="40"><a href="#fleet.php?add=26299" class="quests_icons" id="dock_fleet" onmouseover="return overlib('&lt;table width=\'220\' class=\'hint-table\'&gt;&lt;tr &gt;&lt;td class=\'i\' colspan=\'2\'&gt;&lt;span style=\'color: orange\'&gt;Добавить флоты с дока&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=\'h\' style=\'width: 110px;\'&gt;Большой танкер&lt;/td&gt;&lt;td class=\'h\' style=\'width: 110px;\'&gt;&lt;span &gt;107 505 728 125&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=\'h\' style=\'width: 110px;\'&gt;Колонизатор&lt;/td&gt;&lt;td class=\'h\' style=\'width: 110px;\'&gt;&lt;span &gt;727 079&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td class=\'h\' style=\'width: 110px;\'&gt;Переработчик&lt;/td&gt;&lt;td class=\'h\' style=\'width: 110px;\'&gt;&lt;span &gt;27 356 761 798&lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;',OFFSETY,0)" onmouseout="return nd()" style="white-space: nowrap"></a></td><td class="c" width="85">Вместимость</td><td class="c" width="160"><div id="allcapacity">-</div></td></tr><tr>
+<th colspan="6" class="c"></th></tr><tr><td class="c" align="center" colspan="2"><input style="width: 100%; height: 26px; font-size: 14px;" type="button" onclick="noShips(); calc_capacity();" value="[ Обнулить все корабли ]"></td><td class="c" align="center" colspan="2"><input id="dBQaBBaQa" onclick="blockClick(this);" onmousedown="document.getElementsByName('aqDdqqdDd')[0].value='dEQaEEaQa';" style="width: 100%; height: 26px; font-size: 14px;" type="submit" name="dBQaBBaQa" value="[ Далее ]"></td><td class="c" align="center" colspan="2"><input style="width: 100%; height: 26px; font-size: 14px;" type="button" onclick="maxShips(); calc_capacity();" value="[ Взять все корабли ]"></td></tr><tr><th colspan="6" class="c"></th></tr><input type="hidden" name="galaxy" value="1"><input type="hidden" name="system" value="363"><input type="hidden" name="planet" value="6"><input type="hidden" name="planet_type" value="1"><input type="hidden" name="time" value=""><input type="hidden" name="mission" value="0"><input type="hidden" name="acs" value="0"><input type="hidden" name="mt" value="0"><input type="hidden" name="bt" value="0"><input type="hidden" name="maxepedition" value="5"><input type="hidden" name="curepedition" value="0"><input type="hidden" name="asteroid" value="0"><input type="hidden" name="target_mission" value="0"></tbody></table></form><script>
+var nazad = [], timer = [];</script>
+<script>; var kol = 0; intervalFix(0, time_nazad);</script>
+<script>time_nazad();</script>
+<script>
+	var captainFleetBonus = {}
+	$('#captains_select').on('input', () => {
+	    let opt = $('#captains_select').prop('options')[$('#captains_select').prop('selectedIndex')]
+	    $('#captains_info').html(opt.title || '&mdash;')
+	})
+</script><script>function chShipCount(id, diff){	diff = 1 * diff;	var ncur = 1 * document.getElementsByName("ship" + id)[0].value;	count = ncur + diff;	if(count < 0){		count = 0;	};	if(count > document.getElementsByName("maxship" + id)[0].value){		count = document.getElementsByName("maxship" + id)[0].value;	};	document.getElementsByName("ship" + id)[0].value = count;}</script>
+			<script>
+
+            var max_val202 = 0;
+            var max_val203 = 0;
+
+            function morefl(need202, need203) {
+
+              if (need202 > 0) {
+                var color202 = '#CDB5CD';
+                if (max_val202 < need202) color202 = '#FF6A6A';
+                needGAP202 = gap(need202);
+                document.getElementById('moreFL202').innerHTML = '<div onclick="change_val_need(202, ' + max_val202 + ', ' + need202 + '); calc_capacity();" style="height: 16px;"><font color=' + color202 + '>' + needGAP202 + '</font></div>';
+              }
+
+              if (need203 > 0) {
+                var color203 = '#CDB5CD';
+                if (max_val203 < need203) color203 = '#FF6A6A';
+                needGAP203 = gap(need203);
+            	document.getElementById('moreFL203').innerHTML = '<div onclick="change_val_need(203, ' + max_val203 + ', ' + need203 + '); calc_capacity();" style="height: 16px;"><font color=' + color203 + '>' + needGAP203 + '</font></div>';
+              }
+
+            }
+
+			function change_val_need(element_id, max_val, need) {
+
+                if (element_id > 0) element_id = 'ship' + element_id;
+
+                var val = parseInt($('#'+element_id).val());
+
+		  		if (need > 0) {
+		  		  	if (need > max_val) need = max_val;
+		  		  	else max_val = need;
+		  		}
+
+		        if (val<=0){
+		          	$('#'+element_id).val( max_val );
+		        }
+		        else {
+		          	$('#'+element_id).val( 0 );
+		        }
+
+			}
+			</script>
+			<div id="modalDown"></div>
+			</center>
+
+			<div id="modal-footer-fix"></div>
+
+			<div class="modal_footer" id="modal_footer">
+
+				<a href="#" title="⇐ Назад" class="modal_header_back" style="margin-top: 1px;"></a><!--
+		     --><a class="modal_header_down" onclick="anchorOffset('modalUp')" title="Вверх ▲" id="modal_header_left" style="margin-top: 1px;"></a><!--
+		     --><div id="modal_header_center">Флот</div><!--
+		     --><a onclick="modalClose()" title="Закрыть ×" id="modal_header_right"></a><!--
+		     --><a href="#" title="Вперед ⇒" class="modal_header_forward"></a>
+
+			</div>
+		</div>
+    
+	

@@ -1,0 +1,45 @@
+<div id="modal-content">
+			<div class="modal_header" id="modal_header">
+
+		    	<a title="⇐ Назад" class="modal_header_back"></a><!--
+		     --><a onclick="anchorOffset('modalDown')" title="Вниз ▼" id="modal_header_left"></a><!--
+		     --><div id="modal_header_center">Уведомление</div><!--
+		     --><a onclick="modalClose()" title="Закрыть ×" id="modal_header_right"></a><!--
+		     --><a title="Вперед ⇒" class="modal_header_forward"></a>
+
+			</div>
+			<span id="modal-header-fix"></span>
+
+			<center>
+			<div id="modalUp"></div>
+				
+<table width="570" class="shadow-hover">
+    
+    <tbody><tr><th colspan="1"></th>
+    </tr><tr>
+        <td class="c" colspan="1"><font color=""><span style="color: #FF6A6A">Ошибка</span></font></td>
+    </tr>
+    <tr><th colspan="1"></th>
+    </tr><tr>
+        <th class="errormessage" colspan="1">Попробуйте еще раз, наверное Вы долго отсутствовали на предыдущей странице!</th>
+    </tr>
+    <tr><th colspan="1"></th>
+</tr></tbody></table>
+
+			<div id="modalDown"></div>
+			</center>
+
+			<div id="modal-footer-fix"></div>
+
+			<div class="modal_footer" id="modal_footer">
+
+				<a href="#" title="⇐ Назад" class="modal_header_back" style="margin-top: 1px;"></a><!--
+		     --><a class="modal_header_down" onclick="anchorOffset('modalUp')" title="Вверх ▲" id="modal_header_left" style="margin-top: 1px;"></a><!--
+		     --><div id="modal_header_center">Уведомление</div><!--
+		     --><a onclick="modalClose()" title="Закрыть ×" id="modal_header_right"></a><!--
+		     --><a href="#" title="Вперед ⇒" class="modal_header_forward"></a>
+
+			</div>
+		</div>
+    
+	<script>timeoutTimer[timeoutTimer.length] = setTimeout ("modalOpen('fleet.php')", '5'*1000);</script>
