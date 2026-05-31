@@ -7,6 +7,8 @@ const REFRESH_INTERVAL = 30_000; // 30 секунд
 
 // Структура для хранения миссий
 let missionsState = []; // [{type, coords, returnTime, status, fleet, moonId}]
+// Список планет и лун игрока
+let userPlanets = []; // [{id, coords, isMoon}]
 
 async function watchMissions(browser) {
   console.log("📡 [bot-missions] Запускаем слежку за миссиями...");
@@ -24,34 +26,73 @@ async function watchMissions(browser) {
     timeout: 20_000,
   });
 
-  // Получение миссий из overview.php с парсингом типа, координат, времени возврата
-  async function getMissions() {
-    let missionFrame;
-    for (let i = 0; i < 10; i++) {
-      missionFrame = page
+  // Получение списка планет из overview.php
+  async function updatePlanets() {
+    let overviewFrame;
+    for (let i = 0; i < 5; i++) {
+      overviewFrame = page
         .frames()
         .find((f) => f.url().includes("overview.php"));
-      if (missionFrame) break;
-      await new Promise((r) => setTimeout(r, 3000));
+      if (overviewFrame) break;
+      await new Promise((r) => setTimeout(r, 1000));
     }
-    if (!missionFrame) return [];
+    if (!overviewFrame) return;
 
-    return await missionFrame.evaluate(() => {
-      // Парсим миссии из DOM
+    userPlanets = await overviewFrame.evaluate(() => {
+      const planets = [];
+      document.querySelectorAll('a[onclick*="switch_planet"]').forEach((el) => {
+        const onclick = el.getAttribute("onclick");
+        const idMatch = onclick.match(/switch_planet\((\d+)/);
+        const id = idMatch ? idMatch[1] : null;
+        const parent = el.closest(".ov-pl-wrapper, .curr-planet-wrapper");
+        if (!parent) return;
+        const coordsEl = parent.querySelector(".ov-location a");
+        const coords = coordsEl ? coordsEl.innerText.trim() : "";
+        const isMoon =
+          el.classList.contains("mini_moon") || el.innerText.includes("Луна");
+        if (id && coords) {
+          planets.push({ id, coords, isMoon });
+        }
+      });
+      return planets;
+    });
+    console.log(`🌍 [bot-missions] Обновлено планет: ${userPlanets.length}`);
+  }
+
+  async function getMissions() {
+    // Используем проверенный в анализе URL
+    await page.goto("https://crazy.xgame-online.com/fleet.php?mode=movement", {
+      waitUntil: "domcontentloaded",
+    });
+
+    return await page.evaluate(() => {
       const missions = [];
-      document.querySelectorAll(".fleetMission").forEach((el) => {
-        // Пример: "Экспедиция (1:910:5) возвращается в 13:45:12"
-        const text = el.innerText.trim();
-        const typeMatch = text.match(/(Экспедиция|Атака|Транспорт)/);
-        const coordsMatch = text.match(/(\d+:\d+:\d+)/);
-        const returnMatch = text.match(/возвращается в (\d{2}:\d{2}:\d{2})/);
-        missions.push({
-          type: typeMatch ? typeMatch[1] : "Неизвестно",
-          coords: coordsMatch ? coordsMatch[1] : "",
-          returnTime: returnMatch ? returnMatch[1] : "",
-          status: text.includes("возвращается") ? "returning" : "active",
-          raw: text,
-        });
+      // В этой версии игры флоты в таблицах без четких классов
+      document.querySelectorAll("tr").forEach((tr) => {
+        const text = tr.innerText.replace(/\s+/g, " ");
+        if (text.includes("Экспедиция")) {
+          // Ищем координаты типа [1:260:9]
+          const coordsMatches = text.match(/(\d+:\d+:\d+)/g);
+          // Ищем время типа 16:24:22
+          const timeMatch = text.match(/(\d{2}:\d{2}:\d{2})/);
+
+          if (coordsMatches && coordsMatches.length >= 2) {
+            // В XGame в строке движения: [Цель] [Источник]
+            // Например: [1:260:16] [1:260:9]*
+            const sourceCoords = coordsMatches[1];
+
+            missions.push({
+              type: "Экспедиция",
+              coords: sourceCoords,
+              returnTime: timeMatch ? timeMatch[1] : "",
+              status:
+                text.includes("возврат") || text.includes(">")
+                  ? "returning"
+                  : "active",
+              raw: text,
+            });
+          }
+        }
       });
       return missions;
     });
@@ -74,8 +115,9 @@ async function watchMissions(browser) {
     console.log("─".repeat(60));
   }
 
-  // Первый запрос сразу
+  // Сначала собираем инфо о планетах
   try {
+    await updatePlanets();
     const missions = await getMissions();
     missionsState = missions;
     printMissions(missions);
@@ -97,9 +139,14 @@ async function watchMissions(browser) {
 
       // Перезапуск экспедиций по кругу
       for (const exp of returningExpeditions) {
-        // Проверяем задержку (1-5 минут после returnTime)
+        const moon = userPlanets.find(
+          (p) => p.coords === exp.coords && p.isMoon,
+        );
+        if (!moon) continue;
+
         const now = new Date();
         const [h, m, s] = exp.returnTime.split(":").map(Number);
+
         const returnDate = new Date(
           now.getFullYear(),
           now.getMonth(),
@@ -109,12 +156,14 @@ async function watchMissions(browser) {
           s,
         );
         const diff = now - returnDate;
-        if (diff > 60_000 && diff < 300_000) {
-          // TODO: перейти на луну exp.coords и запустить экспедицию
+
+        if (diff > 60_000) {
           console.log(
-            `⏳ Перезапуск экспедиции с луны ${exp.coords} через startExpedition`,
+            `⏳ Перезапуск экспедиции с луны ${exp.coords} (ID: ${moon.id})`,
           );
-          await startExpedition(page, exp.coords);
+          await startExpedition(page, exp.coords, moon.id);
+          await updatePlanets();
+          break;
         }
       }
     } catch (err) {
