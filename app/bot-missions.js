@@ -1,5 +1,6 @@
 // bot-missions.js
 const SESSION_FILE = "./session.json";
+const CONFIG_FILE = "./config_one.json";
 const { startExpedition } = require("./expedition");
 
 // Как часто обновлять миссии
@@ -77,13 +78,17 @@ async function watchMissions(browser) {
           const timeMatch = text.match(/(\d{2}:\d{2}:\d{2})/);
 
           if (coordsMatches && coordsMatches.length >= 2) {
-            // В XGame в строке движения: [Цель] [Источник]
-            // Например: [1:260:16] [1:260:9]*
-            const sourceCoords = coordsMatches[1];
+            // В XGame в строке движения обычно: [Цель] [Источник]
+            // Для экспедиции цель всегда заканчивается на :16
+            const targetCoords =
+              coordsMatches.find((c) => c.endsWith(":16")) || coordsMatches[0];
+            const sourceCoords =
+              coordsMatches.find((c) => !c.endsWith(":16")) || coordsMatches[1];
 
             missions.push({
               type: "Экспедиция",
               coords: sourceCoords,
+              target: targetCoords,
               returnTime: timeMatch ? timeMatch[1] : "",
               status:
                 text.includes("возврат") || text.includes(">")
@@ -128,42 +133,46 @@ async function watchMissions(browser) {
   // Основной цикл обновления
   setInterval(async () => {
     try {
+      const config = JSON.parse(fs.readFileSync(CONFIG_FILE, "utf-8"));
+      const targetMoons = config.expeditions || [];
+
       const missions = await getMissions();
       missionsState = missions;
       printMissions(missions);
 
-      // Экспедиции, которые возвращаются
-      const returningExpeditions = missions.filter(
-        (m) => m.type === "Экспедиция" && m.status === "returning",
-      );
+      for (const moonCoords of targetMoons) {
+        // Ищем, летит ли уже что-то с этой луны
+        const activeMission = missions.find(
+          (m) => m.type === "Экспедиция" && m.coords === moonCoords,
+        );
 
-      // Перезапуск экспедиций по кругу
-      for (const exp of returningExpeditions) {
+        if (activeMission) {
+          if (activeMission.status === "returning") {
+            console.log(
+              `⏳ Экспедиция с ${moonCoords} возвращается (${activeMission.returnTime})`,
+            );
+          } else {
+            console.log(`✅ Экспедиция с ${moonCoords} уже в полете`);
+          }
+          continue;
+        }
+
+        // Если миссии нет — ищем ID луны и запускаем
         const moon = userPlanets.find(
-          (p) => p.coords === exp.coords && p.isMoon,
+          (p) => p.coords === moonCoords && p.isMoon,
         );
-        if (!moon) continue;
 
-        const now = new Date();
-        const [h, m, s] = exp.returnTime.split(":").map(Number);
-
-        const returnDate = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          now.getDate(),
-          h,
-          m,
-          s,
-        );
-        const diff = now - returnDate;
-
-        if (diff > 60_000) {
+        if (moon) {
           console.log(
-            `⏳ Перезапуск экспедиции с луны ${exp.coords} (ID: ${moon.id})`,
+            `🚀 Запуск недостающей экспедиции с луны ${moonCoords} (ID: ${moon.id})`,
           );
-          await startExpedition(page, exp.coords, moon.id);
-          await updatePlanets();
-          break;
+          await startExpedition(page, moonCoords, moon.id);
+          await updatePlanets(); // Обновим инфо о планетах (там может измениться флот)
+          break; // За раз запускаем одну, чтобы не спамить
+        } else {
+          console.log(
+            `⚠️ Луна ${moonCoords} не найдена в списке планет игрока`,
+          );
         }
       }
     } catch (err) {

@@ -1,36 +1,64 @@
 // expedition.js
 // Функция для запуска новой экспедиции с луны по координатам
-async function startExpedition(page, coords) {
-  console.log(`🛠 [expedition] Запуск экспедиции с луны ${coords}`);
+async function startExpedition(page, coords, moonId) {
+  console.log(
+    `🛠 [expedition] Запуск экспедиции с луны ${coords} (ID: ${moonId})`,
+  );
 
-  // Переходим на fleet.php с нужной луны
-  // TODO: получить cp (ID луны) по координатам, пока просто fleet.php
-  await page.goto("https://crazy.xgame-online.com/fleet.php", {
+  // Переходим на fleet.php с конкретной планеты/луны через cp
+  const fleetUrl = moonId
+    ? `https://crazy.xgame-online.com/fleet.php?cp=${moonId}`
+    : "https://crazy.xgame-online.com/fleet.php";
+
+  await page.goto(fleetUrl, {
     waitUntil: "domcontentloaded",
     timeout: 20_000,
   });
 
-  // Ждём появления формы
-  await page.waitForSelector('form[name="flotenI"]', { timeout: 12000 });
+  // Проверка на ошибку "долго отсутствовали"
+  const errorMsg = await page
+    .$eval(".errormessage", (el) => el.innerText)
+    .catch(() => null);
+  if (errorMsg) {
+    console.log(`❌ Ошибка на странице: ${errorMsg}`);
+    return;
+  }
 
-  // Выбираем все корабли
-  await page.evaluate(() => {
-    document.querySelectorAll('input[name^="ship"]').forEach((inp) => {
-      const maxInp = document.querySelector(
-        'input[name="max' + inp.name + '"]',
-      );
-      if (maxInp) inp.value = maxInp.value;
-    });
+  // Ждём появления формы floten1
+  await page.waitForSelector('form[name="flotenI"], form[action*="floten2"]', {
+    timeout: 12000,
   });
 
-  // Нажимаем "Далее"
-  const submitBtn = await page.$('input[type="submit"][value*="Далее"]');
+  // Выбираем все корабли (ищем ссылку "все корабли" или заполняем max)
+  await page.evaluate(() => {
+    const allShipsLink = Array.from(document.querySelectorAll("a")).find(
+      (a) =>
+        a.innerText.includes("Все корабли") ||
+        a.innerText.includes("всей флотилии"),
+    );
+    if (allShipsLink) {
+      allShipsLink.click();
+    } else {
+      document.querySelectorAll('input[name^="ship"]').forEach((inp) => {
+        const maxInp = document.querySelector(`input[name="max${inp.name}"]`);
+        if (maxInp) inp.value = maxInp.value;
+      });
+    }
+  });
+
+  // Нажимаем "Далее" (ищем любой submit в форме flotenI)
+  const submitBtn = await page.$(
+    'form[name="flotenI"] input[type="submit"], form[action*="floten2"] input[type="submit"]',
+  );
   if (submitBtn) {
-    await submitBtn.click();
-    await page.waitForNavigation({ timeout: 10000 }).catch(() => {});
+    await Promise.all([
+      page.waitForNavigation({ timeout: 10000 }).catch(() => {}),
+      submitBtn.click(),
+    ]);
   } else {
-    console.log("⚠️ Кнопка [Далее] не найдена");
-    return;
+    console.log("⚠️ Кнопка [Далее] не найдена, пробуем Enter");
+    await page.keyboard.press("Enter");
+    await page.waitForNavigation({ timeout: 10000 }).catch(() => {});
   }
 
   // Ждём floten2.php
