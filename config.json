@@ -2,5 +2,35 @@
   "nickname": "Slabak",
   "password": "slabak997",
   "universe": "46",
-  "expeditions": ["1:260:9*", "1:364:14*", "1:378:12*", "1:611:5*", "1:918:1*"]
+
+  "home": { "galaxy": 1, "system": 363, "planet": 6 },
+  "planetCp": 26299,
+  "moonCp": 31694,
+
+  "expedition": {
+    "enabled": true,
+    "dryRun": true,
+    "fromMoonCp": 31694,
+    "targets": ["1:363:16"],
+    "shipName": "Большой танкер",
+    "shipCount": "all",
+    "fillFreeSlots": true
+  },
+
+  "shipIds": {
+    "Большой танкер": 203,
+    "Колонизатор": 208,
+    "Крейсер": 206,
+    "Линкор": 207
+  },
+
+  "pollIntervalMs": 30000,
+  "attackKeywords": [
+    "Вас атакуют",
+    "атакуют вас",
+    "нападение на",
+    "вражеский флот",
+    "под атакой",
+    "входящий флот"
+  ]
 }
