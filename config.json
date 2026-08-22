@@ -12,16 +12,43 @@
     "dryRun": true,
     "fromMoonCp": 31694,
     "targets": ["1:363:16"],
-    "shipName": "Большой танкер",
+    "shipName": "Линкор",
     "shipCount": "all",
     "fillFreeSlots": true
+  },
+
+  "farm": {
+    "enabled": true,
+    "dryRun": true,
+    "fromMoonCp": 31694,
+    "systems": [363, 364, 365],
+    "probeCount": 5000,
+    "minFreeSlots": 3,
+    "minBattleships": 10000000,
+    "shipName": "Линкор",
+    "typeFL": 207,
+    "moreFL": 10,
+    "slotsFL": 3,
+    "minSPY": 15,
+    "resFL": true,
+    "includeVacation": false,
+    "spyCooldownMs": 21600000,
+    "farmCooldownMs": 43200000
+  },
+
+  "safety": {
+    "enabled": true,
+    "dryRun": true,
+    "warnBeforeMs": 300000,
+    "keepUranium": 100000000000000
   },
 
   "shipIds": {
     "Большой танкер": 203,
     "Колонизатор": 208,
     "Крейсер": 206,
-    "Линкор": 207
+    "Линкор": 207,
+    "Шпионский зонд": 210
   },
 
   "pollIntervalMs": 30000,

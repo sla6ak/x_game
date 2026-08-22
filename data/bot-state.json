@@ -1,0 +1,300 @@
+{
+  "updated_at": "2026-08-22T03:28:03.666Z",
+  "home": {
+    "coords": "1:363:6",
+    "planet_cp": 26299,
+    "moon_cp": 31694
+  },
+  "ships": {
+    "planet": [],
+    "moon": []
+  },
+  "missions": [
+    {
+      "direction": "holding",
+      "type": "Экспедиция [10]",
+      "text": "Ваш флот с луны Луна [1:611:5]* исследует позицию [1:611:16] . Задание: Экспедиция [10]",
+      "coords": [
+        "1:611:5",
+        "1:611:16"
+      ],
+      "is_returning": false,
+      "classified": "expedition"
+    },
+    {
+      "direction": "return",
+      "type": "Экспедиция [10]",
+      "text": "Ваш флот возвращается с позиции [1:611:16] на луну Луна [1:611:5]* . Задание: Экспедиция [10]",
+      "coords": [
+        "1:611:16",
+        "1:611:5"
+      ],
+      "is_returning": true,
+      "classified": "expedition"
+    },
+    {
+      "direction": "holding",
+      "type": "Экспедиция [10]",
+      "text": "Ваш флот с луны Луна [1:257:13]* исследует позицию [1:257:16] . Задание: Экспедиция [10]",
+      "coords": [
+        "1:257:13",
+        "1:257:16"
+      ],
+      "is_returning": false,
+      "classified": "expedition"
+    },
+    {
+      "direction": "return",
+      "type": "Экспедиция [10]",
+      "text": "Ваш флот возвращается с позиции [1:257:16] на луну Луна [1:257:13]* . Задание: Экспедиция [10]",
+      "coords": [
+        "1:257:16",
+        "1:257:13"
+      ],
+      "is_returning": true,
+      "classified": "expedition"
+    },
+    {
+      "direction": "holding",
+      "type": "Экспедиция [10]",
+      "text": "Ваш флот с луны Луна [1:331:12]* исследует позицию [1:331:16] . Задание: Экспедиция [10]",
+      "coords": [
+        "1:331:12",
+        "1:331:16"
+      ],
+      "is_returning": false,
+      "classified": "expedition"
+    },
+    {
+      "direction": "return",
+      "type": "Экспедиция [10]",
+      "text": "Ваш флот возвращается с позиции [1:331:16] на луну Луна [1:331:12]* . Задание: Экспедиция [10]",
+      "coords": [
+        "1:331:16",
+        "1:331:12"
+      ],
+      "is_returning": true,
+      "classified": "expedition"
+    },
+    {
+      "direction": "holding",
+      "type": "Экспедиция [10]",
+      "text": "Ваш флот с луны Луна [1:260:9]* исследует позицию [1:260:16] . Задание: Экспедиция [10]",
+      "coords": [
+        "1:260:9",
+        "1:260:16"
+      ],
+      "is_returning": false,
+      "classified": "expedition"
+    },
+    {
+      "direction": "return",
+      "type": "Экспедиция [10]",
+      "text": "Ваш флот возвращается с позиции [1:260:16] на луну Луна [1:260:9]* . Задание: Экспедиция [10]",
+      "coords": [
+        "1:260:16",
+        "1:260:9"
+      ],
+      "is_returning": true,
+      "classified": "expedition"
+    },
+    {
+      "direction": "holding",
+      "type": "Экспедиция [10]",
+      "text": "Ваш флот с луны Луна [1:318:1]* исследует позицию [1:318:16] . Задание: Экспедиция [10]",
+      "coords": [
+        "1:318:1",
+        "1:318:16"
+      ],
+      "is_returning": false,
+      "classified": "expedition"
+    },
+    {
+      "direction": "return",
+      "type": "Экспедиция [10]",
+      "text": "Ваш флот возвращается с позиции [1:318:16] на луну Луна [1:318:1]* . Задание: Экспедиция [10]",
+      "coords": [
+        "1:318:16",
+        "1:318:1"
+      ],
+      "is_returning": true,
+      "classified": "expedition"
+    },
+    {
+      "direction": "holding",
+      "type": "Экспедиция [10]",
+      "text": "Ваш флот с луны Луна [1:918:1]* исследует позицию [1:918:16] . Задание: Экспедиция [10]",
+      "coords": [
+        "1:918:1",
+        "1:918:16"
+      ],
+      "is_returning": false,
+      "classified": "expedition"
+    },
+    {
+      "direction": "return",
+      "type": "Экспедиция [10]",
+      "text": "Ваш флот возвращается с позиции [1:918:16] на луну Луна [1:918:1]* . Задание: Экспедиция [10]",
+      "coords": [
+        "1:918:16",
+        "1:918:1"
+      ],
+      "is_returning": true,
+      "classified": "expedition"
+    }
+  ],
+  "attacks": {
+    "outgoing": [],
+    "incoming": []
+  },
+  "expedition_slots": {
+    "active": 12
+  },
+  "last_expeditions_sent": null,
+  "bodies": [
+    {
+      "coords": "1:363:6",
+      "planet_cp": "31694",
+      "moon_cp": 31694,
+      "name": "БАЗА",
+      "isHome": true
+    },
+    {
+      "coords": "1:257:13",
+      "planet_cp": "26356",
+      "moon_cp": "31747",
+      "name": null,
+      "isHome": false
+    },
+    {
+      "coords": "1:260:9",
+      "planet_cp": "26422",
+      "moon_cp": "31828",
+      "name": null,
+      "isHome": false
+    },
+    {
+      "coords": "1:318:1",
+      "planet_cp": "26304",
+      "moon_cp": "31695",
+      "name": null,
+      "isHome": false
+    },
+    {
+      "coords": "1:331:12",
+      "planet_cp": "26358",
+      "moon_cp": "31749",
+      "name": null,
+      "isHome": false
+    },
+    {
+      "coords": "1:364:9",
+      "planet_cp": "26309",
+      "moon_cp": "31690",
+      "name": null,
+      "isHome": false
+    },
+    {
+      "coords": "1:364:14",
+      "planet_cp": "26305",
+      "moon_cp": "31689",
+      "name": null,
+      "isHome": false
+    },
+    {
+      "coords": "1:369:4",
+      "planet_cp": "26302",
+      "moon_cp": "31692",
+      "name": null,
+      "isHome": false
+    },
+    {
+      "coords": "1:378:12",
+      "planet_cp": "26357",
+      "moon_cp": "31746",
+      "name": null,
+      "isHome": false
+    },
+    {
+      "coords": "1:521:15",
+      "planet_cp": "26355",
+      "moon_cp": "31745",
+      "name": null,
+      "isHome": false
+    },
+    {
+      "coords": "1:610:11",
+      "planet_cp": "26301",
+      "moon_cp": "31693",
+      "name": null,
+      "isHome": false
+    },
+    {
+      "coords": "1:611:5",
+      "planet_cp": "26307",
+      "moon_cp": "31691",
+      "name": null,
+      "isHome": false
+    },
+    {
+      "coords": "1:907:15",
+      "planet_cp": "26359",
+      "moon_cp": "31748",
+      "name": null,
+      "isHome": false
+    },
+    {
+      "coords": "1:918:1",
+      "planet_cp": "26308",
+      "moon_cp": "31750",
+      "name": null,
+      "isHome": false
+    }
+  ],
+  "analysis": {
+    "total": 12,
+    "outgoing": 6,
+    "returning": 6,
+    "byType": {
+      "expedition": 12
+    },
+    "activeSlots": 6
+  },
+  "safety": {
+    "evacuated": {}
+  },
+  "farm": {
+    "farmed": {},
+    "lastSystem": null
+  },
+  "last_tick": {
+    "ts": "2026-08-22T03:28:01.305Z",
+    "missions": {
+      "total": 12,
+      "byType": {
+        "expedition": 12
+      },
+      "incomingAttacks": 0
+    },
+    "safety": {
+      "incoming": 0,
+      "evacuated": [],
+      "returned": []
+    },
+    "farm": {
+      "conditions": {
+        "ok": false,
+        "reasons": [
+          "Свободных слотов 0 (нужно > 3)"
+        ],
+        "freeSlots": 0,
+        "battleships": 279899952008,
+        "incomingCount": 0
+      },
+      "spied": [],
+      "farmed": [],
+      "verified": []
+    },
+    "expedition": null
+  }
+}

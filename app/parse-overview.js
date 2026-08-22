@@ -16,24 +16,33 @@
  * @param {string} homeCoords — координаты вида "1:363:6"
  */
 function findHome(html, homeCoords) {
-  const result = { coords: homeCoords, planet_cp: null, moon_cp: null, source: null };
+  const result = {
+    coords: homeCoords,
+    planet_cp: null,
+    moon_cp: null,
+    source: null,
+  };
   const coordLabel = `[${homeCoords}]`;
 
   // --- Mobile-формат: dropdown <option value="?cp=..."> ---
   const options = [
     ...html.matchAll(
-      /<option[^>]*value="\?cp=(\d+)&[^"]*"[^>]*>([\s\S]*?)<\/option>/g
+      /<option[^>]*value="\?cp=(\d+)&[^"]*"[^>]*>([\s\S]*?)<\/option>/g,
     ),
   ].map((m) => ({
     cp: m[1],
-    label: m[2].replace(/<[^>]+>/g, "").replace(/\s+/g, " ").replace(/&nbsp;/g, " ").trim(),
+    label: m[2]
+      .replace(/<[^>]+>/g, "")
+      .replace(/\s+/g, " ")
+      .replace(/&nbsp;/g, " ")
+      .trim(),
   }));
 
   const planetOpt = options.find(
-    (o) => o.label.includes(coordLabel) && !/луна/i.test(o.label)
+    (o) => o.label.includes(coordLabel) && !/луна/i.test(o.label),
   );
   const moonOpt = options.find(
-    (o) => o.label.includes(coordLabel) && /луна/i.test(o.label)
+    (o) => o.label.includes(coordLabel) && /луна/i.test(o.label),
   );
 
   if (planetOpt || moonOpt) {
@@ -44,29 +53,28 @@ function findHome(html, homeCoords) {
   }
 
   // --- Desktop-формат: switch_planet(...) ---
-  // Луна: a.mini_moon onclick="switch_planet(<cp>)" в home-блоке
-  const homeBlockIdx = html.indexOf(coordLabel);
-  if (homeBlockIdx >= 0) {
-    // Ищем блок home-планеты (ov-pl-block), содержащий координаты
-    const blockStart = html.lastIndexOf("ov-pl-block", homeBlockIdx);
-    const regionStart = blockStart >= 0 ? blockStart : Math.max(0, homeBlockIdx - 2000);
-    const region = html.substring(regionStart, homeBlockIdx + 3000);
+  // Home-блок: <div class="ov-pl-block mooned"> ... <a ...>1:363:6</a> ... switch_planet(<cp>)
+  // Координаты в raw-HTML БЕЗ скобок: <a href=#galaxy.php?...>1:363:6</a>
+  const coordPlain = homeCoords; // "1:363:6"
+  const anchorIdx = html.indexOf(`>${coordPlain}</a>`);
+  if (anchorIdx >= 0) {
+    // Ищем начало home-блока (ov-pl-block) перед координатами
+    const blockStart = html.lastIndexOf("ov-pl-block", anchorIdx);
+    const regionStart =
+      blockStart >= 0 ? blockStart : Math.max(0, anchorIdx - 2000);
+    const region = html.substring(regionStart, anchorIdx + 4000);
 
-    // moon cp: mini_moon -> switch_planet
-    const moonMatch = region.match(
-      /mini_moon[^>]*onclick="switch_planet\((\d+)\)"/
-    );
-    if (moonMatch) {
-      result.moon_cp = moonMatch[1];
-      result.source = "desktop-switch_planet";
-    }
-    // planet cp: a.pl (не mini_moon) -> switch_planet
-    const planetMatch = region.match(
-      /class="pl[^"]*"[^>]*onclick="switch_planet\((\d+)\)"/
-    );
+    // planet cp: ПЕРВЫЙ switch_planet в home-блоке (это сама home-планета).
+    // НО: у home-планеты иконка имеет класс mini_moon, поэтому НЕ используем
+    // mini_moon-матч для moon_cp (он ложно совпадёт с самой home-планетой).
+    const planetMatch = region.match(/switch_planet\((\d+)\)/);
     if (planetMatch) {
       result.planet_cp = planetMatch[1];
+      result.source = "desktop-switch_planet";
     }
+    // moon_cp: в raw-HTML home-луна НЕ связана (рендерится JS). Оставляем null —
+    // вызывающий код подставит moon_cp из config (moonCp).
+    result.moon_cp = null;
   }
 
   return result;
@@ -85,7 +93,10 @@ function parseMissions(html) {
     // Убираем onmouseover/onmouseout/title-атрибуты (в них overlib с вложенным HTML,
     // который ломает простую очистку тегов), затем теги и сущности.
     let t = divHtml
-      .replace(/\son(?:mouseover|mouseout|mousemove|click|focus|blur)="[^"]*"/g, " ")
+      .replace(
+        /\son(?:mouseover|mouseout|mousemove|click|focus|blur)="[^"]*"/g,
+        " ",
+      )
       .replace(/\stitle="[^"]*"/g, " ");
     t = t.replace(/<script[\s\S]*?<\/script>/g, " ");
     const text = t
@@ -99,9 +110,9 @@ function parseMissions(html) {
     if (!text.includes("Задание:")) return;
     const typeMatch = text.match(/Задание:\s*(.+)$/);
     const type = typeMatch ? typeMatch[1].trim() : "unknown";
-    const coords = [
-      ...text.matchAll(/\[(\d+):(\d+):(\d+(?::\d+)?)\]/g),
-    ].map((c) => c[0].slice(1, -1));
+    const coords = [...text.matchAll(/\[(\d+):(\d+):(\d+(?::\d+)?)\]/g)].map(
+      (c) => c[0].slice(1, -1),
+    );
     if (seen.has(text)) return;
     seen.add(text);
     missions.push({
@@ -154,13 +165,11 @@ function parseAttacks(html, missions) {
   // Входящие атаки — эвристика по ключевым словам.
   // ВНИМАНИЕ: нет реального образца входящей атаки, список слов настраивается.
   const incomingKeywords = [
-    "Вас атакуют",
-    "атакуют вас",
-    "нападение на",
+    "Чужой флот игрока",
+    "Чужой флот",
+    "чужой флот игрока",
+    "чужой флот",
     "вражеский флот",
-    "вражеские",
-    "под атакой",
-    "входящий флот",
   ];
   const incoming = [];
   for (const kw of incomingKeywords) {
@@ -192,4 +201,51 @@ function parseOverview(html, homeCoords) {
   return { home, missions, attacks };
 }
 
-module.exports = { parseOverview, findHome, parseMissions, parseAttacks };
+module.exports = { parseOverview, findHome, parseMissions, parseAttacks, parseBodies };
+
+/**
+ * Извлечь все наши тела (планеты и луны) с cp.
+ * Mobile-формат: <option value="?cp=<cp>&mode=0&info=">Название [G:S:P]</option>
+ * Desktop-fallback: switch_planet(<cp>) + ближайшие координаты.
+ * @param {string} html — raw-HTML overview
+ * @returns {Array} [{ cp, coords, type: 'planet'|'moon', name }]
+ */
+function parseBodies(html) {
+  const bodies = [];
+  const seen = new Set();
+
+  // --- Mobile: dropdown-опции ---
+  for (const m of html.matchAll(/<option[^>]*value="\?cp=(\d+)&[^"]*"[^>]*>([\s\S]*?)<\/option>/g)) {
+    const cp = m[1];
+    if (seen.has(cp)) continue;
+    const label = m[2].replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
+    const cM = label.match(/\[(\d+):(\d+):(\d+)\]/);
+    if (!cM) continue;
+    seen.add(cp);
+    const isMoon = /луна/i.test(label);
+    const name = label.replace(/\[\d+:\d+:\d+\]\*?/, "").trim();
+    bodies.push({ cp, coords: `${cM[1]}:${cM[2]}:${cM[3]}`, type: isMoon ? "moon" : "planet", name });
+  }
+
+  // --- Desktop-fallback: switch_planet ---
+  if (!bodies.length) {
+    for (const m of html.matchAll(/switch_planet\((\d+)\)/g)) {
+      const cp = m[1];
+      if (seen.has(cp)) continue;
+      const before = html.substring(Math.max(0, m.index - 3000), m.index);
+      const cMs = [...before.matchAll(/(\d+):(\d+):(\d+)/g)];
+      if (!cMs.length) continue;
+      seen.add(cp);
+      const c = cMs[cMs.length - 1];
+      const between = html.substring(Math.max(0, m.index - 600), m.index);
+      bodies.push({
+        cp,
+        coords: `${c[1]}:${c[2]}:${c[3]}`,
+        type: /Луна/.test(between) ? "moon" : "planet",
+        name: null,
+      });
+    }
+  }
+
+  return bodies;
+}

@@ -32,17 +32,26 @@ async function fetchHtml(context, urlPath) {
 
 /**
  * POST-запрос (для отправки флотов).
+ *
+ * ВАЖНО (проверено вживую): сервер принимает ТОЛЬКО
+ * application/x-www-form-urlencoded + заголовок Referer = страница-источник.
+ * Multipart (formData) и отсутствие Referer → «Вы долго отсутствовали».
+ *
  * @param {import('playwright').BrowserContext} context
- * @param {string} urlPath
- * @param {Object} form — объект полей формы
+ * @param {string} urlPath — путь вида "/floten1.php"
+ * @param {Object} form — объект полей формы { key: value }
+ * @param {Object} [opts] — { referer: string } (URL страницы-источника)
  */
-async function postForm(context, urlPath, form) {
+async function postForm(context, urlPath, form, opts = {}) {
   const url = urlPath.startsWith("http") ? urlPath : BASE + urlPath;
   const params = new URLSearchParams();
-  for (const [k, v] of Object.entries(form)) params.append(k, v);
+  for (const [k, v] of Object.entries(form)) params.append(k, v == null ? "" : String(v));
+  const headers = { "content-type": "application/x-www-form-urlencoded" };
+  if (opts.referer) headers["referer"] = opts.referer;
   const res = await context.request.post(url, {
     timeout: 20000,
-    formData: params,
+    data: params.toString(),
+    headers,
   });
   return { status: res.status(), html: await res.text() };
 }
