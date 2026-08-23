@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-23T10:25:46.957Z",
+  "updated_at": "2026-08-23T15:17:05.329Z",
   "home": {
     "coords": "1:363:6",
     "planet_cp": 26299,
@@ -11,39 +11,6 @@
   },
   "missions": [
     {
-      "direction": "return",
-      "type": "Атаковать",
-      "text": "Ваш флот возвращается с планеты база [1:363:5] на луну Луна [1:363:6]* . Задание: Атаковать",
-      "coords": [
-        "1:363:5",
-        "1:363:6"
-      ],
-      "is_returning": true,
-      "classified": "return"
-    },
-    {
-      "direction": "return",
-      "type": "Атаковать",
-      "text": "Ваш флот возвращается с планеты лёгкого поведения [1:363:10] на луну Луна [1:363:6]* . Задание: Атаковать",
-      "coords": [
-        "1:363:10",
-        "1:363:6"
-      ],
-      "is_returning": true,
-      "classified": "return"
-    },
-    {
-      "direction": "holding",
-      "type": "Экспедиция [10]",
-      "text": "Ваш флот с луны Луна [1:257:13]* исследует позицию [1:257:16] . Задание: Экспедиция [10]",
-      "coords": [
-        "1:257:13",
-        "1:257:16"
-      ],
-      "is_returning": false,
-      "classified": "expedition"
-    },
-    {
       "direction": "holding",
       "type": "Экспедиция [10]",
       "text": "Ваш флот с луны Луна [1:363:6]* исследует позицию [1:363:16] . Задание: Экспедиция [10]",
@@ -52,17 +19,6 @@
         "1:363:16"
       ],
       "is_returning": false,
-      "classified": "expedition"
-    },
-    {
-      "direction": "return",
-      "type": "Экспедиция [10]",
-      "text": "Ваш флот возвращается с позиции [1:257:16] на луну Луна [1:257:13]* . Задание: Экспедиция [10]",
-      "coords": [
-        "1:257:16",
-        "1:257:13"
-      ],
-      "is_returning": true,
       "classified": "expedition"
     },
     {
@@ -78,32 +34,11 @@
     }
   ],
   "attacks": {
-    "outgoing": [
-      {
-        "direction": "return",
-        "type": "Атаковать",
-        "text": "Ваш флот возвращается с планеты база [1:363:5] на луну Луна [1:363:6]* . Задание: Атаковать",
-        "coords": [
-          "1:363:5",
-          "1:363:6"
-        ],
-        "is_returning": true
-      },
-      {
-        "direction": "return",
-        "type": "Атаковать",
-        "text": "Ваш флот возвращается с планеты лёгкого поведения [1:363:10] на луну Луна [1:363:6]* . Задание: Атаковать",
-        "coords": [
-          "1:363:10",
-          "1:363:6"
-        ],
-        "is_returning": true
-      }
-    ],
+    "outgoing": [],
     "incoming": []
   },
   "expedition_slots": {
-    "active": 4
+    "active": 2
   },
   "last_expeditions_sent": null,
   "bodies": [
@@ -207,14 +142,13 @@
     }
   ],
   "analysis": {
-    "total": 6,
-    "outgoing": 2,
-    "returning": 4,
+    "total": 2,
+    "outgoing": 1,
+    "returning": 1,
     "byType": {
-      "return": 2,
-      "expedition": 4
+      "expedition": 2
     },
-    "activeSlots": 2
+    "activeSlots": 1
   },
   "safety": {
     "evacuated": {}
@@ -225,12 +159,12 @@
     "cursor": 363
   },
   "last_tick": {
-    "ts": "2026-08-23T10:24:45.123Z",
+    "ts": "2026-08-23T13:37:54.460Z",
     "missions": {
-      "total": 6,
+      "total": 3,
       "byType": {
-        "return": 2,
-        "expedition": 4
+        "return": 1,
+        "expedition": 2
       },
       "incomingAttacks": 0
     },
@@ -243,10 +177,10 @@
       "conditions": {
         "ok": true,
         "reasons": [],
-        "freeSlots": 21,
+        "freeSlots": 35,
         "freeSlotsSource": "text",
         "fleetMax": 42,
-        "battleships": 355839852460,
+        "battleships": 205143708034,
         "minFree": 3,
         "minBattleships": 10000000,
         "incomingCount": 0
