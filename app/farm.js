@@ -9,25 +9,36 @@
  *     - если по всем неактивным текущей системы уже есть атаки — шпионим следующую систему
  *       (смена системы: galaxy.php?mode=1&galaxyGO=1&systemGO=N);
  *     - сверяем текущие полёты с новыми целями, дубли пропускаем.
- *  2. Шпионаж: зонды на всех неактивных системы (spy.js).
- *  3. Сообщения: шпионские доклады по тем же координатам (система совпадает).
- *  4. «Ишкофарм» — отправка флота по докладу (форма select на messages.php, кнопка gRPhPPPPh).
- *  5. Проверка: миссия появилась в списке миссий (overview).
+ *  2. Ротация систем: счётчик (курсор) по окну home ± systemRange (config.farm.systemRange).
+ *     Порядок: home, home+1..home+range, home-1..home-range, затем снова home.
+ *     Курсор хранится в state (farm.cursor) — если миссии заняты, цикл выходит
+ *     на ранней проверке, и следующий тик продолжает с той же системы.
+ *  3. Шпионаж: зонды на неактивные цели текущей системы (spy.js).
+ *  4. Сообщения: шпионские доклады текущей системы → «Ишкофарм» (messages.php,
+ *     панель со 100 докладами, submit-кнопка — динамический токен).
+ *  5. Верификация: миссия появилась в overview (секция sent → farmed).
+ *
+ * Система считается обработанной, когда все её цели прошпионены (spy_sent)
+ * и по ней не осталось «фермных» докладов (farmed/sent). Тогда курсор
+ * переходит к следующей системе. Защита от зависания: maxSystemWaitMs.
  *
  * Состояние (data/bot-state.json):
  *   farm: {
- *     farmed: { "g:s:p": timestamp },   // по этим координатам уже отправлен фарм
- *     lastSystem: 363,                  // последняя система, по которой шпионили
- *     systems: [363, 364, ...]          // из config
+ *     farmed: { "g:s:p": timestamp },   // подтверждённый фарм (кулдаун 12ч)
+ *     sent:   { "g:s:p": { at, reportId } }, // отправлен, ждём верификации
+ *     cursor: 363,                      // текущая система (счётчик)
+ *     cursorSince: timestamp            // когда начали работать с этой системой
  *   }
  */
 
-const { fetchHtml, postForm } = require("./http");
-const { parseMessages, filterSpyReports } = require("./parse-messages");
+const { fetchHtml, postForm, BASE } = require("./http");
+const { parseMessages, filterSpyReports } = require("./parsers/messages");
 const { getSystem, switchSystem, findInactiveTargets } = require("./galaxy");
 const { spyTargets } = require("./spy");
-const { parseFleet } = require("./parse-fleet");
+const { parseFleet } = require("./parsers/fleet");
 const { classifyMission } = require("./missions");
+const { extractError } = require("./parsers/forms");
+const { delay } = require("./helpers/async");
 const dataStore = require("./data-store");
 const fleetState = require("./fleet-state");
 
@@ -134,7 +145,6 @@ function busyTargetCoords(missions) {
  * @returns {Promise<string>} raw-HTML
  */
 async function fetchMessagesPage(context) {
-  const { BASE } = require("./http");
   const url = "/messages.php?mode=show&messcat=100";
   const { status, html } = await postForm(
     context,
@@ -165,7 +175,6 @@ async function fetchMessagesPage(context) {
  */
 async function farmFromReport(context, config, reportId) {
   const fc = config.farm || {};
-  const { BASE } = require("./http");
   const MSG_URL = "/messages.php?mode=show&messcat=100";
   const referer = BASE + MSG_URL;
 
@@ -215,7 +224,6 @@ async function farmFromReport(context, config, reportId) {
   const { status: s2, html: resp } = await postForm(context, MSG_URL + "&lim=1", form, { referer });
   if (s2 !== 200) return { ok: false, error: `HTTP ${s2}` };
 
-  const { extractError } = require("./parse-form");
   const err = extractError(resp);
   if (err) return { ok: false, error: err };
   return { ok: true };
@@ -234,10 +242,27 @@ async function runFarmCycle(context, config, missionsData) {
   const dryRun = fc.dryRun !== false;
 
   const state = dataStore.load();
-  state.farm = state.farm || { farmed: {}, lastSystem: null };
+  state.farm = state.farm || { farmed: {}, sent: {} };
   state.farm.farmed = state.farm.farmed || {};
+  state.farm.sent = state.farm.sent || {};
 
   const report = { conditions: null, spied: [], farmed: [], verified: [] };
+
+  // Сохраняем ТОЛЬКО секцию farm (пЕРЕЗАГРУЖАЯ state): наша копия загружена
+  // до spyTargets()/collectMissions(), и прямой save(state) затрёт изменения
+  // других модулей (spy_sent, missions...).
+  const saveFarmState = () => {
+    const fresh = dataStore.load();
+    fresh.farm = {
+      ...(fresh.farm || {}),
+      farmed: { ...(fresh.farm?.farmed || {}), ...state.farm.farmed },
+      sent: { ...(fresh.farm?.sent || {}), ...state.farm.sent },
+      cursor: state.farm.cursor,
+      cursorSince: state.farm.cursorSince,
+    };
+    delete fresh.farm.lastSystem; // заменена на cursor
+    dataStore.save(fresh);
+  };
 
   // --- 0. Основной флот должен быть на главной луне (оттуда фармим) ---
   const mf = fleetState.getMainFleet();
@@ -245,7 +270,7 @@ async function runFarmCycle(context, config, missionsData) {
     const reason = `Основной флот не на главной луне (сейчас: ${mf.coords}, cp=${mf.cp})`;
     console.log(`🌾 [farm] ${reason} — фарм ждёт`);
     report.conditions = { ok: false, reasons: [reason], freeSlots: null, battleships: null };
-    dataStore.save(state);
+    saveFarmState();
     return report;
   }
 
@@ -254,7 +279,7 @@ async function runFarmCycle(context, config, missionsData) {
   report.conditions = cond;
   if (!cond.ok) {
     console.log(`🌾 [farm] Условия не выполнены: ${cond.reasons.join("; ")}`);
-    dataStore.save(state);
+    saveFarmState();
     return report;
   }
   console.log(`🌾 [farm] Условия выполнены (слоты=${cond.freeSlots}, линкоры=${cond.battleships}) — ищем цели`);
@@ -263,32 +288,61 @@ async function runFarmCycle(context, config, missionsData) {
   const busy = busyTargetCoords(missionsData.missions);
   const ourCoords = (state.bodies || []).map((b) => b.coords);
 
-  // --- 2. Выбор системы: home, затем следующие ---
-  const systems = fc.systems || [config.home.system, config.home.system + 1, config.home.system + 2];
+  // --- 2. Ротация систем: счётчик (курсор) по окну home ± systemRange ---
+  // Ширина окна — config.farm.systemRange (по умолчанию 30): системы
+  // home, home+1..home+range, home-1..home-range. Курсор персистентный:
+  // если миссии заняты (ранний выход выше), следующий тик продолжит с той же.
+  const homeSys = config.home.system;
+  const range = fc.systemRange != null ? fc.systemRange : 30;
+  const maxScan = fc.maxScanPerTick || 10;
+  const GRACE_MS = fc.reportGraceMs != null ? fc.reportGraceMs : 5 * 60 * 1000;
+  const MAX_SYSTEM_MS = fc.maxSystemWaitMs != null ? fc.maxSystemWaitMs : 20 * 60 * 1000;
+
+  const nextSys = (sys) => {
+    if (sys == null) return homeSys;
+    if (sys < homeSys + range) return sys + 1;
+    if (sys > homeSys - range) return sys - 1;
+    return homeSys; // окно пройдено — снова home
+  };
+
+  let cursor = Number.isInteger(state.farm.cursor) ? state.farm.cursor : homeSys;
+  if (cursor < homeSys - range || cursor > homeSys + range) cursor = homeSys; // курсор вне окна
+  const prevCursor = cursor;
+
   let systemData = null;
   let targets = [];
-  for (const sys of systems) {
-    const gd = sys === config.home.system
-      ? await getSystem(context, config.home.galaxy, sys)
-      : await switchSystem(context, config.home.galaxy, sys);
+  let scanned = 0;
+  while (scanned < maxScan) {
+    const gd = cursor === homeSys
+      ? await getSystem(context, config.home.galaxy, cursor)
+      : await switchSystem(context, config.home.galaxy, cursor);
     const t = findInactiveTargets(gd, {
       ourCoords,
       busyCoords: [...busy],
       includeVacation: !!fc.includeVacation,
     });
+    scanned++;
     if (t.length > 0) {
       systemData = gd;
       targets = t;
-      console.log(`🌾 [farm] Система ${gd.galaxy}:${sys}: неактивных целей ${t.length}`);
+      console.log(`🌾 [farm] Система ${gd.galaxy}:${cursor}: неактивных целей ${t.length} (проверено систем: ${scanned})`);
       break;
     }
-    console.log(`🌾 [farm] Система ${sys}: новых целей нет — следующая`);
+    cursor = nextSys(cursor);
   }
 
   if (!targets.length) {
-    console.log("🌾 [farm] Новых целей нет в доступных системах");
-    dataStore.save(state);
+    console.log(`🌾 [farm] Целей нет (проверено систем: ${scanned}, курсор теперь ${cursor})`);
+    state.farm.cursor = cursor;
+    state.farm.cursorSince = null;
+    saveFarmState();
     return report;
+  }
+
+  // Только что приземлились на систему с целями — запускаем grace-таймер
+  // (зондам нужно 1-3 минуты, чтобы вернуть доклады).
+  if (prevCursor !== cursor) {
+    state.farm.cursorSince = Date.now();
   }
 
   // --- 3. Шпионаж по новым целям ---
@@ -301,7 +355,7 @@ async function runFarmCycle(context, config, missionsData) {
   const messages = parseMessages(msgsHtml);
   const spyReports = filterSpyReports(messages);
 
-  const sysSet = new Set(targets.map((t) => `${t.galaxy}:${t.system}`));
+  const cursorSys = String(cursor);
   const farmCooldownMs = fc.farmCooldownMs || 12 * 3600 * 1000;
   const now = Date.now();
 
@@ -331,7 +385,7 @@ async function runFarmCycle(context, config, missionsData) {
   for (const msg of spyReports) {
     if (!msg.coords) continue;
     const [g, s] = msg.coords.split(":");
-    if (!sysSet.has(`${g}:${s}`)) continue; // не та система
+    if (s !== cursorSys) continue; // только доклады текущей системы
     if (state.farm.farmed[msg.coords] && now - state.farm.farmed[msg.coords] < farmCooldownMs) continue;
     if (state.farm.sent[msg.coords]) continue; // уже отправлено, ждём верификации
     if (busy.has(msg.coords)) continue; // по этим координатам уже летит флот
@@ -347,19 +401,46 @@ async function runFarmCycle(context, config, missionsData) {
     } else {
       console.warn(`❌ [farm] Ишкофарм ${msg.id} → ${msg.coords}: ${res.error}`);
     }
-    if (!dryRun) await new Promise((r) => setTimeout(r, 1500));
+    if (!dryRun) await delay(1500);
   }
 
-  state.farm.lastSystem = systemData ? systemData.system : state.farm.lastSystem;
-  // Сохраняем ПЕРЕЗАГРУЖЕННый state: наша копия state загружена до spyTargets(),
-  // и простой save(state) затрёт spy_sent (кулдауны шпионажа), который записал
-  // spy.js. Мержим только секцию farm.
-  const fresh = dataStore.load();
-  fresh.farm = fresh.farm || { farmed: {} };
-  fresh.farm.farmed = { ...(fresh.farm.farmed || {}), ...state.farm.farmed };
-  fresh.farm.sent = { ...(fresh.farm.sent || {}), ...state.farm.sent };
-  fresh.farm.lastSystem = state.farm.lastSystem;
-  dataStore.save(fresh);
+  // --- 5. Система обработана? Переходим к следующей ---
+  // Обработана = все цели прошпионены (spy_sent) И по системе не осталось
+  // «фермных» докладов (все farmed/sent/busy) И прошёл grace-период
+  // (зонды успели долететь). Если застряли на системе > maxSystemWaitMs —
+  // переходим принудительно.
+  const freshSpy = dataStore.load();
+  const spiedSet = new Set(Object.keys(freshSpy.spy_sent || {}));
+  const allSpied = targets.every((t) => spiedSet.has(t.coords));
+  const farmableLeft = spyReports.filter((r) => {
+    if (!r.coords || r.coords.split(":")[1] !== cursorSys) return false;
+    if (state.farm.farmed[r.coords] && now - state.farm.farmed[r.coords] < farmCooldownMs) return false;
+    if (state.farm.sent[r.coords]) return false;
+    if (busy.has(r.coords)) return false;
+    return true;
+  });
+
+  const since = state.farm.cursorSince || now;
+  const elapsed = Date.now() - since;
+  const graceElapsed = elapsed >= GRACE_MS;
+  const stuckTooLong = elapsed >= MAX_SYSTEM_MS;
+
+  if (stuckTooLong || (allSpied && farmableLeft.length === 0 && graceElapsed)) {
+    const done = cursor;
+    cursor = nextSys(cursor);
+    state.farm.cursor = cursor;
+    state.farm.cursorSince = null;
+    console.log(
+      `🌾 [farm] Система ${done} обработана (целей прошпионено: ${allSpied}, докладов осталось: ${farmableLeft.length}, ${stuckTooLong ? "принудительно" : "grace"}) — следующая: ${cursor}`
+    );
+  } else {
+    console.log(
+      `🌾 [farm] Система ${cursor}: ждём (allSpied=${allSpied}, докладов осталось: ${farmableLeft.length}, grace ${Math.round(elapsed / 60000)}/${Math.round(GRACE_MS / 60000)} мин)`
+    );
+  }
+
+  state.farm.cursor = cursor;
+  saveFarmState();
   return report;
 }
 

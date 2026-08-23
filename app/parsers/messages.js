@@ -1,5 +1,5 @@
 /**
- * parse-messages.js — парсинг raw-HTML страницы сообщений (reports).
+ * messages.js — парсинг raw-HTML страницы сообщений (reports).
  *
  * Страница: messages.php?mode=show&messcat=100 (доклады: боевые, шпионаж,
  * доставка, экспедиции и т.д.)

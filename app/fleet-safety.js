@@ -16,11 +16,12 @@
  */
 
 const { fetchHtml } = require("./http");
-const { parseAttacks } = require("./parse-overview");
-const { parseFleet, parseActiveMissions, normalizeCoords } = require("./parse-fleet");
+const { parseAttacks } = require("./parsers/overview");
+const { parseFleet, parseActiveMissions } = require("./parsers/fleet");
 const { safeMoons, findBody } = require("./bodies");
 const { sendMission, recallMission } = require("./mission-sender");
-const { stripHtml } = require("./parse-form");
+const { normalizeCoords, splitCoords } = require("./helpers/coords");
+const { stripHtml } = require("./helpers/html");
 const dataStore = require("./data-store");
 const fleetState = require("./fleet-state");
 
@@ -226,7 +227,7 @@ async function runSafetyCheck(context, config, missionsData) {
       if (n > 0 && s.id) ships[s.id] = n;
     }
 
-    const [mg, ms, mp] = moon.coords.split(":").map(Number);
+    const { galaxy: mg, system: ms, planet: mp } = splitCoords(moon.coords);
     const res = await sendMission(context, {
       fromCp: atk.cp,
       target: { galaxy: mg, system: ms, planet: mp, planettype: "3" },

@@ -38,8 +38,9 @@
  *   Если урана меньше keepUranium — взять 0. Знать ресурсы заранее не нужно.
  */
 
-const { BASE } = require("./http");
-const { extractError, isAjaxReload, stripHtml } = require("./parse-form");
+const { BASE, postForm } = require("./http");
+const { extractError, isAjaxReload } = require("./parsers/forms");
+const { stripHtml } = require("./helpers/html");
 const fs = require("fs");
 const path = require("path");
 
@@ -218,7 +219,7 @@ async function sendMission(context, opts) {
       // Сохраняем страницу для разбора (цель должна быть в подстановке из URL)
       const html = await page.content().catch(() => "");
       try {
-        const dir = path.join(__dirname, "..", "debags");
+        const dir = path.join(__dirname, "..", "debug", "forms");
         fs.mkdirSync(dir, { recursive: true });
         const file = path.join(dir, `floten2-debug-${target.galaxy}-${target.system}-${target.planet}.html`);
         fs.writeFileSync(file, html);
@@ -330,12 +331,10 @@ async function sendMission(context, opts) {
 async function recallMission(context, fleetId, opts = {}) {
   const { dryRun = false } = opts;
   if (dryRun) return { ok: true, dryRun: true };
-  const { postForm } = require("./http");
   const res = await postForm(context, "/fleetback.php", { fleetid: String(fleetId) }, {
     referer: `${BASE}/fleet.php`,
   });
   if (res.status !== 200) return { ok: false, error: `HTTP ${res.status}` };
-  const { extractError } = require("./parse-form");
   const err = extractError(res.html);
   if (err) return { ok: false, error: err };
   return { ok: true };

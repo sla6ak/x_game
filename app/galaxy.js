@@ -10,7 +10,7 @@
  */
 
 const { fetchHtml } = require("./http");
-const { parseGalaxy, filterInactive } = require("./parse-galaxy");
+const { parseGalaxy, filterInactive } = require("./parsers/galaxy");
 
 /**
  * Получить обзор системы.

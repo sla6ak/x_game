@@ -1,9 +1,11 @@
 /**
- * parse-form.js — универсальный парсер форм из raw-HTML.
+ * forms.js — универсальный парсер форм из raw-HTML + разбор ответов.
  *
  * Извлекает поля формы по её name: input (все типы), select, button.
  * Для radio-кнопок сохраняет checked-вариант. Для select — value.
  */
+
+const { stripHtml } = require("../helpers/html");
 
 /**
  * Парсить форму из raw-HTML.
@@ -35,21 +37,6 @@ function parseForm(html, formName) {
     }
   }
   return fields;
-}
-
-/**
- * Извлечь текст из HTML (без тегов/скриптов).
- * @param {string} html
- */
-function stripHtml(html) {
-  return html
-    .replace(/<script[\s\S]*?<\/script>/g, " ")
-    .replace(/<style[\s\S]*?<\/style>/g, " ")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/\s+/g, " ")
-    .trim();
 }
 
 /**

@@ -1,5 +1,5 @@
 /**
- * parse-fleet.js — парсинг raw-HTML страницы fleet.php?cp=<cp>.
+ * fleet.js — парсинг raw-HTML страницы fleet.php?cp=<cp>.
  *
  * Извлекает:
  *  - координаты тела (galaxy/system/planet/planet_type) из hidden-полей
@@ -10,6 +10,8 @@
  * Корабль: <input name="ship203" alt="Большой танкер5424821143">
  *   alt = "<имя><макс_кол-во>" (без разделителя). Точное кол-во — в maxship<ID>.
  */
+
+const { normalizeCoords } = require("../helpers/coords");
 
 function getHidden(html, name) {
   const m = html.match(new RegExp(`name="${name}" value="([^"]*)"`));
@@ -119,15 +121,6 @@ function parseActiveMissions(html) {
     });
   }
   return missions;
-}
-
-/**
- * Нормализация координат для сравнения: убираем суффикс луны (*, *N).
- * "1:363:6*" → "1:363:6"
- */
-function normalizeCoords(c) {
-  if (!c) return null;
-  return c.replace(/\*\d*$/, "");
 }
 
 /**

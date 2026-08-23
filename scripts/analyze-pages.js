@@ -1,9 +1,22 @@
 // analyze-pages.js
-// Временный скрипт для анализа HTML-структуры страниц игры
-// Запускается один раз для сбора информации о структуре
+// Скрипт для анализа HTML-структуры страниц игры (dev-утилита).
+// Запускается один раз для сбора информации о структуре: node scripts/analyze-pages.js
+// Снапшоты страниц сохраняются в debug/<страница>/.
 
 const fs = require("fs");
-const SESSION_FILE = "./session.json";
+const path = require("path");
+
+const ROOT = path.join(__dirname, "..");
+const DEBUG_DIR = path.join(ROOT, "debug");
+const SESSION_FILE = path.join(ROOT, "session.json");
+
+function saveDebug(subdir, filename, content) {
+  const dir = path.join(DEBUG_DIR, subdir);
+  fs.mkdirSync(dir, { recursive: true });
+  const file = path.join(dir, filename);
+  fs.writeFileSync(file, content);
+  console.log(`💾 Сохранён ${path.relative(ROOT, file)}`);
+}
 
 async function analyzePages(browser) {
   console.log("🔍 [analyze] Начинаем анализ страниц...");
@@ -40,8 +53,7 @@ async function analyzePages(browser) {
     const bodyHtml = await overviewFrame.evaluate(
       () => document.body.innerHTML,
     );
-    fs.writeFileSync("./debug-overview.html", bodyHtml);
-    console.log("💾 Сохранён debug-overview.html");
+    saveDebug("overview", "overview.html", bodyHtml);
 
     // Ищем таблицы с миссиями
     const missionTables = await overviewFrame.evaluate(() => {
@@ -109,8 +121,7 @@ async function analyzePages(browser) {
   await new Promise((r) => setTimeout(r, 2000));
 
   const fleetHtml = await page.evaluate(() => document.body.innerHTML);
-  fs.writeFileSync("./debug-fleet.html", fleetHtml);
-  console.log("💾 Сохранён debug-fleet.html");
+  saveDebug("fleet", "fleet.html", fleetHtml);
 
   // Детально анализируем корабли на странице
   const fleetDetails = await page.evaluate(() => {
@@ -243,8 +254,7 @@ async function analyzePages(browser) {
   });
 
   const flotenHtml = await page.evaluate(() => document.body.innerHTML);
-  fs.writeFileSync("./debug-floten1.html", flotenHtml);
-  console.log("💾 Сохранён debug-floten1.html");
+  saveDebug("forms", "floten1.html", flotenHtml);
 
   // Собираем информацию о формах
   const forms = await page.evaluate(() => {
@@ -343,8 +353,7 @@ async function analyzePages(browser) {
 
       if (hasMovement) {
         console.log(`  ✅ Найдена информация о движении флота!`);
-        fs.writeFileSync("./debug-movement.html", html);
-        console.log("  💾 Сохранён debug-movement.html");
+        saveDebug("movement", "movement.html", html);
 
         // Парсим информацию о летящих флотах
         const flyingFleets = await page.evaluate(() => {
@@ -403,7 +412,7 @@ async function analyzePages(browser) {
     }
   });
 
-  console.log("\n✅ Анализ завершён. Проверьте файлы debug-*.html");
+  console.log("\n✅ Анализ завершён. Проверьте каталог debug/");
   await context.close();
 }
 

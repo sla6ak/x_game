@@ -13,7 +13,7 @@
  * не связана). Остальные планеты/луны — из блоков ov-pl-wrapper.
  */
 
-const { findHome } = require("./parse-overview");
+const { findHome } = require("./parsers/overview");
 
 /**
  * Извлечь все тела (планеты+луны) из raw-HTML overview.

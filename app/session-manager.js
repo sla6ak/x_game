@@ -1,31 +1,19 @@
 const fs = require("fs");
 const path = require("path");
+const { BASE } = require("./http");
+const { blockResources } = require("./helpers/browser");
+const { loadConfig } = require("./helpers/config");
+const { delay } = require("./helpers/async");
 
 // Единый файл сессии (cookies)
 const SESSION_FILE = path.join(__dirname, "..", "session.json");
-const BASE = "https://crazy.xgame-online.com";
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 1_800;
 const TIMEOUT = 15_000;
 
 // Креды из config.json
-const credentials = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "..", "config.json"), "utf-8"),
-);
-
-/**
- * Блокировщик лишних ресурсов (картинки, шрифты, стили).
- * Экспортируем для повторного использования в bot-missions / expedition.
- */
-function blockResources(page) {
-  return page.route("**/*", (route) => {
-    const blocked = ["image", "media", "font", "stylesheet"];
-    blocked.includes(route.request().resourceType())
-      ? route.abort()
-      : route.continue();
-  });
-}
+const credentials = loadConfig();
 
 // Ждём появления формы логина в DOM
 async function waitForLoginForm(page) {
@@ -193,7 +181,7 @@ async function ensureLoggedIn(context) {
         console.log(
           `⏳ [session] Следующая попытка через ${RETRY_DELAY / 1000} сек...`,
         );
-        await new Promise((r) => setTimeout(r, RETRY_DELAY));
+        await delay(RETRY_DELAY);
       }
     }
   }
@@ -201,4 +189,4 @@ async function ensureLoggedIn(context) {
   return false;
 }
 
-module.exports = { ensureLoggedIn, blockResources, SESSION_FILE, BASE };
+module.exports = { ensureLoggedIn, SESSION_FILE, BASE };

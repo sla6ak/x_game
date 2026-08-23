@@ -2,13 +2,14 @@
  * spy.js — отправка шпионских зондов на цели (неактивные игроки).
  *
  * Переиспользуемая функция: spyTargets(context, config, targets, opts).
- * Цели: [{ coords: "g:s:p", planet, player, status, ... }] (из parse-galaxy).
+ * Цели: [{ coords: "g:s:p", planet, player, status, ... }] (из parsers/galaxy).
  *
  * Дедупликация: цели, на которые уже летит/летел шпионаж (state.spy_sent),
  * пропускаются, если не прошло spyCooldownMs.
  */
 
 const { sendMission } = require("./mission-sender");
+const { delay } = require("./helpers/async");
 const dataStore = require("./data-store");
 
 /**
@@ -63,7 +64,7 @@ async function spyTargets(context, config, targets, opts = {}) {
       console.warn(`❌ [spy] Шпионаж → ${t.coords} не удался (стадия ${res.stage}): ${res.error}`);
     }
     // пауза между отправками (анти-спам)
-    await new Promise((r) => setTimeout(r, 1500));
+    await delay(1500);
   }
 
   // Сохраняем кулдауны: ПЕРЕЗАГРУЖАЕМ state, чтобы не затереть изменения

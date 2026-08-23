@@ -12,7 +12,7 @@
  */
 
 const { fetchHtml } = require("./http");
-const { parseMissions, parseAttacks } = require("./parse-overview");
+const { parseMissions, parseAttacks } = require("./parsers/overview");
 const { parseBodies, safeMoons } = require("./bodies");
 const dataStore = require("./data-store");
 

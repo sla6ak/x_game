@@ -17,13 +17,10 @@
  * (флот может быть в пути или на безопасной луне).
  */
 
-const fs = require("fs");
-const path = require("path");
 const dataStore = require("./data-store");
+const { loadConfig } = require("./helpers/config");
 
-const config = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "..", "config.json"), "utf-8")
-);
+const config = loadConfig();
 
 /** Положение по умолчанию: главная луна. */
 function defaultPosition() {

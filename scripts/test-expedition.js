@@ -1,10 +1,12 @@
 // test-expedition.js
-// Тестовый скрипт для анализа процесса отправки экспедиции
+// Тестовый скрипт для анализа процесса отправки экспедиции (dev-утилита).
+// Запуск: node scripts/test-expedition.js
 const { chromium } = require("playwright");
-const { ensureLoggedIn } = require("./app/session-manager");
+const { ensureLoggedIn } = require("../app/session-manager");
 const fs = require("fs");
+const path = require("path");
 
-const SESSION_FILE = "./session.json";
+const ROOT = path.join(__dirname, "..");
 
 async function testExpedition() {
   console.log("🚀 Тестируем отправку экспедиции...");
@@ -12,15 +14,13 @@ async function testExpedition() {
   const browser = await chromium.launch({ headless: false });
 
   try {
-    const ok = await ensureLoggedIn(browser);
+    // ensureLoggedIn работает с ОБЩИМ контекстом (cookies сохраняются в нём)
+    const context = await browser.newContext();
+    const ok = await ensureLoggedIn(context);
     if (!ok) {
       await browser.close();
       process.exit(1);
     }
-
-    const cookies = JSON.parse(fs.readFileSync(SESSION_FILE, "utf-8"));
-    const context = await browser.newContext();
-    await context.addCookies(cookies);
 
     const page = await context.newPage();
 
@@ -198,8 +198,10 @@ async function testExpedition() {
 
         // Сохраняем HTML следующей страницы
         const nextHtml = await page.evaluate(() => document.body.innerHTML);
-        fs.writeFileSync("./debug-floten2.html", nextHtml);
-        console.log("💾 Сохранён debug-floten2.html");
+        const debugDir = path.join(ROOT, "debug", "forms");
+        fs.mkdirSync(debugDir, { recursive: true });
+        fs.writeFileSync(path.join(debugDir, "floten2.html"), nextHtml);
+        console.log("💾 Сохранён debug/forms/floten2.html");
 
         // Анализируем страницу floten2
         const floten2Data = await page.evaluate(() => {

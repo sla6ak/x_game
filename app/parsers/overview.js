@@ -1,10 +1,12 @@
 /**
- * parse-overview.js — парсинг raw-HTML страницы overview.php.
+ * overview.js — парсинг raw-HTML страницы overview.php.
  *
  * Извлекает:
  *  - home: координаты, planet_cp, moon_cp (работает и для desktop, и для mobile)
  *  - missions: все миссии (holding = исходящие, return = возвращающиеся)
  *  - attacks: исходящие атаки (Задание: Атаковать) + эвристические входящие
+ *
+ * Тела (планеты/луны) — в ../bodies.js (parseBodies с home-обработкой).
  *
  * Desktop-формат overview:  a.mini_moon onclick="switch_planet(31694)"
  * Mobile-формат overview:   <option value="?cp=31694&mode=0&info=">Луна [1:363:6]*</option>
@@ -201,51 +203,4 @@ function parseOverview(html, homeCoords) {
   return { home, missions, attacks };
 }
 
-module.exports = { parseOverview, findHome, parseMissions, parseAttacks, parseBodies };
-
-/**
- * Извлечь все наши тела (планеты и луны) с cp.
- * Mobile-формат: <option value="?cp=<cp>&mode=0&info=">Название [G:S:P]</option>
- * Desktop-fallback: switch_planet(<cp>) + ближайшие координаты.
- * @param {string} html — raw-HTML overview
- * @returns {Array} [{ cp, coords, type: 'planet'|'moon', name }]
- */
-function parseBodies(html) {
-  const bodies = [];
-  const seen = new Set();
-
-  // --- Mobile: dropdown-опции ---
-  for (const m of html.matchAll(/<option[^>]*value="\?cp=(\d+)&[^"]*"[^>]*>([\s\S]*?)<\/option>/g)) {
-    const cp = m[1];
-    if (seen.has(cp)) continue;
-    const label = m[2].replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
-    const cM = label.match(/\[(\d+):(\d+):(\d+)\]/);
-    if (!cM) continue;
-    seen.add(cp);
-    const isMoon = /луна/i.test(label);
-    const name = label.replace(/\[\d+:\d+:\d+\]\*?/, "").trim();
-    bodies.push({ cp, coords: `${cM[1]}:${cM[2]}:${cM[3]}`, type: isMoon ? "moon" : "planet", name });
-  }
-
-  // --- Desktop-fallback: switch_planet ---
-  if (!bodies.length) {
-    for (const m of html.matchAll(/switch_planet\((\d+)\)/g)) {
-      const cp = m[1];
-      if (seen.has(cp)) continue;
-      const before = html.substring(Math.max(0, m.index - 3000), m.index);
-      const cMs = [...before.matchAll(/(\d+):(\d+):(\d+)/g)];
-      if (!cMs.length) continue;
-      seen.add(cp);
-      const c = cMs[cMs.length - 1];
-      const between = html.substring(Math.max(0, m.index - 600), m.index);
-      bodies.push({
-        cp,
-        coords: `${c[1]}:${c[2]}:${c[3]}`,
-        type: /Луна/.test(between) ? "moon" : "planet",
-        name: null,
-      });
-    }
-  }
-
-  return bodies;
-}
+module.exports = { parseOverview, findHome, parseMissions, parseAttacks };

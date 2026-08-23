@@ -5,17 +5,14 @@
  * цикл бота (bot-loop): миссии → сейв → фарм → экспедиции.
  */
 
-const fs = require("fs");
-const path = require("path");
 const http = require("http");
 const { chromium } = require("playwright");
 const { ensureLoggedIn } = require("./app/session-manager");
 const { botLoop } = require("./app/bot-loop");
 const logger = require("./app/logger");
+const { loadConfig } = require("./app/helpers/config");
 
-const config = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "config.json"), "utf-8")
-);
+const config = loadConfig();
 
 // Базовое логирование ошибок: .errors в корне + глобальные обработчики
 logger.installGlobalHandlers();

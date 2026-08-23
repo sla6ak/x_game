@@ -10,9 +10,9 @@
  * Включать реальную отправку только после проверки плана.
  */
 
-const { fetchHtml } = require("./http");
-const { parseFleet } = require("./parse-fleet");
-const { blockResources, BASE } = require("./session-manager");
+const { fetchHtml, BASE } = require("./http");
+const { parseFleet } = require("./parsers/fleet");
+const { blockResources } = require("./helpers/browser");
 
 /**
  * Построить план экспедиции по raw-HTML флот-страницы луны.

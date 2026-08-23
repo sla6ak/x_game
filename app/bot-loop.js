@@ -14,6 +14,7 @@ const { collectMissions } = require("./missions");
 const { runSafetyCheck } = require("./fleet-safety");
 const { runFarmCycle } = require("./farm");
 const { launchExpeditions } = require("./expedition");
+const { delay } = require("./helpers/async");
 const dataStore = require("./data-store");
 
 /**
@@ -87,7 +88,7 @@ async function botLoop(context, config, opts = {}) {
       console.error(`❌ Ошибка цикла: ${e.message}`);
     }
     const elapsed = Date.now() - started;
-    await new Promise((r) => setTimeout(r, Math.max(5000, interval - elapsed)));
+    await delay(Math.max(5000, interval - elapsed));
   }
 }
 

@@ -24,11 +24,6 @@
     "enabled": true,
     "dryRun": false,
     "fromMoonCp": 31694,
-    "systems": [
-      363,
-      364,
-      365
-    ],
     "probeCount": 5000,
     "minFreeSlots": 3,
     "minBattleships": 10000000,
@@ -40,7 +35,11 @@
     "resFL": true,
     "includeVacation": false,
     "spyCooldownMs": 21600000,
-    "farmCooldownMs": 43200000
+    "farmCooldownMs": 43200000,
+    "systemRange": 30,
+    "maxScanPerTick": 10,
+    "reportGraceMs": 300000,
+    "maxSystemWaitMs": 1200000
   },
   "safety": {
     "enabled": true,
