@@ -33,9 +33,8 @@
  *
  * Ресурсы (стадия 3, окно выбора ресурсов):
  *   resources: { r1, r2, r3 } — точные значения (как раньше), ИЛИ
- *   resources: { maxAll: true, keepUranium: N } — нажать кнопки «Взять все»
- *   у каждого ресурса, затем отнять keepUranium от урана (resource3).
- *   Если урана меньше keepUranium — взять 0. Знать ресурсы заранее не нужно.
+ *   resources: { maxAll: true, keepUranium: N } — алмазы → уран (−keep / половина) → металл
+ * @param {number} [opts.speedPercent] — скорость флота на стадии 2 (10 = 10%)
  */
 
 const { BASE, postForm } = require("./http");
@@ -69,6 +68,7 @@ async function sendMission(context, opts) {
     resources = null,
     holdingtime = null,
     moreFL = null,
+    speedPercent = null,
     dryRun = false,
     page: myPage = null,
   } = opts;
@@ -204,27 +204,36 @@ async function sendMission(context, opts) {
       .catch(() => null);
     if (filled) {
       console.log(`🎯 [mission] Цель (стадия 2): ${JSON.stringify(filled)}`);
-      // Отладка: какие поля вообще есть на стадии 2 (видны в логе тест-запуска)
-      const dbg = await page
-        .evaluate(() => {
-          const f = document.querySelector('form[name="floten2"]');
-          return f
-            ? [...f.querySelectorAll("input,select")].map((el) => `${el.name}=${el.value}`).join(", ")
-            : null;
-        })
-        .catch(() => null);
-      if (dbg) console.log(`🔎 [mission] Поля floten2: ${dbg}`);
     } else {
       console.warn("⚠️ [mission] Поля цели на стадии 2 не найдены — полагаемся на подстановку из URL");
-      // Сохраняем страницу для разбора (цель должна быть в подстановке из URL)
-      const html = await page.content().catch(() => "");
-      try {
-        const dir = path.join(__dirname, "..", "debug", "forms");
-        fs.mkdirSync(dir, { recursive: true });
-        const file = path.join(dir, `floten2-debug-${target.galaxy}-${target.system}-${target.planet}.html`);
-        fs.writeFileSync(file, html);
-        console.warn(`🔎 [mission] Страница стадии 2 сохранена: ${file}`);
-      } catch (e) { /* не критично */ }
+    }
+
+    // Скорость флота (PLAN: 10% при эвакуации)
+    if (speedPercent != null) {
+      const set = await page
+        .evaluate((pct) => {
+          const form = document.querySelector('form[name="floten2"]');
+          if (!form) return false;
+          for (const name of ["speed", "consumption"]) {
+            const sel = form.querySelector(`select[name="${name}"]`);
+            if (!sel) continue;
+            for (const opt of sel.options) {
+              const label = opt.textContent || "";
+              if (
+                label.includes(`${pct}%`) ||
+                opt.value === String(pct) ||
+                (pct === 10 && opt.value === "1")
+              ) {
+                sel.value = opt.value;
+                sel.dispatchEvent(new Event("change", { bubbles: true }));
+                return true;
+              }
+            }
+          }
+          return false;
+        }, speedPercent)
+        .catch(() => false);
+      if (set) console.log(`🐢 [mission] Скорость флота: ${speedPercent}%`);
     }
 
     // --- Стадия 3: жмём кнопку floten2 ---
@@ -242,26 +251,33 @@ async function sendMission(context, opts) {
     let resourcesTaken = null;
     if (resources) {
       if (resources.maxAll) {
-        // Режим «Взять все»: кнопки max у каждого ресурса, затем уран − keepUranium.
+        // PLAN: алмазы → уран (оставить keep / половина) → металл.
         // resource1=металл, resource2=алмазы, resource3=уран.
         const keepUranium = resources.keepUranium || 0;
         const res = await page
           .evaluate((keep) => {
-            const out = {};
-            for (const name of ["resource1", "resource2", "resource3"]) {
+            const clickMax = (name) => {
               const el = document.querySelector(`input[name="${name}"]`);
-              if (!el) { out[name] = null; continue; }
-              // кнопка «Взять все» в той же строке (input[type=button] title=Взять все)
+              if (!el) return 0;
               const row = el.closest("tr") || el.parentElement;
               const btn = row && row.querySelector('input[title="Взять все"], button[title="Взять все"]');
               if (btn) btn.click();
-              let val = parseInt(String(el.value).replace(/\D/g, ""), 10) || 0;
-              if (name === "resource3" && keep > 0) {
-                val = Math.max(0, val - keep); // несгораемый уран оставляем
-                el.value = String(val);
-              }
-              out[name] = val;
+              return parseInt(String(el.value).replace(/\D/g, ""), 10) || 0;
+            };
+            const setVal = (name, val) => {
+              const el = document.querySelector(`input[name="${name}"]`);
+              if (el) el.value = String(val);
+            };
+            const out = {};
+            out.resource2 = clickMax("resource2");
+            let u = clickMax("resource3");
+            if (keep > 0) {
+              if (u >= keep) u = u - keep;
+              else u = Math.floor(u / 2);
+              setVal("resource3", u);
             }
+            out.resource3 = u;
+            out.resource1 = clickMax("resource1");
             return out;
           }, keepUranium)
           .catch(() => null);

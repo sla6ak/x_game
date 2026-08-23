@@ -10,7 +10,7 @@
  * SESSION_EXPIRED → re-login и продолжение.
  */
 
-const { collectMissions } = require("./missions");
+const { collectMissions, isMainMoonUnderAttack } = require("./missions");
 const { runSafetyCheck } = require("./fleet-safety");
 const { runFarmCycle } = require("./farm");
 const { launchExpeditions } = require("./expedition");
@@ -32,6 +32,7 @@ async function botTick(context, config) {
     total: missionsData.missions.length,
     byType: missionsData.analysis.byType,
     incomingAttacks: missionsData.attacks.incoming.length,
+    mainMoonAttacks: (missionsData.mainMoonIncoming || []).length,
   };
 
   // 2. Сейв (приоритет)
@@ -40,15 +41,13 @@ async function botTick(context, config) {
     tick.safety = await runSafetyCheck(context, config, missionsData);
   }
 
-  // 3. Фарм (только если нет срочного сейва)
+  // 3. Фарм (только если главную луну не атакуют)
   const farmCfg = config.farm || {};
-  const hasUrgentAttack =
-    (tick.safety && tick.safety.incoming > 0) ||
-    missionsData.attacks.incoming.length > 0;
-  if (farmCfg.enabled && !hasUrgentAttack) {
+  const mainMoonUnderAttack = isMainMoonUnderAttack(missionsData, config);
+  if (farmCfg.enabled && !mainMoonUnderAttack) {
     tick.farm = await runFarmCycle(context, config, missionsData);
-  } else if (farmCfg.enabled && hasUrgentAttack) {
-    tick.farm = { skipped: "есть входящие атаки — приоритет сейва" };
+  } else if (farmCfg.enabled && mainMoonUnderAttack) {
+    tick.farm = { skipped: "атака на главную луну — приоритет сейва" };
   }
 
   // 4. Экспедиции

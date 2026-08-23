@@ -157,35 +157,105 @@ function parseMissions(html) {
 }
 
 /**
- * Парсинг атак.
- * - outgoing: миссии с типом "Атаковать" (флоты игрока, летящие атаковать)
- * - incoming: эвристический поиск по ключевым словам (нет реального образца)
+ * ETA миссии из JS-счётчика overview (ppXXX = секунды до прибытия).
+ * @param {string} html
+ * @param {string} text — текст миссии (фрагмент для поиска блока)
+ * @returns {number|null} ms
  */
-function parseAttacks(html, missions) {
-  const outgoing = missions.filter((m) => /атак/i.test(m.type));
+function parseMissionEtaMs(html, text) {
+  if (!text) return null;
+  const needle = text.substring(0, Math.min(80, text.length));
+  const idx = html.indexOf(needle);
+  if (idx < 0) return null;
+  const region = html.substring(Math.max(0, idx - 800), idx + 400);
+  const ppM = region.match(/pp\w+\s*=\s*(\d+)/);
+  if (!ppM) return null;
+  return parseInt(ppM[1], 10) * 1000;
+}
 
-  // Входящие атаки — эвристика по ключевым словам.
-  // ВНИМАНИЕ: нет реального образца входящей атаки, список слов настраивается.
+/**
+ * Координаты цели входящей атаки и признак «атака на луну».
+ * @param {string} text — текст миссии overview
+ * @returns {{ coords: string|null, isMoon: boolean }}
+ */
+function parseIncomingTarget(text) {
+  const moonM = text.match(
+    /(?:на\s+(?:нашей\s+)?лун[а-я]*[^[]*)?\[(\d+:\d+:\d+)\*\]/i,
+  );
+  if (moonM) return { coords: moonM[1], isMoon: true };
+
+  const planetM = text.match(
+    /на\s+(?:нашей\s+)?планет[а-я]*[^[]*\[(\d+:\d+:\d+)\]/i,
+  );
+  if (planetM) return { coords: planetM[1], isMoon: false };
+
+  const all = [...text.matchAll(/\[(\d+:\d+:\d+)(\*\d*)?\]/g)];
+  if (all.length) {
+    const last = all[all.length - 1];
+    return { coords: last[1], isMoon: !!last[2] };
+  }
+  return { coords: null, isMoon: /лун/i.test(text) };
+}
+
+/**
+ * Парсинг атак.
+ * - outgoing: наши миссии «Атаковать»
+ * - incoming: строки overview с «Чужой флот» (+ fallback по ключевым словам)
+ */
+function parseAttacks(html, missions, extraKeywords = []) {
+  const outgoing = missions.filter(
+    (m) => /атак/i.test(m.type) && !/чужой/i.test(m.text),
+  );
+
+  const incoming = [];
+  const seen = new Set();
+
+  const pushIncoming = (item) => {
+    const key = `${item.coords || "?"}|${(item.snippet || "").substring(0, 80)}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    incoming.push(item);
+  };
+
+  // Основной источник: миссии overview с «Чужой флот»
+  for (const m of missions) {
+    if (!/чужой\s+флот/i.test(m.text)) continue;
+    const { coords, isMoon } = parseIncomingTarget(m.text);
+    pushIncoming({
+      coords,
+      isMoon,
+      etaMs: parseMissionEtaMs(html, m.text),
+      snippet: m.text.substring(0, 300),
+      source: "mission-row",
+    });
+  }
+
+  // Fallback: ключевые слова в HTML (если формат строки изменился)
   const incomingKeywords = [
     "Чужой флот игрока",
     "Чужой флот",
-    "чужой флот игрока",
     "чужой флот",
     "вражеский флот",
+    ...extraKeywords,
   ];
-  const incoming = [];
   for (const kw of incomingKeywords) {
     const idx = html.toLowerCase().indexOf(kw.toLowerCase());
-    if (idx >= 0) {
-      incoming.push({
-        keyword: kw,
-        snippet: html
-          .substring(Math.max(0, idx - 200), idx + 300)
-          .replace(/<[^>]+>/g, " ")
-          .replace(/\s+/g, " ")
-          .trim(),
-      });
-    }
+    if (idx < 0) continue;
+    const snippet = html
+      .substring(Math.max(0, idx - 200), idx + 400)
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const plain = snippet;
+    const { coords, isMoon } = parseIncomingTarget(plain);
+    pushIncoming({
+      keyword: kw,
+      coords,
+      isMoon,
+      etaMs: parseMissionEtaMs(html, plain.substring(0, 80)),
+      snippet: plain.substring(0, 300),
+      source: "keyword",
+    });
   }
 
   return { outgoing, incoming };
@@ -203,4 +273,11 @@ function parseOverview(html, homeCoords) {
   return { home, missions, attacks };
 }
 
-module.exports = { parseOverview, findHome, parseMissions, parseAttacks };
+module.exports = {
+  parseOverview,
+  findHome,
+  parseMissions,
+  parseAttacks,
+  parseIncomingTarget,
+  parseMissionEtaMs,
+};

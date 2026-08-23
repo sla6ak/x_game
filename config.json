@@ -26,7 +26,7 @@
     "fromMoonCp": 31694,
     "probeCount": 5000,
     "minFreeSlots": 3,
-    "minBattleships": 10000000,
+    "minBattleships": 20000000000,
     "shipName": "Линкор",
     "typeFL": 207,
     "moreFL": 10,
@@ -38,14 +38,15 @@
     "farmCooldownMs": 43200000,
     "systemRange": 30,
     "maxScanPerTick": 10,
-    "reportGraceMs": 300000,
+    "reportGraceMs": 120000,
     "maxSystemWaitMs": 1200000
   },
   "safety": {
     "enabled": true,
     "dryRun": true,
-    "warnBeforeMs": 300000,
-    "keepUranium": 100000000000000
+    "warnBeforeMs": 900000,
+    "keepUranium": 100000000000000,
+    "evacuationSpeedPercent": 10
   },
   "shipIds": {
     "Большой танкер": 203,

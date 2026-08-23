@@ -14,6 +14,7 @@
  */
 
 const { findHome } = require("./parsers/overview");
+const { normalizeCoords } = require("./helpers/coords");
 
 /**
  * Извлечь все тела (планеты+луны) из raw-HTML overview.
@@ -86,13 +87,26 @@ function findBody(bodies, coords) {
  * Список всех НЕ-атакуемых лун (для эвакуации).
  * @param {Array} bodies
  * @param {Array<string>} attackedCoords — координаты под атакой
+ * @param {Object} [opts] — { excludeHome: "g:s:p" } — не использовать главную луну
  * @returns {Array<{coords,moon_cp}>}
  */
-function safeMoons(bodies, attackedCoords = []) {
-  const set = new Set(attackedCoords);
+function safeMoons(bodies, attackedCoords = [], opts = {}) {
+  const attacked = new Set(attackedCoords.map((c) => normalizeCoords(c)).filter(Boolean));
+  const excludeHome = opts.excludeHome ? normalizeCoords(opts.excludeHome) : null;
   return bodies
-    .filter((b) => b.moon_cp && !set.has(b.coords))
+    .filter((b) => b.moon_cp && !attacked.has(normalizeCoords(b.coords)))
+    .filter((b) => !excludeHome || normalizeCoords(b.coords) !== excludeHome)
     .map((b) => ({ coords: b.coords, moon_cp: b.moon_cp }));
 }
 
-module.exports = { parseBodies, findBody, safeMoons };
+/**
+ * Случайная безопасная луна (кроме главной и атакуемых).
+ * @returns {{coords,moon_cp}|null}
+ */
+function pickRandomSafeMoon(bodies, attackedCoords = [], opts = {}) {
+  const safe = safeMoons(bodies, attackedCoords, opts);
+  if (!safe.length) return null;
+  return safe[Math.floor(Math.random() * safe.length)];
+}
+
+module.exports = { parseBodies, findBody, safeMoons, pickRandomSafeMoon };

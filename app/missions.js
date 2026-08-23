@@ -14,7 +14,37 @@
 const { fetchHtml } = require("./http");
 const { parseMissions, parseAttacks } = require("./parsers/overview");
 const { parseBodies, safeMoons } = require("./bodies");
+const { normalizeCoords } = require("./helpers/coords");
 const dataStore = require("./data-store");
+
+/** Координаты главной планеты/луны из config. */
+function getHomeCoords(config) {
+  return `${config.home.galaxy}:${config.home.system}:${config.home.planet}`;
+}
+
+/**
+ * Входящие атаки на главную луну (PLAN: реагируем только на них).
+ * @param {Array} incoming — parseAttacks(...).incoming
+ * @param {Object} config
+ * @returns {Array}
+ */
+function filterMainMoonIncoming(incoming, config) {
+  const home = normalizeCoords(getHomeCoords(config));
+  return (incoming || []).filter((a) => {
+    if (!a.coords || normalizeCoords(a.coords) !== home) return false;
+    // атака на планету с теми же coords — игнорируем (нужна луна)
+    if (a.isMoon === false) return false;
+    return true;
+  });
+}
+
+/** Есть ли срочная атака на главную луну (для блокировки фарма). */
+function isMainMoonUnderAttack(missionsData, config) {
+  const incoming =
+    missionsData.mainMoonIncoming ||
+    filterMainMoonIncoming(missionsData.attacks?.incoming || [], config);
+  return incoming.length > 0;
+}
 
 /**
  * Классификация типа миссии по её тексту/типу.
@@ -66,14 +96,15 @@ async function collectMissions(context, config) {
   const html = await fetchHtml(context, "/overview.php");
 
   const missions = parseMissions(html);
-  const attacks = parseAttacks(html, missions);
+  const attacks = parseAttacks(html, missions, config.attackKeywords || []);
   const bodies = parseBodies(html, {
     homeCoords,
     homeMoonCp: config.moonCp,
   });
   const analysis = analyzeMissions(missions);
+  const mainMoonIncoming = filterMainMoonIncoming(attacks.incoming, config);
 
-  // Координаты под вражеской атакой (для эвакуации)
+  // Координаты под вражеской атакой (любые наши тела)
   const attackedCoords = attacks.incoming.map((a) => a.coords).filter(Boolean);
 
   // Храним в data-store
@@ -100,10 +131,18 @@ async function collectMissions(context, config) {
     missions,
     analysis,
     attacks,
+    mainMoonIncoming,
     bodies,
-    safeMoons: safeMoons(bodies, attackedCoords),
+    safeMoons: safeMoons(bodies, attackedCoords, { excludeHome: homeCoords }),
     _html: html,
   };
 }
 
-module.exports = { collectMissions, analyzeMissions, classifyMission };
+module.exports = {
+  collectMissions,
+  analyzeMissions,
+  classifyMission,
+  getHomeCoords,
+  filterMainMoonIncoming,
+  isMainMoonUnderAttack,
+};

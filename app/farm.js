@@ -36,7 +36,7 @@ const { parseMessages, filterSpyReports } = require("./parsers/messages");
 const { getSystem, switchSystem, findInactiveTargets } = require("./galaxy");
 const { spyTargets } = require("./spy");
 const { parseFleet } = require("./parsers/fleet");
-const { classifyMission } = require("./missions");
+const { classifyMission, isMainMoonUnderAttack } = require("./missions");
 const { extractError } = require("./parsers/forms");
 const { delay } = require("./helpers/async");
 const dataStore = require("./data-store");
@@ -53,12 +53,13 @@ async function checkFarmConditions(context, config, missionsData) {
   const reasons = [];
   const fc = config.farm || {};
   const minFree = fc.minFreeSlots != null ? fc.minFreeSlots : 3;
-  const minBattleships = fc.minBattleships != null ? fc.minBattleships : 10_000_000;
+  const minBattleships = fc.minBattleships != null ? fc.minBattleships : 20_000_000_000;
 
-  // 1) Нет вражеских атак на наши тела
-  const incoming = (missionsData.attacks && missionsData.attacks.incoming) || [];
-  if (incoming.length > 0) {
-    reasons.push(`Входящие атаки: ${incoming.length} — фарм отложен (приоритет сейв)`);
+  // 1) Нет атак на главную луну (PLAN: фарм только когда её не атакуют)
+  const mainMoonAttacks = missionsData.mainMoonIncoming ||
+    (isMainMoonUnderAttack(missionsData, config) ? [{}] : []);
+  if (mainMoonAttacks.length > 0) {
+    reasons.push(`Атака на главную луну (${mainMoonAttacks.length}) — фарм отложен (приоритет сейва)`);
   }
 
   // 2) Свободные ОБЩИЕ слоты флота на луне (fleet.php?cp=moonCp)
@@ -88,7 +89,7 @@ async function checkFarmConditions(context, config, missionsData) {
 
   // Детальный лог каждой проверки (✅/❌) — видно, где именно не сработало
   const checks = [];
-  checks.push(`атаки=${incoming.length} ${incoming.length === 0 ? "✅" : "❌"}`);
+  checks.push(`атака глав.луны=${mainMoonAttacks.length} ${mainMoonAttacks.length === 0 ? "✅" : "❌"}`);
   if (freeSlots != null) {
     const ok = freeSlots > minFree;
     checks.push(`слоты=${freeSlots} из ${fleetMax ?? "?"} (нужно >${minFree}) ${ok ? "✅" : "❌"}`);
@@ -116,7 +117,7 @@ async function checkFarmConditions(context, config, missionsData) {
     battleships,
     minFree,
     minBattleships,
-    incomingCount: incoming.length,
+    incomingCount: mainMoonAttacks.length,
   };
 }
 
@@ -286,7 +287,7 @@ async function runFarmCycle(context, config, missionsData) {
 
   // координаты, по которым уже летят атаки/фарм
   const busy = busyTargetCoords(missionsData.missions);
-  const ourCoords = (state.bodies || []).map((b) => b.coords);
+  const ourCoords = (missionsData.bodies || []).map((b) => b.coords);
 
   // --- 2. Ротация систем: счётчик (курсор) по окну home ± systemRange ---
   // Ширина окна — config.farm.systemRange (по умолчанию 30): системы
@@ -295,7 +296,7 @@ async function runFarmCycle(context, config, missionsData) {
   const homeSys = config.home.system;
   const range = fc.systemRange != null ? fc.systemRange : 30;
   const maxScan = fc.maxScanPerTick || 10;
-  const GRACE_MS = fc.reportGraceMs != null ? fc.reportGraceMs : 5 * 60 * 1000;
+  const GRACE_MS = fc.reportGraceMs != null ? fc.reportGraceMs : 2 * 60 * 1000;
   const MAX_SYSTEM_MS = fc.maxSystemWaitMs != null ? fc.maxSystemWaitMs : 20 * 60 * 1000;
 
   const nextSys = (sys) => {
@@ -420,8 +421,8 @@ async function runFarmCycle(context, config, missionsData) {
     return true;
   });
 
-  const since = state.farm.cursorSince || now;
-  const elapsed = Date.now() - since;
+  const sinceGrace = state.farm.cursorSince || now;
+  const elapsed = Date.now() - sinceGrace;
   const graceElapsed = elapsed >= GRACE_MS;
   const stuckTooLong = elapsed >= MAX_SYSTEM_MS;
 
