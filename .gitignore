@@ -1,5 +1,8 @@
 node_modules
 package-lock
 
+# runtime-лог ошибок (генерируется при работе бота)
+.errors
+
 
 

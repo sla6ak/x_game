@@ -63,6 +63,7 @@ function findInactiveTargets(galaxyData, opts = {}) {
     .map((p) => ({
       coords: p.coords,
       pos: p.pos,
+      planet: p.pos, // номер планеты (для sendMission.target.planet)
       player: p.player,
       status: p.status,
       hasMoon: p.hasMoon,

@@ -33,9 +33,12 @@ async function getExpeditionPlan(context, config) {
   return {
     fromMoonCp: moonCp,
     fromCoords: fleet.coords,
-    maxSlots: fleet.maxepedition,
-    usedSlots: fleet.curepedition,
-    freeSlots: fleet.freeSlots || 0,
+    maxSlots: fleet.expMax,
+    usedSlots: fleet.expUsed,
+    freeSlots: fleet.freeExpeditionSlots || 0,
+    // для отладки: общие миссии (не только экспедиционные)
+    fleetFree: fleet.freeSlots,
+    fleetMax: fleet.fleetMax,
     target: config.expedition.targets[0],
     shipName,
     shipId,
@@ -56,7 +59,8 @@ async function launchExpeditions(context, config) {
 
   if (plan.freeSlots <= 0) {
     console.log(
-      `🧪 [expedition] Слоты заняты (${plan.usedSlots}/${plan.maxSlots}) — ждём.`,
+      `🧪 [expedition] Экспедиционные слоты заняты (${plan.usedSlots}/${plan.maxSlots}), ` +
+        `общие миссии: ${plan.fleetMax != null ? `${plan.fleetFree} из ${plan.fleetMax} свободны` : "не распарсилось"} — ждём.`,
     );
     return null;
   }

@@ -1,0 +1,27 @@
+# Render Blueprint — деплой бота на render.com
+#
+# Важно: это Web Service (Render требует слушать $PORT — в serverXG.js
+# есть минимальный health-сервер на :PORT, эндпоинт /health).
+#
+# ⚠️ Бесплатный тариф Render спинаунит (усыпляет) web-сервис после
+# ~15 минут без трафика — для 24/7 бота нужен платный инстанс
+# (Starter, $7/мес) или деплой как Background Worker (тоже платный).
+#
+# Сборка: npm install (postinstall ставит chromium) + install-deps
+# (системные библиотеки chromium; на Render build выполняется от root).
+
+services:
+  - type: web
+    name: serverxg-bot
+    runtime: node
+    plan: free
+    buildCommand: npm install && npx playwright install-deps chromium
+    startCommand: npm start
+    autoDeploy: true
+    healthCheckPath: /health
+    envVars:
+      # Render не имеет дисплея — браузер только headless
+      - key: HEADLESS
+        value: "1"
+      - key: NODE_ENV
+        value: production

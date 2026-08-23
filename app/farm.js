@@ -29,6 +29,7 @@ const { spyTargets } = require("./spy");
 const { parseFleet } = require("./parse-fleet");
 const { classifyMission } = require("./missions");
 const dataStore = require("./data-store");
+const fleetState = require("./fleet-state");
 
 /**
  * Проверки-условия для автофарма.
@@ -40,6 +41,8 @@ const dataStore = require("./data-store");
 async function checkFarmConditions(context, config, missionsData) {
   const reasons = [];
   const fc = config.farm || {};
+  const minFree = fc.minFreeSlots != null ? fc.minFreeSlots : 3;
+  const minBattleships = fc.minBattleships != null ? fc.minBattleships : 10_000_000;
 
   // 1) Нет вражеских атак на наши тела
   const incoming = (missionsData.attacks && missionsData.attacks.incoming) || [];
@@ -47,13 +50,19 @@ async function checkFarmConditions(context, config, missionsData) {
     reasons.push(`Входящие атаки: ${incoming.length} — фарм отложен (приоритет сейв)`);
   }
 
-  // 2) Свободные слоты флота на луне (fleet.php?cp=moonCp)
+  // 2) Свободные ОБЩИЕ слоты флота на луне (fleet.php?cp=moonCp)
+  //    Считаются из текстового счётчика «Флоты X из Y» (все миссии),
+  //    НЕ из экспедиционных hidden-полей (только миссии-экспедиции).
   let freeSlots = null;
+  let freeSlotsSource = null;
+  let fleetMax = null;
   let battleships = null;
   try {
     const html = await fetchHtml(context, `/fleet.php?cp=${fc.fromMoonCp || config.moonCp}`);
     const fleet = parseFleet(html);
     freeSlots = fleet.freeSlots;
+    freeSlotsSource = fleet.freeSlotsSource;
+    fleetMax = fleet.fleetMax;
     // линкоры: из ship-инпутов (если есть в raw) или из дока
     const lin = (fleet.ships || []).find((s) => s.name === fc.shipName || s.name === "Линкор");
     if (lin && lin.available != null) {
@@ -66,21 +75,36 @@ async function checkFarmConditions(context, config, missionsData) {
     reasons.push(`Не удалось прочитать флот луны: ${e.message}`);
   }
 
-  const minFree = fc.minFreeSlots != null ? fc.minFreeSlots : 3;
-  const minBattleships = fc.minBattleships != null ? fc.minBattleships : 10_000_000;
-
-  if (freeSlots != null && freeSlots <= minFree) {
-    reasons.push(`Свободных слотов ${freeSlots} (нужно > ${minFree})`);
+  // Детальный лог каждой проверки (✅/❌) — видно, где именно не сработало
+  const checks = [];
+  checks.push(`атаки=${incoming.length} ${incoming.length === 0 ? "✅" : "❌"}`);
+  if (freeSlots != null) {
+    const ok = freeSlots > minFree;
+    checks.push(`слоты=${freeSlots} из ${fleetMax ?? "?"} (нужно >${minFree}) ${ok ? "✅" : "❌"}`);
+    if (!ok) reasons.push(`Свободных слотов ${freeSlots} (нужно > ${minFree})`);
+  } else {
+    checks.push(`слоты=не распарсилось ${freeSlotsSource ? `(${freeSlotsSource})` : ""} ❌`);
+    reasons.push("Не удалось определить свободные слоты флота");
   }
-  if (battleships != null && battleships < minBattleships) {
-    reasons.push(`Линкоров ${battleships} (нужно >= ${minBattleships})`);
+  if (battleships != null) {
+    const ok = battleships >= minBattleships;
+    checks.push(`линкоры=${battleships} (нужно >=${minBattleships}) ${ok ? "✅" : "❌"}`);
+    if (!ok) reasons.push(`Линкоров ${battleships} (нужно >= ${minBattleships})`);
+  } else {
+    checks.push(`линкоры=не найдены ❌`);
+    reasons.push(`Линкоры не найдены на луне (ship-инпуты и док пуст)`);
   }
+  console.log(`🌾 [farm] Проверки: ${checks.join(", ")}`);
 
   return {
     ok: reasons.length === 0,
     reasons,
     freeSlots,
+    freeSlotsSource,
+    fleetMax,
     battleships,
+    minFree,
+    minBattleships,
     incomingCount: incoming.length,
   };
 }
@@ -103,10 +127,37 @@ function busyTargetCoords(missions) {
 }
 
 /**
+ * Страница сообщений (категория 100) на 100 сообщений.
+ * GET отдаёт компактный список (10 сообщений, без панели «Ишкофарм»);
+ * POST формы select с pageMess=0 — полная страница со 100 докладами и панелью.
+ * @param {import('playwright').BrowserContext} context
+ * @returns {Promise<string>} raw-HTML
+ */
+async function fetchMessagesPage(context) {
+  const { BASE } = require("./http");
+  const url = "/messages.php?mode=show&messcat=100";
+  const { status, html } = await postForm(
+    context,
+    url + "&lim=1",
+    { messages: "1", category: "100", sortDesc: "DESC", pageMess: "0" },
+    { referer: BASE + url }
+  );
+  if (status !== 200) throw new Error(`HTTP ${status} для ${url}`);
+  return html;
+}
+
+/**
  * Отправить «Ишкофарм» по шпионскому докладу.
- * Форма select на messages.php?mode=show&messcat=100:
- *   gRPhPPPPh=[Отправить] + настройки панели (typeFL, moreFL, slotsFL, minSPY, resFL)
- *   + delmes<ID> (выбранный доклад) + showmes<ID> (все видимые строки)
+ *
+ * ВАЖНО (проверено вживую 23.08):
+ *  - панель «Ишкофарм» сервер рендерит ТОЛЬКО на странице со 100 сообщениями
+ *    (POST формы select с pageMess=0). GET и pageMess=1 (10 сообщений) — компактный
+ *    список БЕЗ панели: POST с полями панели просто игнорируется (200, но флот не летит).
+ *  - имя submit-кнопки панели — СЛУЧАЙНЫЙ токен на каждый рендер (gRPhPPPPh, suQhsQQQ...).
+ *    Захардкоженный токен из старого сэмпла сервер не узнаёт → парсим со страницы:
+ *    единственная submit-кнопка со значением "[ Отправить ]" (остальные — "[ ok ]").
+ *  - minSPY = окно свежести докладов в МИНУТАХ (0 = все доклады).
+ *
  * @param {import('playwright').BrowserContext} context
  * @param {Object} config
  * @param {string} reportId — id сообщения (доклада)
@@ -114,43 +165,57 @@ function busyTargetCoords(missions) {
  */
 async function farmFromReport(context, config, reportId) {
   const fc = config.farm || {};
-  const html = await fetchHtml(context, "/messages.php?mode=show&messcat=100");
+  const { BASE } = require("./http");
+  const MSG_URL = "/messages.php?mode=show&messcat=100";
+  const referer = BASE + MSG_URL;
 
-  // собираем все showmes-поля со страницы (они обязательны в форме)
-  const form = {};
-  form.messages = "1";
-  form.category = "100";
-  form.sortDesc = "DESC";
-  form.pageMess = "1";
+  // 1) Страница со 100 докладами (только там есть панель «Ишкофарм»)
+  let listHtml;
+  try {
+    listHtml = await fetchMessagesPage(context);
+  } catch (e) {
+    return { ok: false, error: e.message };
+  }
+
+  // 2) Все showmes-поля со страницы (обязательны в форме)
+  const form = { messages: "1", category: "100", sortDesc: "DESC", pageMess: "0" };
   const showmesRe = /name="showmes(\d+)" type="hidden" value="\1"/g;
   let m;
-  while ((m = showmesRe.exec(html)) !== null) {
+  while ((m = showmesRe.exec(listHtml)) !== null) {
     form[`showmes${m[1]}`] = m[1];
   }
   if (form[`showmes${reportId}`] == null) {
     return { ok: false, error: `Доклад ${reportId} не найден на странице сообщений` };
   }
 
-  // выбранный доклад
+  // 3) Выбранный доклад + настройки панели Ишкофарм
   form[`delmes${reportId}`] = "on";
-
-  // настройки панели Ишкофарм
   if (fc.resFL !== false) form.resFL = "on";
   form.maxFL = String(fc.maxFL != null ? fc.maxFL : 0);
   form.moreFL = String(fc.moreFL != null ? fc.moreFL : 10);
   form.slotsFL = String(fc.slotsFL != null ? fc.slotsFL : 3);
   form.typeFL = String(fc.typeFL != null ? fc.typeFL : 207); // 207 = Линкор
   form.minSPY = String(fc.minSPY != null ? fc.minSPY : 15);
-  form.gRPhPPPPh = "[ Отправить ]";
 
-  const { status, html: resp } = await postForm(
-    context,
-    "/messages.php?mode=show&messcat=100&lim=1",
-    form
-  );
-  if (status !== 200) return { ok: false, error: `HTTP ${status}` };
+  // 4) Токен submit-кнопки панели — парсим со страницы (имя меняется на каждом рендере)
+  const tagRe = /<input[^>]*type="submit"[^>]*>/g;
+  let btnName = null;
+  while ((m = tagRe.exec(listHtml)) !== null) {
+    const tag = m[0];
+    if (/\[\s*Отправить\s*\]/.test(tag)) {
+      const nm = tag.match(/name="([^"]+)"/);
+      if (nm) { btnName = nm[1]; break; }
+    }
+  }
+  if (!btnName) {
+    return { ok: false, error: "Панель «Ишкофарм» не найдена на странице (нет кнопки [ Отправить ])" };
+  }
+  form[btnName] = "[ Отправить ]";
 
-  const { stripHtml, extractError } = require("./parse-form");
+  const { status: s2, html: resp } = await postForm(context, MSG_URL + "&lim=1", form, { referer });
+  if (s2 !== 200) return { ok: false, error: `HTTP ${s2}` };
+
+  const { extractError } = require("./parse-form");
   const err = extractError(resp);
   if (err) return { ok: false, error: err };
   return { ok: true };
@@ -174,6 +239,16 @@ async function runFarmCycle(context, config, missionsData) {
 
   const report = { conditions: null, spied: [], farmed: [], verified: [] };
 
+  // --- 0. Основной флот должен быть на главной луне (оттуда фармим) ---
+  const mf = fleetState.getMainFleet();
+  if (mf.at !== "home-moon") {
+    const reason = `Основной флот не на главной луне (сейчас: ${mf.coords}, cp=${mf.cp})`;
+    console.log(`🌾 [farm] ${reason} — фарм ждёт`);
+    report.conditions = { ok: false, reasons: [reason], freeSlots: null, battleships: null };
+    dataStore.save(state);
+    return report;
+  }
+
   // --- 1. Условия ---
   const cond = await checkFarmConditions(context, config, missionsData);
   report.conditions = cond;
@@ -182,6 +257,7 @@ async function runFarmCycle(context, config, missionsData) {
     dataStore.save(state);
     return report;
   }
+  console.log(`🌾 [farm] Условия выполнены (слоты=${cond.freeSlots}, линкоры=${cond.battleships}) — ищем цели`);
 
   // координаты, по которым уже летят атаки/фарм
   const busy = busyTargetCoords(missionsData.missions);
@@ -221,7 +297,7 @@ async function runFarmCycle(context, config, missionsData) {
 
   // --- 4. Шпионские доклады → Ишкофарм ---
   // (доклады появляются через 1-3 минуты после прилёта зондов)
-  const msgsHtml = await fetchHtml(context, "/messages.php?mode=show&messcat=100");
+  const msgsHtml = await fetchMessagesPage(context);
   const messages = parseMessages(msgsHtml);
   const spyReports = filterSpyReports(messages);
 
@@ -229,43 +305,62 @@ async function runFarmCycle(context, config, missionsData) {
   const farmCooldownMs = fc.farmCooldownMs || 12 * 3600 * 1000;
   const now = Date.now();
 
+  // --- 4.1. Верификация ранее отправленного фарма ---
+  // Шпионы летают не мгновенно: после отправки «Ишкофарм» ждём, пока миссия
+  // появится в overview (missionsData собран на этом тике). Подтвердилось →
+  // farmed (кулдаун 12ч). Не подтвердилось 10 минут → снимаем sent и повторяем.
+  // Так кулдаун не ставится «в воздух» при тихом сбое отправки.
+  state.farm.sent = state.farm.sent || {};
+  const SENT_RETRY_MS = 10 * 60 * 1000;
+  for (const [coords, info] of Object.entries(state.farm.sent)) {
+    const isFlying = missionsData.missions.some((m) => {
+      const t = classifyMission(m);
+      return (t === "attack" || t === "farm") && m.coords.includes(coords);
+    });
+    if (isFlying) {
+      state.farm.farmed[coords] = Date.now();
+      delete state.farm.sent[coords];
+      report.verified.push({ coords, type: "verified" });
+      console.log(`🌾 [farm] Верифицировано: ${coords} — фарм-флот летит`);
+    } else if (Date.now() - info.at > SENT_RETRY_MS) {
+      delete state.farm.sent[coords];
+      console.log(`🌾 [farm] ${coords}: миссия не подтвердилась за 10 мин — повторим по докладу ${info.reportId}`);
+    }
+  }
+
   for (const msg of spyReports) {
     if (!msg.coords) continue;
     const [g, s] = msg.coords.split(":");
     if (!sysSet.has(`${g}:${s}`)) continue; // не та система
     if (state.farm.farmed[msg.coords] && now - state.farm.farmed[msg.coords] < farmCooldownMs) continue;
+    if (state.farm.sent[msg.coords]) continue; // уже отправлено, ждём верификации
+    if (busy.has(msg.coords)) continue; // по этим координатам уже летит флот
 
     const res = dryRun
       ? { ok: true, dryRun: true }
       : await farmFromReport(context, config, msg.id);
 
     if (res.ok) {
-      state.farm.farmed[msg.coords] = now;
+      if (!dryRun) state.farm.sent[msg.coords] = { at: now, reportId: msg.id };
       report.farmed.push({ id: msg.id, coords: msg.coords, dryRun });
-      console.log(`🌾 [farm] Ишкофарм по докладу ${msg.id} → ${msg.coords} [${dryRun ? "dry-run" : "sent"}]`);
+      console.log(`🌾 [farm] Ишкофарм по докладу ${msg.id} → ${msg.coords} [${dryRun ? "dry-run" : "sent, ждём верификации"}]`);
     } else {
       console.warn(`❌ [farm] Ишкофарм ${msg.id} → ${msg.coords}: ${res.error}`);
     }
     if (!dryRun) await new Promise((r) => setTimeout(r, 1500));
   }
 
-  // --- 5. Верификация: миссии в overview ---
-  if (report.farmed.length && !dryRun) {
-    const { collectMissions } = require("./missions");
-    const fresh = await collectMissions(context, config);
-    const farmCoords = new Set(report.farmed.map((f) => f.coords));
-    for (const m of fresh.missions) {
-      const type = classifyMission(m);
-      if ((type === "attack" || type === "farm") && m.coords.some((c) => farmCoords.has(c))) {
-        report.verified.push({ coords: m.coords.join("→"), type });
-      }
-    }
-    console.log(`🌾 [farm] Верификация: подтверждено миссий ${report.verified.length}`);
-  }
-
   state.farm.lastSystem = systemData ? systemData.system : state.farm.lastSystem;
-  dataStore.save(state);
+  // Сохраняем ПЕРЕЗАГРУЖЕННый state: наша копия state загружена до spyTargets(),
+  // и простой save(state) затрёт spy_sent (кулдауны шпионажа), который записал
+  // spy.js. Мержим только секцию farm.
+  const fresh = dataStore.load();
+  fresh.farm = fresh.farm || { farmed: {} };
+  fresh.farm.farmed = { ...(fresh.farm.farmed || {}), ...state.farm.farmed };
+  fresh.farm.sent = { ...(fresh.farm.sent || {}), ...state.farm.sent };
+  fresh.farm.lastSystem = state.farm.lastSystem;
+  dataStore.save(fresh);
   return report;
 }
 
-module.exports = { runFarmCycle, checkFarmConditions, farmFromReport, busyTargetCoords };
+module.exports = { runFarmCycle, checkFarmConditions, farmFromReport, busyTargetCoords, fetchMessagesPage };

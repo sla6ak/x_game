@@ -31,6 +31,7 @@ async function spyTargets(context, config, targets, opts = {}) {
   const sent = [];
   const skipped = [];
   const failed = [];
+  const sentAt = {}; // coords -> ts, только реальные отправки (dry-run не пишет)
 
   for (const t of targets) {
     const last = state.spy_sent[t.coords];
@@ -44,7 +45,8 @@ async function spyTargets(context, config, targets, opts = {}) {
       target: {
         galaxy: t.galaxy != null ? t.galaxy : config.home.galaxy,
         system: t.system,
-        planet: t.planet,
+        // findInactiveTargets отдаёт номер планеты в поле pos (и planet, если задано)
+        planet: t.planet != null ? t.planet : t.pos,
         planettype: "1",
       },
       mission: 6, // Шпионаж
@@ -53,7 +55,7 @@ async function spyTargets(context, config, targets, opts = {}) {
     });
 
     if (res.ok) {
-      state.spy_sent[t.coords] = now;
+      if (!dryRun) sentAt[t.coords] = now; // dry-run не пачкает кулдаун
       sent.push({ coords: t.coords, player: t.player, dryRun });
       console.log(`🕵️ [spy] Шпионаж → ${t.coords} (${t.player || "?"}) [${dryRun ? "dry-run" : "sent"}]`);
     } else {
@@ -64,7 +66,14 @@ async function spyTargets(context, config, targets, opts = {}) {
     await new Promise((r) => setTimeout(r, 1500));
   }
 
-  dataStore.save(state);
+  // Сохраняем кулдауны: ПЕРЕЗАГРУЖАЕМ state, чтобы не затереть изменения
+  // других модулей (и наоборот — чтобы spy_sent не терялся при последующих
+  // save). Dry-run ничего не записывает.
+  if (Object.keys(sentAt).length) {
+    const fresh = dataStore.load();
+    fresh.spy_sent = { ...(fresh.spy_sent || {}), ...sentAt };
+    dataStore.save(fresh);
+  }
   return { sent, skipped, failed };
 }
 

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-22T03:28:03.666Z",
+  "updated_at": "2026-08-23T02:57:03.084Z",
   "home": {
     "coords": "1:363:6",
     "planet_cp": 26299,
@@ -11,37 +11,37 @@
   },
   "missions": [
     {
-      "direction": "holding",
-      "type": "Экспедиция [10]",
-      "text": "Ваш флот с луны Луна [1:611:5]* исследует позицию [1:611:16] . Задание: Экспедиция [10]",
+      "direction": "return",
+      "type": "Ресурсы в трюмах Металл",
+      "text": "Ваш флот возвращается с планеты база [1:363:5] на луну Луна [1:363:6]* . Задание: Ресурсы в трюмах Металл",
       "coords": [
-        "1:611:5",
-        "1:611:16"
+        "1:363:5",
+        "1:363:6"
       ],
-      "is_returning": false,
-      "classified": "expedition"
+      "is_returning": true,
+      "classified": "return"
     },
     {
       "direction": "return",
-      "type": "Экспедиция [10]",
-      "text": "Ваш флот возвращается с позиции [1:611:16] на луну Луна [1:611:5]* . Задание: Экспедиция [10]",
+      "type": "Ресурсы в трюмах Металл",
+      "text": "Ваш флот возвращается с планеты лёгкого поведения [1:363:10] на луну Луна [1:363:6]* . Задание: Ресурсы в трюмах Металл",
       "coords": [
-        "1:611:16",
-        "1:611:5"
+        "1:363:10",
+        "1:363:6"
       ],
       "is_returning": true,
-      "classified": "expedition"
+      "classified": "return"
     },
     {
-      "direction": "holding",
-      "type": "Экспедиция [10]",
-      "text": "Ваш флот с луны Луна [1:257:13]* исследует позицию [1:257:16] . Задание: Экспедиция [10]",
+      "direction": "return",
+      "type": "Ресурсы в трюмах Металл",
+      "text": "Ваш флот возвращается с планеты Колония [1:363:7] на луну Луна [1:363:6]* . Задание: Ресурсы в трюмах Металл",
       "coords": [
-        "1:257:13",
-        "1:257:16"
+        "1:363:7",
+        "1:363:6"
       ],
-      "is_returning": false,
-      "classified": "expedition"
+      "is_returning": true,
+      "classified": "return"
     },
     {
       "direction": "return",
@@ -53,6 +53,28 @@
       ],
       "is_returning": true,
       "classified": "expedition"
+    },
+    {
+      "direction": "return",
+      "type": "Атаковать",
+      "text": "Ваш флот возвращается с планеты база [1:363:5] на луну Луна [1:363:6]* . Задание: Атаковать",
+      "coords": [
+        "1:363:5",
+        "1:363:6"
+      ],
+      "is_returning": true,
+      "classified": "return"
+    },
+    {
+      "direction": "return",
+      "type": "Атаковать",
+      "text": "Ваш флот возвращается с планеты лёгкого поведения [1:363:10] на луну Луна [1:363:6]* . Задание: Атаковать",
+      "coords": [
+        "1:363:10",
+        "1:363:6"
+      ],
+      "is_returning": true,
+      "classified": "return"
     },
     {
       "direction": "holding",
@@ -141,20 +163,63 @@
       ],
       "is_returning": true,
       "classified": "expedition"
+    },
+    {
+      "direction": "holding",
+      "type": "Экспедиция [10]",
+      "text": "Ваш флот с луны Луна [1:611:5]* исследует позицию [1:611:16] . Задание: Экспедиция [10]",
+      "coords": [
+        "1:611:5",
+        "1:611:16"
+      ],
+      "is_returning": false,
+      "classified": "expedition"
+    },
+    {
+      "direction": "return",
+      "type": "Экспедиция [10]",
+      "text": "Ваш флот возвращается с позиции [1:611:16] на луну Луна [1:611:5]* . Задание: Экспедиция [10]",
+      "coords": [
+        "1:611:16",
+        "1:611:5"
+      ],
+      "is_returning": true,
+      "classified": "expedition"
     }
   ],
   "attacks": {
-    "outgoing": [],
+    "outgoing": [
+      {
+        "direction": "return",
+        "type": "Атаковать",
+        "text": "Ваш флот возвращается с планеты база [1:363:5] на луну Луна [1:363:6]* . Задание: Атаковать",
+        "coords": [
+          "1:363:5",
+          "1:363:6"
+        ],
+        "is_returning": true
+      },
+      {
+        "direction": "return",
+        "type": "Атаковать",
+        "text": "Ваш флот возвращается с планеты лёгкого поведения [1:363:10] на луну Луна [1:363:6]* . Задание: Атаковать",
+        "coords": [
+          "1:363:10",
+          "1:363:6"
+        ],
+        "is_returning": true
+      }
+    ],
     "incoming": []
   },
   "expedition_slots": {
-    "active": 12
+    "active": 11
   },
   "last_expeditions_sent": null,
   "bodies": [
     {
       "coords": "1:363:6",
-      "planet_cp": "31694",
+      "planet_cp": "26299",
       "moon_cp": 31694,
       "name": "БАЗА",
       "isHome": true
@@ -252,27 +317,30 @@
     }
   ],
   "analysis": {
-    "total": 12,
-    "outgoing": 6,
-    "returning": 6,
+    "total": 16,
+    "outgoing": 5,
+    "returning": 11,
     "byType": {
-      "expedition": 12
+      "return": 5,
+      "expedition": 11
     },
-    "activeSlots": 6
+    "activeSlots": 5
   },
   "safety": {
     "evacuated": {}
   },
   "farm": {
     "farmed": {},
-    "lastSystem": null
+    "lastSystem": "363",
+    "sent": {}
   },
   "last_tick": {
-    "ts": "2026-08-22T03:28:01.305Z",
+    "ts": "2026-08-23T02:56:16.317Z",
     "missions": {
-      "total": 12,
+      "total": 16,
       "byType": {
-        "expedition": 12
+        "return": 5,
+        "expedition": 11
       },
       "incomingAttacks": 0
     },
@@ -283,12 +351,14 @@
     },
     "farm": {
       "conditions": {
-        "ok": false,
-        "reasons": [
-          "Свободных слотов 0 (нужно > 3)"
-        ],
-        "freeSlots": 0,
-        "battleships": 279899952008,
+        "ok": true,
+        "reasons": [],
+        "freeSlots": 31,
+        "freeSlotsSource": "text",
+        "fleetMax": 42,
+        "battleships": 62071523225,
+        "minFree": 3,
+        "minBattleships": 10000000,
         "incomingCount": 0
       },
       "spied": [],
@@ -296,5 +366,18 @@
       "verified": []
     },
     "expedition": null
+  },
+  "mainFleet": {
+    "at": "home-moon",
+    "cp": 31694,
+    "coords": "1:363:6",
+    "since": null,
+    "evacuatedFrom": null
+  },
+  "spy_sent": {
+    "1:363:3": 1787452556098,
+    "1:363:5": 1787452556098,
+    "1:363:7": 1787452556098,
+    "1:363:10": 1787452556098
   }
 }

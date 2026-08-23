@@ -10,19 +10,38 @@
  *
  * Подтверждённый flow (тестировался вживую):
  *   Стадия 1: GET  fleet.php?galaxy=G&system=S&planet=P&planettype=T&target_mission=M[&shipID=count]
+ *             — это тот же URL, что у кнопки «Шпионаж» на странице галактики
+ *             (цель и миссия подставляются сервером из параметров URL).
+ *             Если задан fromCp — сначала пробуем fleet.php?cp=<fromCp>&<те же параметры>
+ *             (тело-источник, например луна); если форма не появилась — дублируем
+ *             ссылку игры как есть (источник = главная планета).
  *             → страница с формой floten1. Заполняем ship<ID>, жмём [Далее].
- *   Стадия 2: страница с формой floten2 (hidden usedfleet — токен флота). Жмём кнопку.
+ *   Стадия 2: страница с формой floten2 (hidden usedfleet — токен флота).
+ *             Если поля цели (galaxy/system/planet/planet_type) есть — заполняем
+ *             координаты цели (на случай, если сервер их не подставил из URL);
+ *             если их нет — цель уже подставлена из URL, просто жмём кнопку.
  *   Стадия 3: страница с формой floten3 (mission, resource1/2/3, holdingtime).
  *             Заполняем ресурсы (если нужно), жмём кнопку.
  *   Стадия 4: ajax_reload / новая страница. Успех: без модалки «Ошибка ...».
  *
- * Коды миссий (target_mission): 1=Атака, 3=Транспорт, 5=Защита, 6=Шпионаж
+ * Коды миссий (target_mission): 1=Атака, 3=Транспорт, 4=Оставить,
+ *   5=Защита, 6=Шпионаж
+ * «Оставить» (4): флот НЕ возвращается после прибытия — остаётся на цели.
+ * Используется для сейва: эвакуация на безопасную луну и возврат домой.
  * Коды кораблей (ship<ID>): 203 Танкер, 208 Колонизатор, 206 Крейсер,
  *   207 Линкор, 210 Шпионский зонд
+ *
+ * Ресурсы (стадия 3, окно выбора ресурсов):
+ *   resources: { r1, r2, r3 } — точные значения (как раньше), ИЛИ
+ *   resources: { maxAll: true, keepUranium: N } — нажать кнопки «Взять все»
+ *   у каждого ресурса, затем отнять keepUranium от урана (resource3).
+ *   Если урана меньше keepUranium — взять 0. Знать ресурсы заранее не нужно.
  */
 
 const { BASE } = require("./http");
 const { extractError, isAjaxReload, stripHtml } = require("./parse-form");
+const fs = require("fs");
+const path = require("path");
 
 /**
  * Отправить миссию.
@@ -32,12 +51,13 @@ const { extractError, isAjaxReload, stripHtml } = require("./parse-form");
  * @param {Object} opts.target — { galaxy, system, planet, planettype } (1=планета, 3=луна)
  * @param {number} opts.mission — код миссии (1/3/5/6)
  * @param {Object} opts.ships — { [shipId]: count }, например { 210: 5000 }
- * @param {Object} [opts.resources] — { r1, r2, r3 } (стадия 3, для транспорта/атаки)
+ * @param {Object} [opts.resources] — { r1, r2, r3 } (стадия 3) ИЛИ
+ *   { maxAll: true, keepUranium: N } — «Взять все» кнопки − несгораемый уран
  * @param {number} [opts.holdingtime] — время у цели (1..9)
  * @param {number} [opts.moreFL] — запасной флот % (стадия 1)
  * @param {boolean} [opts.dryRun] — только план, без отправки
  * @param {import('playwright').Page} [opts.page] — переиспользуемая страница
- * @returns {Promise<Object>} { ok, dryRun, error?, stage?, confirmed? }
+ * @returns {Promise<Object>} { ok, dryRun, error?, stage?, confirmed?, resources? }
  */
 async function sendMission(context, opts) {
   const {
@@ -57,6 +77,9 @@ async function sendMission(context, opts) {
   }
 
   // --- URL стадии 1 ---
+  // Формат ссылки «Шпионаж» со страницы галактики: цель + миссия + корабли
+  // подставляются сервером из параметров URL. Если задан fromCp (тело-источник,
+  // например луна) — сначала пробуем с cp; не сработает — как есть (источник = home).
   const q = new URLSearchParams();
   q.set("galaxy", target.galaxy);
   q.set("system", target.system);
@@ -64,21 +87,45 @@ async function sendMission(context, opts) {
   q.set("planettype", target.planettype || "1");
   q.set("target_mission", mission);
   for (const [id, count] of Object.entries(ships)) q.set(String(id), String(count));
-  const url = `${BASE}/fleet.php?${q.toString()}`;
+  const targetQ = q.toString();
+  const urls = [];
+  if (fromCp != null) urls.push(`${BASE}/fleet.php?cp=${fromCp}&${targetQ}`);
+  urls.push(`${BASE}/fleet.php?${targetQ}`);
 
   const page = myPage || (await context.newPage());
   const owned = !myPage;
   try {
-    // --- Стадия 1: страница флота ---
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
-    let form1 = await page
-      .waitForSelector('form[name="floten1"]', { timeout: 25000 })
-      .catch(() => null);
+    // --- Стадия 1: страница флота (тело-источник → home) ---
+    let form1 = null;
+    for (const url of urls) {
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
+      form1 = await page
+        .waitForSelector('form[name="floten1"]', { timeout: 25000 })
+        .catch(() => null);
+      if (form1) break;
+    }
     if (!form1) {
       const html = await page.content();
       const err = extractError(html);
       return { ok: false, stage: 1, error: err || "Форма floten1 не найдена" };
     }
+
+    // Логим цель (hidden-поля подставлены сервером из URL) и доступные корабли
+    // (список кораблей = флот тела-источника, у луны ~90М зондов)
+    const dbg = await page
+      .evaluate(() => {
+        const f = document.querySelector('form[name="floten1"]');
+        if (!f) return null;
+        const g = (n) => { const el = f.querySelector(`[name="${n}"]`); return el ? el.value : null; };
+        const max = (n) => { const el = document.querySelector(`input[name="maxship${n}"]`); return el ? el.value : null; };
+        return {
+          target: `${g("galaxy")}:${g("system")}:${g("planet")}`,
+          target_mission: g("target_mission"),
+          maxShips: { 203: max(203), 207: max(207), 210: max(210) },
+        };
+      })
+      .catch(() => null);
+    if (dbg) console.log(`📍 [mission] Цель: ${dbg.target} (mission=${dbg.target_mission}), корабли источника: ${JSON.stringify(dbg.maxShips)}`);
 
     // заполняем корабли
     for (const [id, count] of Object.entries(ships)) {
@@ -113,6 +160,14 @@ async function sendMission(context, opts) {
     }
 
     // --- Стадия 2: жмём [Далее] на floten1 ---
+    // Токен gRPdPPPPd обычно ставится onmousedown кнопки — дублируем явно,
+    // чтобы submit гарантированно прошёл.
+    await page
+      .evaluate(() => {
+        const el = document.querySelector('form[name="floten1"] input[name="gRPdPPPPd"]');
+        if (el) el.value = "pGereeeer";
+      })
+      .catch(() => {});
     await page.click('form[name="floten1"] [type="submit"], form[name="floten1"] button[type="submit"]');
     const form2 = await page
       .waitForSelector('form[name="floten2"]', { timeout: 25000 })
@@ -121,6 +176,54 @@ async function sendMission(context, opts) {
       const html = await page.content();
       const err = extractError(html);
       return { ok: false, stage: 2, error: err || "Форма floten2 не найдена" };
+    }
+
+    // --- Стадия 2: координаты цели ---
+    // Цель обычно подставлена сервером из URL стадии 1. Если на странице есть
+    // поля galaxy/system/planet — дожимаем их значениями цели (idempotent).
+    // Если полей нет — цель уже в токене, просто идём дальше.
+    const filled = await page
+      .evaluate((t) => {
+        const f = document.querySelector('form[name="floten2"]');
+        if (!f) return null;
+        const out = {};
+        const set = (name, val) => {
+          const el = f.querySelector(`[name="${name}"]`);
+          if (!el) return null;
+          el.value = String(val);
+          return el.value;
+        };
+        out.galaxy = set("galaxy", t.galaxy);
+        out.system = set("system", t.system);
+        out.planet = set("planet", t.planet);
+        out.planet_type = set("planet_type", t.planettype || "1");
+        if (out.planet_type == null) out.planet_type = set("planettype", t.planettype || "1");
+        return out;
+      }, target)
+      .catch(() => null);
+    if (filled) {
+      console.log(`🎯 [mission] Цель (стадия 2): ${JSON.stringify(filled)}`);
+      // Отладка: какие поля вообще есть на стадии 2 (видны в логе тест-запуска)
+      const dbg = await page
+        .evaluate(() => {
+          const f = document.querySelector('form[name="floten2"]');
+          return f
+            ? [...f.querySelectorAll("input,select")].map((el) => `${el.name}=${el.value}`).join(", ")
+            : null;
+        })
+        .catch(() => null);
+      if (dbg) console.log(`🔎 [mission] Поля floten2: ${dbg}`);
+    } else {
+      console.warn("⚠️ [mission] Поля цели на стадии 2 не найдены — полагаемся на подстановку из URL");
+      // Сохраняем страницу для разбора (цель должна быть в подстановке из URL)
+      const html = await page.content().catch(() => "");
+      try {
+        const dir = path.join(__dirname, "..", "debags");
+        fs.mkdirSync(dir, { recursive: true });
+        const file = path.join(dir, `floten2-debug-${target.galaxy}-${target.system}-${target.planet}.html`);
+        fs.writeFileSync(file, html);
+        console.warn(`🔎 [mission] Страница стадии 2 сохранена: ${file}`);
+      } catch (e) { /* не критично */ }
     }
 
     // --- Стадия 3: жмём кнопку floten2 ---
@@ -134,20 +237,51 @@ async function sendMission(context, opts) {
       return { ok: false, stage: 3, error: err || "Форма floten3 не найдена" };
     }
 
-    // заполняем ресурсы (стадия 3) — только если заданы
+    // заполняем ресурсы (стадия 3)
+    let resourcesTaken = null;
     if (resources) {
-      const setRes = async (name, val) => {
-        if (val == null) return;
-        await page
-          .evaluate(([n, v]) => {
-            const el = document.querySelector(`input[name="${n}"]`);
-            if (el) el.value = String(v);
-          }, [name, val])
-          .catch(() => {});
-      };
-      await setRes("resource1", resources.r1);
-      await setRes("resource2", resources.r2);
-      await setRes("resource3", resources.r3);
+      if (resources.maxAll) {
+        // Режим «Взять все»: кнопки max у каждого ресурса, затем уран − keepUranium.
+        // resource1=металл, resource2=алмазы, resource3=уран.
+        const keepUranium = resources.keepUranium || 0;
+        const res = await page
+          .evaluate((keep) => {
+            const out = {};
+            for (const name of ["resource1", "resource2", "resource3"]) {
+              const el = document.querySelector(`input[name="${name}"]`);
+              if (!el) { out[name] = null; continue; }
+              // кнопка «Взять все» в той же строке (input[type=button] title=Взять все)
+              const row = el.closest("tr") || el.parentElement;
+              const btn = row && row.querySelector('input[title="Взять все"], button[title="Взять все"]');
+              if (btn) btn.click();
+              let val = parseInt(String(el.value).replace(/\D/g, ""), 10) || 0;
+              if (name === "resource3" && keep > 0) {
+                val = Math.max(0, val - keep); // несгораемый уран оставляем
+                el.value = String(val);
+              }
+              out[name] = val;
+            }
+            return out;
+          }, keepUranium)
+          .catch(() => null);
+        resourcesTaken = res;
+        console.log(
+          `📦 [mission] Ресурсы «Взять все» (уран −${keepUranium}): ${JSON.stringify(res)}`,
+        );
+      } else {
+        const setRes = async (name, val) => {
+          if (val == null) return;
+          await page
+            .evaluate(([n, v]) => {
+              const el = document.querySelector(`input[name="${n}"]`);
+              if (el) el.value = String(v);
+            }, [name, val])
+            .catch(() => {});
+        };
+        await setRes("resource1", resources.r1);
+        await setRes("resource2", resources.r2);
+        await setRes("resource3", resources.r3);
+      }
     }
     if (holdingtime != null) {
       await page
@@ -176,6 +310,7 @@ async function sendMission(context, opts) {
       ok: true,
       stage: 4,
       confirmed,
+      resources: resourcesTaken,
       note: confirmed ? undefined : "Без явного подтверждения — проверьте миссии в overview",
     };
   } finally {
@@ -183,4 +318,27 @@ async function sendMission(context, opts) {
   }
 }
 
-module.exports = { sendMission };
+/**
+ * Отозвать активную миссию (флот возвращается на тело-источник).
+ * Форма на fleet.php: <form name="fleetback_<id>" action="fleetback.php">
+ *   <input name="fleetid" value="<id>"> + [Отозвать]
+ * @param {import('playwright').BrowserContext} context
+ * @param {string|number} fleetId — id флота (из parseActiveMissions)
+ * @param {Object} [opts] — { dryRun }
+ * @returns {Promise<Object>} { ok, error? }
+ */
+async function recallMission(context, fleetId, opts = {}) {
+  const { dryRun = false } = opts;
+  if (dryRun) return { ok: true, dryRun: true };
+  const { postForm } = require("./http");
+  const res = await postForm(context, "/fleetback.php", { fleetid: String(fleetId) }, {
+    referer: `${BASE}/fleet.php`,
+  });
+  if (res.status !== 200) return { ok: false, error: `HTTP ${res.status}` };
+  const { extractError } = require("./parse-form");
+  const err = extractError(res.html);
+  if (err) return { ok: false, error: err };
+  return { ok: true };
+}
+
+module.exports = { sendMission, recallMission };

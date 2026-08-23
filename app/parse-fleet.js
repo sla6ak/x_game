@@ -90,6 +90,60 @@ function parseActiveFleets(html) {
 }
 
 /**
+ * Парсинг активных миссий со страницы fleet.php (строки с формой [Отозвать]).
+ * Каждая строка миссии содержит форму <form name="fleetback_<fleet_id>" action="fleetback.php">.
+ * Из строки извлекаем: fleet_id, тип миссии, координаты [от] [куда].
+ * @param {string} html — raw-HTML fleet.php?cp=<cp>
+ * @returns {Array<{fleetId, type, from, to}>}
+ */
+function parseActiveMissions(html) {
+  const missions = [];
+  const chunks = html.split(/<tr[\s>]/);
+  for (const chunk of chunks) {
+    const fm = chunk.match(/name="fleetback_(\d+)"/);
+    if (!fm) continue;
+    const fleetId = fm[1];
+    const text = chunk.replace(/<[^>]+>/g, " ");
+    // координаты вида [1:363:6] или [1:363:6]* (луна)
+    const coords = [...text.matchAll(/\[(\d+):(\d+):(\d+)(\*\d*)?\]/g)].map(
+      (x) => `${x[1]}:${x[2]}:${x[3]}`,
+    );
+    const typeM = text.match(
+      /Экспедиция|Атаковать|Атака|Транспорт|Оставить|Шпионаж|Добыча ТМ|Ишкофарм/,
+    );
+    missions.push({
+      fleetId,
+      type: typeM ? typeM[0] : "unknown",
+      from: coords[0] || null,
+      to: coords[1] || null,
+    });
+  }
+  return missions;
+}
+
+/**
+ * Нормализация координат для сравнения: убираем суффикс луны (*, *N).
+ * "1:363:6*" → "1:363:6"
+ */
+function normalizeCoords(c) {
+  if (!c) return null;
+  return c.replace(/\*\d*$/, "");
+}
+
+/**
+ * Парсинг текстовых счётчиков «Флоты X из Y» и «Экспедиции X из Y».
+ * Формат в raw-HTML: «Флоты <span style="color: #E6EBFB">7</span> из 42».
+ * «Флоты» — ОБЩЕЕ количество миссий (то, что нужно для фарма),
+ * «Экспедиции» — только слоты с целью «экспедиция».
+ */
+function parseCounter(html, label) {
+  const re = new RegExp(label + "\\s*<span[^>]*>(\\d+)</span>\\s*из\\s*(\\d+)");
+  const m = html.match(re);
+  if (!m) return { used: null, max: null };
+  return { used: parseInt(m[1], 10), max: parseInt(m[2], 10) };
+}
+
+/**
  * Полный парсинг fleet-страницы.
  * @param {string} html
  */
@@ -98,6 +152,27 @@ function parseFleet(html) {
   const curexp = getHidden(html, "curepedition");
   const max = maxexp != null ? parseInt(maxexp, 10) : null;
   const current = curexp != null ? parseInt(curexp, 10) : null;
+
+  // Текстовые счётчики (основной источник)
+  const fleet = parseCounter(html, "Флоты");
+  const exp = parseCounter(html, "Экспедиции");
+
+  // Слоты экспедиций: из текста, fallback — hidden-поля
+  const expMax = exp.max != null ? exp.max : max;
+  const expUsed = exp.used != null ? exp.used : current;
+
+  // ОБЩИЕ свободные миссии: из текста «Флоты X из Y».
+  // Fallback (если текст не распарсился) — hidden-поля экспедиций,
+  // но это НЕВЕРНАЯ семантика (только экспедиционные слоты) — помечаем source.
+  let freeSlots = null;
+  let freeSlotsSource = null;
+  if (fleet.max != null && fleet.used != null) {
+    freeSlots = fleet.max - fleet.used;
+    freeSlotsSource = "text";
+  } else if (max != null && current != null) {
+    freeSlots = max - current;
+    freeSlotsSource = "expedition-hidden-fallback";
+  }
 
   return {
     galaxy: getHidden(html, "galaxy"),
@@ -110,7 +185,15 @@ function parseFleet(html) {
         : null,
     maxepedition: max,
     curepedition: current,
-    freeSlots: max != null && current != null ? max - current : null,
+    // ОБЩИЕ миссии (для фарма): «Флоты X из Y»
+    fleetUsed: fleet.used,
+    fleetMax: fleet.max,
+    freeSlots, // = fleetMax - fleetUsed
+    freeSlotsSource,
+    // Слоты экспедиций: «Экспедиции X из Y» (fallback hidden-поля)
+    expUsed: expUsed,
+    expMax: expMax,
+    freeExpeditionSlots: expMax != null && expUsed != null ? expMax - expUsed : null,
     // ship-инпуты (с id) — если есть в raw-HTML; иначе корабли дока из тултипа (без id)
     ships: parseShips(html),
     dockShips: parseDockShips(html),
@@ -118,4 +201,4 @@ function parseFleet(html) {
   };
 }
 
-module.exports = { parseFleet, parseShips, parseDockShips, parseActiveFleets, getHidden };
+module.exports = { parseFleet, parseShips, parseDockShips, parseActiveFleets, parseActiveMissions, normalizeCoords, getHidden };

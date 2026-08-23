@@ -17,11 +17,12 @@
 
 const { fetchHtml } = require("./http");
 const { parseAttacks } = require("./parse-overview");
-const { parseFleet } = require("./parse-fleet");
+const { parseFleet, parseActiveMissions, normalizeCoords } = require("./parse-fleet");
 const { safeMoons, findBody } = require("./bodies");
-const { sendMission } = require("./mission-sender");
+const { sendMission, recallMission } = require("./mission-sender");
 const { stripHtml } = require("./parse-form");
 const dataStore = require("./data-store");
+const fleetState = require("./fleet-state");
 
 /**
  * Время "HH:MM:SS" → ms до прибытия (сегодня или завтра).
@@ -91,7 +92,10 @@ async function runSafetyCheck(context, config, missionsData) {
   state.safety = state.safety || { evacuated: {} };
 
   const bodies = missionsData.bodies || [];
-  if (!bodies.length) return { skipped: "нет данных о наших телах" };
+  if (!bodies.length) {
+    console.log("🛡️ [safety] Нет данных о наших телах (bodies пуст) — пропускаю");
+    return { skipped: "нет данных о наших телах" };
+  }
 
   // входящие атаки (эвристика parseAttacks + координаты/ETA)
   const html = missionsData._html || (await fetchHtml(context, "/overview.php"));
@@ -99,28 +103,87 @@ async function runSafetyCheck(context, config, missionsData) {
   const incoming = expandIncoming(html, attacks.incoming, bodies);
   const report = { incoming: incoming.length, evacuated: [], returned: [] };
 
+  // Детальный лог проверки: сколько тел, какие атаки и когда прибывают
+  console.log(
+    `🛡️ [safety] Проверка: тел=${bodies.length}, входящие атаки=${incoming.length}` +
+      (incoming.length
+        ? ` [${incoming.map((a) => `${a.coords || "?"} ${a.arrivalText || "ETA ?"}`).join(", ")}]`
+        : ""),
+  );
+
   if (!incoming.length) {
-    // атак нет — возвращаем ранее эвакуированный флот домой
+    // атак нет — возвращаем ранее эвакуированный флот домой.
+    // Два случая:
+    //  A) миссия «Оставить» ещё летит (флот в пути на безопасную луну) —
+    //     ОТЫЗЫВАЕМ её: флот вернётся на тело-источник (домой);
+    //  B) флот уже на безопасной луне — отправляем НОВУЮ миссию «Оставить»
+    //     домой со ВСЕМИ ресурсами, кроме несгораемого урана.
+    let returnedHome = 0;
     for (const [coords, ev] of Object.entries(state.safety.evacuated)) {
+      // --- A) миссия в пути? ищем её на fleet.php тела-источника ---
+      let active = null;
+      if (ev.fromCp) {
+        try {
+          const html = await fetchHtml(context, `/fleet.php?cp=${ev.fromCp}`);
+          const missions = parseActiveMissions(html);
+          const fromN = normalizeCoords(ev.fromCoords || coords);
+          const toN = normalizeCoords(ev.moonCoords);
+          active = missions.find(
+            (m) =>
+              normalizeCoords(m.from) === fromN &&
+              normalizeCoords(m.to) === toN,
+          );
+        } catch (e) {
+          console.warn(`🛡️ [safety] Не удалось прочитать флот ${coords} для поиска миссии: ${e.message}`);
+        }
+      }
+
+      if (active) {
+        // флот в пути — отзываем миссию, он вернётся домой сам
+        const res = await recallMission(context, active.fleetId, { dryRun });
+        if (res.ok) {
+          delete state.safety.evacuated[coords];
+          returnedHome++;
+          console.log(`🛡️ [safety] Отзыв миссии «Оставить» (флот ${active.fleetId}, ${coords} → ${ev.moonCoords}) — флот вернётся домой [${dryRun ? "dry-run" : "sent"}]`);
+        } else {
+          console.warn(`❌ [safety] Отзыв миссии ${coords} не удался: ${res.error}`);
+        }
+        continue;
+      }
+
+      // --- B) флот на безопасной луне — новая миссия «Оставить» домой ---
+      const homeCoords = `${config.home.galaxy}:${config.home.system}:${config.home.planet}`;
       const res = await sendMission(context, {
         fromCp: ev.moonCp,
         target: {
           galaxy: config.home.galaxy,
           system: config.home.system,
           planet: config.home.planet,
-          planettype: "1",
+          planettype: "3", // главная ЛУНА — по умолчанию основной флот там
         },
-        mission: 3,
+        mission: 4, // «Оставить» — флот останется дома
         ships: ev.ships || {},
+        resources: { maxAll: true, keepUranium }, // все ресурсы кроме несгораемого урана
         dryRun,
       });
       if (res.ok) {
-        report.returned.push({ coords, dryRun });
         delete state.safety.evacuated[coords];
-        console.log(`🛡️ [safety] Флот с ${coords} возвращён домой [${dryRun ? "dry-run" : "sent"}]`);
+        returnedHome++;
+        console.log(`🛡️ [safety] Флот возвращается: ${ev.moonCoords} → ${homeCoords} (миссия «Оставить», ресурсы: все кроме ${keepUranium} урана) [${dryRun ? "dry-run" : "sent"}]`);
       } else {
-        console.warn(`❌ [safety] Возврат с ${coords} не удался: ${res.error}`);
+        console.warn(`❌ [safety] Возврат с ${ev.moonCoords} не удался (стадия ${res.stage}): ${res.error}`);
       }
+    }
+    // все флоты возвращаемы — сбрасываем положение основного флота на главную луну
+    if (!Object.keys(state.safety.evacuated).length) {
+      const mf = fleetState.getMainFleet();
+      if (mf.at !== "home-moon") {
+        fleetState.setMainFleet(config.moonCp, `${config.home.galaxy}:${config.home.system}:${config.home.planet}`);
+        console.log("📍 [safety] Основной флот возвращается на главную луну — положение сброшено");
+      }
+    }
+    if (!returnedHome) {
+      console.log("🛡️ [safety] Атак нет, эвакуированных флотов нет — ничего не делаем");
     }
     dataStore.save(state);
     return report;
@@ -152,16 +215,9 @@ async function runSafetyCheck(context, config, missionsData) {
     // флот и ресурсы атакуемого тела
     const fleetHtml = await fetchHtml(context, `/fleet.php?cp=${atk.cp}`);
     const fleet = parseFleet(fleetHtml);
-    const res1 = fleet.thisresource1 != null ? parseInt(fleet.thisresource1, 10) : 0;
-    const res2 = fleet.thisresource2 != null ? parseInt(fleet.thisresource2, 10) : 0;
-    const res3 = fleet.thisresource3 != null ? parseInt(fleet.thisresource3, 10) : 0;
-
-    // ресурсы: ВСЕ алмазы (r2), уран — всё кроме keepUranium (r3), металл — весь (r1)
-    const resources = {
-      r1: res1,
-      r2: res2,
-      r3: Math.max(0, res3 - keepUranium),
-    };
+    // ⚠️ В raw-HTML fleet.php НЕТ полей ресурсов — ресурсы забираем через
+    // кнопки «Взять все» в окне выбора ресурсов (стадия 3), заранее
+    // знать их не нужно. Уран: все − keepUranium (если меньше — 0).
 
     // корабли: все доступные на теле (ship-инпуты)
     const ships = {};
@@ -174,23 +230,26 @@ async function runSafetyCheck(context, config, missionsData) {
     const res = await sendMission(context, {
       fromCp: atk.cp,
       target: { galaxy: mg, system: ms, planet: mp, planettype: "3" },
-      mission: 3, // транспорт
+      mission: 4, // «Оставить» — флот останется на безопасной луне
       ships,
-      resources,
+      resources: { maxAll: true, keepUranium }, // все ресурсы кроме несгораемого урана
       dryRun,
     });
 
     if (res.ok) {
       state.safety.evacuated[atk.coords] = {
         at: Date.now(),
+        fromCp: atk.cp,
+        fromCoords: atk.coords,
         moonCp: moon.moon_cp,
         moonCoords: moon.coords,
         ships,
-        resources,
       };
       report.evacuated.push({ coords: atk.coords, moon: moon.coords, dryRun });
+      // запоминаем, где сейчас основной флот
+      fleetState.setMainFleet(moon.moon_cp, moon.coords, { cp: atk.cp, coords: atk.coords });
       console.log(
-        `🛡️ [safety] ЭВАКУАЦИЯ ${atk.coords} → ${moon.coords}: корабли ${JSON.stringify(ships)}, ресурсы ${JSON.stringify(resources)} [${dryRun ? "dry-run" : "sent"}]`
+        `🛡️ [safety] ЭВАКУАЦИЯ ${atk.coords} → ${moon.coords}: корабли ${JSON.stringify(ships)}, ресурсы: все кроме ${keepUranium} урана, миссия «Оставить» [${dryRun ? "dry-run" : "sent"}]`
       );
     } else {
       console.warn(`❌ [safety] Эвакуация ${atk.coords} не удалась (стадия ${res.stage}): ${res.error}`);
