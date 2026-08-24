@@ -1,8 +1,8 @@
 /**
- * logger.js — базовое логирование ошибок.
+ * logger.js — базовое логирование.
  *
- * - Все ошибки пишутся в корневой файл `.errors` (append) + в консоль.
- * - Формат строки: ISO-время | уровень | сообщение | стек (если есть).
+ * - Все логи (console.log / warn / error) пишутся в один файл `errors.log`.
+ * - В консоль они продолжают идти обычным образом.
  * - Глобальные обработчики uncaughtException / unhandledRejection
  *   подключаются через installGlobalHandlers().
  */
@@ -10,48 +10,80 @@
 const fs = require("fs");
 const path = require("path");
 
-const ERRORS_FILE = path.join(__dirname, "..", ".errors");
+const ERRORS_FILE = path.join(__dirname, "..", "errors.log");
+const nativeConsole = {
+  log: console.log.bind(console),
+  warn: console.warn.bind(console),
+  error: console.error.bind(console),
+};
 
 function timestamp() {
   return new Date().toISOString();
 }
 
-/**
- * Дописать запись в .errors. Никогда не бросает исключений —
- * логгер не должен ронять сам бота.
- */
-function appendToFile(level, message, err) {
+function formatValue(value) {
+  if (value instanceof Error) return value.stack || value.message;
+  if (typeof value === "string") return value;
+  try {
+    return JSON.stringify(value);
+  } catch (e) {
+    return String(value);
+  }
+}
+
+function formatArgs(args) {
+  return args.map(formatValue).join(" ");
+}
+
+function appendToFile(filePath, level, message, err) {
   const lines = [`[${timestamp()}] ${level} ${message}`];
   if (err && err.stack) {
     lines.push(err.stack);
   }
-  lines.push(""); // пустая строка-разделитель
+  lines.push("");
   try {
-    fs.appendFileSync(ERRORS_FILE, lines.join("\n"), "utf-8");
+    fs.appendFileSync(filePath, lines.join("\n"), "utf-8");
   } catch (e) {
-    // Файл недоступен (например, read-only ФС) — только в консоль.
-    console.error(`[logger] Не удалось записать в ${ERRORS_FILE}:`, e.message);
+    nativeConsole.error(
+      `[logger] Не удалось записать в ${filePath}:`,
+      e.message,
+    );
   }
 }
 
-/** Логирование ошибки: консоль + .errors */
+/** Логирование ошибки: консоль + errors.log */
 function error(message, err) {
   const detail = err ? ` ${err.message}` : "";
-  console.error(`❌ [error] ${message}${detail}`);
-  appendToFile("ERROR", `${message}${detail}`, err);
+  nativeConsole.error(`❌ [error] ${message}${detail}`);
+  appendToFile(ERRORS_FILE, "ERROR", `${message}${detail}`, err);
 }
 
-/** Предупреждение: только в консоль (не ошибка, не пишем в .errors) */
-function warn(message) {
-  console.warn(`⚠️ [warn] ${message}`);
+/** Предупреждение: консоль + errors.log */
+function warn(message, ...extra) {
+  nativeConsole.warn(`⚠️ [warn] ${message}`, ...extra);
+  appendToFile(ERRORS_FILE, "WARN", formatArgs([message, ...extra]));
 }
 
-/**
- * Глобальные обработчики: необработанные исключения и rejection'и
- * фиксируются в .errors. uncaughtException завершает процесс
- * (продолжать работу в неизвестном состоянии нельзя).
- */
+/** Простой лог: консоль + errors.log */
+function log(message, ...extra) {
+  nativeConsole.log(message, ...extra);
+  appendToFile(ERRORS_FILE, "INFO", formatArgs([message, ...extra]));
+}
+
 function installGlobalHandlers() {
+  console.log = (...args) => {
+    nativeConsole.log(...args);
+    appendToFile(ERRORS_FILE, "INFO", formatArgs(args));
+  };
+  console.warn = (...args) => {
+    nativeConsole.warn(...args);
+    appendToFile(ERRORS_FILE, "WARN", formatArgs(args));
+  };
+  console.error = (...args) => {
+    nativeConsole.error(...args);
+    appendToFile(ERRORS_FILE, "ERROR", formatArgs(args));
+  };
+
   process.on("uncaughtException", (err) => {
     error("uncaughtException — процесс завершён", err);
     process.exit(1);
@@ -61,8 +93,8 @@ function installGlobalHandlers() {
     error("unhandledRejection", err);
   });
   process.on("exit", (code) => {
-    appendToFile("EXIT", `Процесс завершён, exit code: ${code}`);
+    appendToFile(ERRORS_FILE, "EXIT", `Процесс завершён, exit code: ${code}`);
   });
 }
 
-module.exports = { error, warn, installGlobalHandlers, ERRORS_FILE };
+module.exports = { error, warn, log, installGlobalHandlers, ERRORS_FILE };

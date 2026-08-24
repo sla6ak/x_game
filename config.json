@@ -13,9 +13,7 @@
     "enabled": true,
     "dryRun": true,
     "fromMoonCp": 31694,
-    "targets": [
-      "1:363:16"
-    ],
+    "targets": ["1:363:16"],
     "shipName": "Линкор",
     "shipCount": "all",
     "fillFreeSlots": true
@@ -31,10 +29,10 @@
     "typeFL": 207,
     "moreFL": 10,
     "slotsFL": 3,
-    "minSPY": 60,
+    "minSPY": 10,
     "resFL": true,
     "includeVacation": false,
-    "spyCooldownMs": 21600000,
+    "spyCooldownMs": 60000,
     "farmCooldownMs": 43200000,
     "systemRange": 30,
     "maxScanPerTick": 10,
@@ -55,7 +53,7 @@
     "Линкор": 207,
     "Шпионский зонд": 210
   },
-  "pollIntervalMs": 30000,
+  "pollIntervalMs": 90000,
   "attackKeywords": [
     "Вас атакуют",
     "атакуют вас",

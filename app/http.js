@@ -8,6 +8,29 @@
  */
 
 const BASE = "https://crazy.xgame-online.com";
+const REQUEST_TIMEOUT_MS = Number(process.env.REQUEST_TIMEOUT_MS || 60000);
+const REQUEST_RETRIES = Number(process.env.REQUEST_RETRIES || 2);
+
+async function withRetry(fn, retries = REQUEST_RETRIES, delayMs = 1000) {
+  let lastError = null;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      const message = err && err.message ? String(err.message) : "";
+      const isTimeout =
+        err &&
+        (err.name === "TimeoutError" ||
+          /Timeout \d+ms exceeded/i.test(message));
+      if (!isTimeout || attempt >= retries) {
+        throw err;
+      }
+      lastError = err;
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+  throw lastError || new Error("request failed");
+}
 
 /**
  * Запросить raw-HTML страницы через контекст (с cookies сессии).
@@ -17,7 +40,9 @@ const BASE = "https://crazy.xgame-online.com";
  */
 async function fetchHtml(context, urlPath) {
   const url = urlPath.startsWith("http") ? urlPath : BASE + urlPath;
-  const res = await context.request.get(url, { timeout: 20000 });
+  const res = await withRetry(() =>
+    context.request.get(url, { timeout: REQUEST_TIMEOUT_MS }),
+  );
   const status = res.status();
   const html = await res.text();
   if (status !== 200) {
@@ -45,15 +70,18 @@ async function fetchHtml(context, urlPath) {
 async function postForm(context, urlPath, form, opts = {}) {
   const url = urlPath.startsWith("http") ? urlPath : BASE + urlPath;
   const params = new URLSearchParams();
-  for (const [k, v] of Object.entries(form)) params.append(k, v == null ? "" : String(v));
+  for (const [k, v] of Object.entries(form))
+    params.append(k, v == null ? "" : String(v));
   const headers = { "content-type": "application/x-www-form-urlencoded" };
   if (opts.referer) headers["referer"] = opts.referer;
-  const res = await context.request.post(url, {
-    timeout: 20000,
-    data: params.toString(),
-    headers,
-  });
+  const res = await withRetry(() =>
+    context.request.post(url, {
+      timeout: REQUEST_TIMEOUT_MS,
+      data: params.toString(),
+      headers,
+    }),
+  );
   return { status: res.status(), html: await res.text() };
 }
 
-module.exports = { fetchHtml, postForm, BASE };
+module.exports = { fetchHtml, postForm, BASE, withRetry, REQUEST_TIMEOUT_MS };

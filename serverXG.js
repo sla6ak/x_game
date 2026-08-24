@@ -6,11 +6,16 @@
  */
 
 const http = require("http");
+const path = require("path");
+const dotenv = require("dotenv");
 const { chromium } = require("playwright");
 const { ensureLoggedIn } = require("./app/session-manager");
 const { botLoop } = require("./app/bot-loop");
 const logger = require("./app/logger");
-const { loadConfig } = require("./app/helpers/config");
+const { loadConfig, loadBotControls } = require("./app/helpers/config");
+const { handleControlsRequest } = require("./app/web/controls");
+
+dotenv.config({ path: path.join(__dirname, ".env") });
 
 const config = loadConfig();
 
@@ -45,13 +50,26 @@ function startHealthServer(port) {
           status: "ok",
           uptime_s: Math.round(process.uptime()),
           last_tick: lastTick,
-        })
+          controls: loadBotControls(),
+        }),
       );
-    } else {
-      res.writeHead(404); res.end();
+      return;
     }
+
+    if (req.url === "/controls") {
+      handleControlsRequest(req, res);
+      return;
+    }
+
+    res.writeHead(404);
+    res.end();
   });
-  server.listen(port, () => console.log(`🌐 [server] Health-сервер на :${port}`));
+  server.listen(port, () => {
+    console.log(`🌐 [server] Health-сервер реально запущен на :${port}`);
+    console.log(
+      `🌐 [server] Живая страница: http://localhost:${port}/controls`,
+    );
+  });
   return { server, setLastTick: (t) => (lastTick = t) };
 }
 
@@ -80,6 +98,13 @@ async function main() {
 
   // Render Web Service: health-эндпоинт на $PORT
   const port = process.env.PORT ? Number(process.env.PORT) : null;
+  if (port) {
+    console.log(`🧭 [server] PORT из env: ${port}`);
+  } else {
+    console.warn(
+      "⚠️ [server] PORT не задан — живая страница /controls не запущена",
+    );
+  }
   const health = port ? startHealthServer(port) : null;
 
   try {
@@ -104,7 +129,9 @@ async function main() {
               .map(([k, v]) => `${k}:${v}`)
               .join(" ")}), ` +
             `атаки: ${(s && s.incoming) || 0}` +
-            (f ? ` | farm: слоты=${f.freeSlots ?? "?"}/${f.fleetMax ?? "?"}, линкоры=${f.battleships ?? "?"}${f.ok ? " ✅" : " ❌ " + f.reasons.join("; ")}` : "")
+            (f
+              ? ` | farm: слоты=${f.freeSlots ?? "?"}/${f.fleetMax ?? "?"}, линкоры=${f.battleships ?? "?"}${f.ok ? " ✅" : " ❌ " + f.reasons.join("; ")}`
+              : ""),
         );
         if (health) health.setLastTick(tick);
       },
@@ -117,7 +144,9 @@ async function main() {
         console.log("✅ [server] Сессия восстановлена, продолжаем");
         await botLoop(context, config, {
           stop: () => stopped,
-          onTick: (tick) => { if (health) health.setLastTick(tick); },
+          onTick: (tick) => {
+            if (health) health.setLastTick(tick);
+          },
         });
       }
     } else {
