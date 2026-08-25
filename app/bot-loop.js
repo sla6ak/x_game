@@ -38,6 +38,11 @@ async function botTick(context, config) {
   config.expedition = {
     ...(config.expedition || {}),
     enabled: !!controls.expedition,
+    shipCount:
+      Number.isFinite(Number(controls.expeditionShipCount)) &&
+      Number(controls.expeditionShipCount) > 0
+        ? Number(controls.expeditionShipCount)
+        : (config.expedition?.shipCount ?? 500000000000),
   };
   config.safety = { ...(config.safety || {}), enabled: !!controls.safety };
 

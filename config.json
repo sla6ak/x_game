@@ -11,7 +11,7 @@
   "moonCp": 31694,
   "expedition": {
     "enabled": true,
-    "dryRun": true,
+    "dryRun": false,
     "fromMoonCp": 31694,
     "targets": ["1:363:16"],
     "shipName": "Линкор",

@@ -13,6 +13,7 @@
 const { fetchHtml, BASE } = require("./http");
 const { parseFleet } = require("./parsers/fleet");
 const { blockResources } = require("./helpers/browser");
+const { sendMission } = require("./mission-sender");
 
 /**
  * Построить план экспедиции по raw-HTML флот-страницы луны.
@@ -26,9 +27,43 @@ async function getExpeditionPlan(context, config) {
 
   const shipName = config.expedition.shipName;
   const shipId = config.shipIds ? config.shipIds[shipName] || null : null;
-  const dockShip = (fleet.dockShips || []).find(
-    (s) => s.name === shipName,
-  );
+  const liveShip = (fleet.ships || []).find((s) => s.name === shipName);
+  const dockShip = (fleet.dockShips || []).find((s) => s.name === shipName);
+  const availableShips =
+    liveShip && liveShip.available != null
+      ? Number(liveShip.available)
+      : dockShip && dockShip.available != null
+        ? Number(dockShip.available)
+        : 0;
+
+  const requestedCount = config.expedition.shipCount;
+  const resolvedCount =
+    requestedCount === "all" ||
+    requestedCount === "ALL" ||
+    requestedCount === null ||
+    requestedCount === undefined ||
+    requestedCount === ""
+      ? "all"
+      : Number(requestedCount);
+
+  const reasons = [];
+  if (!config.expedition.enabled) reasons.push("expedition disabled");
+  if (!moonCp) reasons.push("missing moonCp");
+  if (!config.expedition.targets || config.expedition.targets.length === 0)
+    reasons.push("missing target");
+  if (!shipId) reasons.push(`unknown shipId for ${shipName}`);
+  if ((fleet.freeExpeditionSlots || 0) <= 0)
+    reasons.push("no free expedition slots");
+  if (availableShips <= 0) reasons.push("no ships available on moon");
+  if (
+    resolvedCount !== "all" &&
+    (!Number.isFinite(Number(resolvedCount)) || Number(resolvedCount) <= 0)
+  ) {
+    reasons.push("invalid ship limit");
+  }
+
+  const ready = reasons.length === 0;
+  const effectiveDryRun = Boolean(config.expedition.dryRun) || !ready;
 
   return {
     fromMoonCp: moonCp,
@@ -42,9 +77,11 @@ async function getExpeditionPlan(context, config) {
     target: config.expedition.targets[0],
     shipName,
     shipId,
-    shipCount: config.expedition.shipCount,
-    availableShips: dockShip ? dockShip.available : 0,
-    dryRun: config.expedition.dryRun,
+    shipCount: resolvedCount,
+    availableShips,
+    ready,
+    readinessReasons: reasons,
+    dryRun: effectiveDryRun,
   };
 }
 
@@ -69,11 +106,23 @@ async function launchExpeditions(context, config) {
   console.log(`   Откуда: ${plan.fromCoords} (cp=${plan.fromMoonCp})`);
   console.log(`   Куда:     ${plan.target}`);
   console.log(
-    `   Корабль:  ${plan.shipName} (id=${plan.shipId}), кол-во=${plan.shipCount}, в доке=${plan.availableShips}`,
+    `   Корабль:  ${plan.shipName} (id=${plan.shipId}), лимит=${plan.shipCount}, реально на луне=${plan.availableShips}`,
   );
 
+  if (plan.readinessReasons && plan.readinessReasons.length) {
+    console.log(
+      `🚦 [expedition] Автопроверка: готовность=${plan.ready ? "OK" : "NO"} — ${plan.readinessReasons.join("; ")}`,
+    );
+  } else {
+    console.log(
+      `🚦 [expedition] Автопроверка: готовность=OK — можно отправлять.`,
+    );
+  }
+
   if (plan.dryRun) {
-    console.log(`🏃 [expedition] DRY-RUN: отправка НЕ выполняется.`);
+    console.log(
+      `🏃 [expedition] DRY-RUN: бот автоматически удерживает отправку, пока условия не готовы.`,
+    );
     return plan;
   }
 
@@ -95,14 +144,6 @@ async function doRealLaunch(context, config, plan) {
   try {
     await blockResources(page);
 
-    // --- Этап 1: флот-страница луны ---
-    console.log(`📄 [expedition] Открываю fleet.php?cp=${plan.fromMoonCp}`);
-    await page.goto(`${BASE}/fleet.php?cp=${plan.fromMoonCp}`, {
-      waitUntil: "domcontentloaded",
-      timeout: 20000,
-    });
-
-    // Ждём появления ship-инпутов (они рендерятся JS)
     const shipId = plan.shipId;
     if (!shipId) {
       console.error(
@@ -111,98 +152,62 @@ async function doRealLaunch(context, config, plan) {
       return;
     }
 
-    // Заполняем количество кораблей (ship<id>)
-    const filled = await page
-      .evaluate(
-        ({ shipId, count }) => {
-          const input = document.querySelector(`input[name="ship${shipId}"]`);
-          if (!input) return false;
-          const maxEl = document.getElementById(`maxship${shipId}`);
-          const max = maxEl ? parseInt(maxEl.value, 10) : 0;
-          const val = count === "all" ? max : Math.min(parseInt(count, 10), max);
-          input.value = String(val || 0);
-          input.dispatchEvent(new Event("change", { bubbles: true }));
-          return true;
-        },
-        { shipId, count: plan.shipCount },
-      )
-      .catch(() => false);
+    const rawRequested =
+      plan.shipCount === "all" || plan.shipCount === "ALL"
+        ? Number.MAX_SAFE_INTEGER
+        : Number(plan.shipCount) || 0;
+    const available = Number(plan.availableShips || 0);
+    const requestedCount =
+      Number.isFinite(available) && available > 0
+        ? Math.min(rawRequested, available)
+        : rawRequested;
 
-    if (!filled) {
-      console.error(
-        `❌ [expedition] Не найден ship-инпут ship${shipId} (корабли рендерятся JS, страница могла уйти в about:blank).`,
-      );
-      return;
-    }
-    console.log(`✅ [expedition] Заполнено ship${shipId} (count=${plan.shipCount}).`);
+    const targetParts = String(plan.target || "")
+      .split(":")
+      .map((n) => Number(n));
+    const targetMission = Number(config.expedition.targetMission || 15);
+    const targetCoords =
+      targetParts.length === 3 && targetParts.every(Number.isFinite)
+        ? {
+            galaxy: targetParts[0],
+            system: targetParts[1],
+            planet: targetParts[2],
+            planettype: 1,
+          }
+        : null;
 
-    // moreFL = 0 (без дополнительных флотов)
-    await page
-      .evaluate(() => {
-        const sel = document.querySelector('select[name="moreFL"]');
-        if (sel) {
-          sel.value = "0";
-          sel.dispatchEvent(new Event("change", { bubbles: true }));
-        }
-      })
-      .catch(() => {});
-
-    // Нажимаем "Далее" (submit floten1)
-    console.log(`📤 [expedition] Отправляю форму floten1 (Далее)...`);
-    await page
-      .evaluate(() => {
-        const form = document.querySelector('form[name="floten1"]');
-        if (!form) throw new Error("Форма floten1 не найдена");
-        if (typeof form.requestSubmit === "function") form.requestSubmit();
-        else form.submit();
-      })
-      .catch((e) => {
-        console.error(`❌ [expedition] Не удалось отправить форму: ${e.message}`);
-        return;
-      });
-
-    // Ждём страницу выбора цели
-    await page
-      .waitForLoadState("domcontentloaded", { timeout: 15000 })
-      .catch(() => {});
-
-    console.log(`📄 [expedition] Текущий URL после "Далее": ${page.url()}`);
-
-    // --- Этап 2: выбор цели (best-effort) ---
-    // Структура страницы цели не подтверждена — логим что есть.
-    const targetInfo = await page
-      .evaluate(() => {
-        const galaxy = document.querySelector('input[name="galaxy"]');
-        const system = document.querySelector('input[name="system"]');
-        const planet = document.querySelector('input[name="planet"]');
-        const mission = document.querySelector('select[name="mission"]');
-        return {
-          hasGalaxy: !!galaxy,
-          hasSystem: !!system,
-          hasPlanet: !!planet,
-          hasMissionSelect: !!mission,
-          missionOptions: mission
-            ? [...mission.options].map((o) => ({ v: o.value, t: o.text }))
-            : [],
-        };
-      })
-      .catch(() => null);
-
-    if (targetInfo) {
-      console.log(
-        `🔎 [expedition] Страница цели: galaxy=${targetInfo.hasGalaxy} system=${targetInfo.hasSystem} planet=${targetInfo.hasPlanet} missionSelect=${targetInfo.hasMissionSelect}`,
-      );
-      if (targetInfo.missionOptions.length) {
-        console.log(
-          `   Миссии: ${targetInfo.missionOptions
-            .map((o) => `${o.v}=${o.t}`)
-            .join(", ")}`,
-        );
-      }
-    }
+    const finalTarget =
+      targetCoords ||
+      (() => {
+        const alt = String(config.expedition.targets?.[0] || "1:363:6")
+          .split(":")
+          .map((n) => Number(n));
+        return alt.length === 3
+          ? {
+              galaxy: alt[0],
+              system: alt[1],
+              planet: alt[2],
+              planettype: 1,
+            }
+          : { galaxy: 1, system: 363, planet: 6, planettype: 1 };
+      })();
 
     console.log(
-      `⚠️ [expedition] Этап 2 (выбор цели) — best-effort. Проверьте вручную и доработайте doRealLaunch под реальную структуру.`,
+      `🚀 [expedition] Реальный запуск через mission-sender: target=${finalTarget.galaxy}:${finalTarget.system}:${finalTarget.planet} mission=${targetMission} ship${shipId}=${requestedCount}`,
+    );
+
+    const result = await sendMission(context, {
+      fromCp: plan.fromMoonCp,
+      target: finalTarget,
+      mission: targetMission,
+      ships: { [shipId]: requestedCount },
+      page,
+      moreFL: 0,
+      dryRun: false,
+    });
+
+    console.log(
+      `📌 [expedition] Результат реальной отправки: ${JSON.stringify({ ok: result.ok, stage: result.stage, error: result.error, confirmed: result.confirmed })}`,
     );
   } catch (err) {
     console.error(`❌ [expedition] Ошибка реальной отправки:`, err.message);

@@ -20,18 +20,32 @@ function loadConfig() {
 }
 
 function loadBotControls() {
+  const defaults = {
+    farm: true,
+    expedition: true,
+    safety: true,
+    expeditionShipCount: 500000000000,
+  };
+
   try {
-    return JSON.parse(fs.readFileSync(CONTROLS_FILE, "utf-8"));
+    const parsed = JSON.parse(fs.readFileSync(CONTROLS_FILE, "utf-8"));
+    const next = { ...defaults, ...parsed };
+    const n = Number(next.expeditionShipCount);
+    next.expeditionShipCount =
+      Number.isFinite(n) && n > 0 ? n : defaults.expeditionShipCount;
+    return next;
   } catch (e) {
-    return { farm: true, expedition: true, safety: true };
+    return defaults;
   }
 }
 
 function saveBotControls(controls) {
+  const raw = Number(controls?.expeditionShipCount ?? 500000000000);
   const next = {
     farm: !!controls?.farm,
     expedition: !!controls?.expedition,
     safety: !!controls?.safety,
+    expeditionShipCount: Number.isFinite(raw) && raw > 0 ? raw : 500000000000,
   };
   fs.writeFileSync(
     CONTROLS_FILE,

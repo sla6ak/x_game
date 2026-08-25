@@ -175,26 +175,46 @@ function parseMissionEtaMs(html, text) {
 
 /**
  * Координаты цели входящей атаки и признак «атака на луну».
+ *
+ * Для live-строк OGame форма обычно такая:
+ *   "... с луны Moon [[2:795:15]*] ... на луну Луна [[1:363:6]*] ... Задание: Атаковать"
+ * Важно: ищем ссылку на нашу цель по слову "Луна" / "Moon" и только потом берём
+ * соответствующую координату. Не используем первый попавшийся координатный блок.
+ *
  * @param {string} text — текст миссии overview
  * @returns {{ coords: string|null, isMoon: boolean }}
  */
 function parseIncomingTarget(text) {
-  const moonM = text.match(
-    /(?:на\s+(?:нашей\s+)?лун[а-я]*[^[]*)?\[(\d+:\d+:\d+)\*\]/i,
-  );
-  if (moonM) return { coords: moonM[1], isMoon: true };
+  const raw = String(text || "");
+  const normalized = raw
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 
-  const planetM = text.match(
-    /на\s+(?:нашей\s+)?планет[а-я]*[^[]*\[(\d+:\d+:\d+)\]/i,
-  );
-  if (planetM) return { coords: planetM[1], isMoon: false };
-
-  const all = [...text.matchAll(/\[(\d+:\d+:\d+)(\*\d*)?\]/g)];
-  if (all.length) {
-    const last = all[all.length - 1];
-    return { coords: last[1], isMoon: !!last[2] };
+  const targetWords = [...normalized.matchAll(/Луна|Moon|Планета|Planet/gi)];
+  if (targetWords.length) {
+    const lastWord = targetWords[targetWords.length - 1];
+    const afterWord = normalized.slice(lastWord.index + lastWord[0].length);
+    const coordMatch = afterWord.match(/(\d+:\d+:\d+)/);
+    if (coordMatch) {
+      return {
+        coords: coordMatch[1],
+        isMoon: /Луна|Moon/i.test(lastWord[0]),
+      };
+    }
   }
-  return { coords: null, isMoon: /лун/i.test(text) };
+
+  const all = [...normalized.matchAll(/(\d+:\d+:\d+)/g)];
+  if (all.length) {
+    const last = all[all.length - 1][1];
+    return {
+      coords: last,
+      isMoon: /\*/.test(normalized) || /Луна|Moon/i.test(normalized),
+    };
+  }
+
+  return { coords: null, isMoon: /лун/i.test(normalized) };
 }
 
 /**

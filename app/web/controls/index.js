@@ -23,10 +23,15 @@ const CONTROL_FIELDS = [
 
 function resolveControlsFromBody(body = "") {
   const params = new URLSearchParams(body);
+  const expeditionShipCount = Number(params.get("expeditionShipCount"));
   return {
     farm: params.has("farm"),
     expedition: params.has("expedition"),
     safety: params.has("safety"),
+    expeditionShipCount:
+      Number.isFinite(expeditionShipCount) && expeditionShipCount > 0
+        ? expeditionShipCount
+        : 500000000000,
   };
 }
 
@@ -40,6 +45,8 @@ function renderControlsPage(state = loadBotControls()) {
     `,
   ).join("");
 
+  const expeditionShipCount = Number(state.expeditionShipCount ?? 500000000000);
+
   return `<!doctype html>
     <html lang="ru">
       <head>
@@ -50,9 +57,12 @@ function renderControlsPage(state = loadBotControls()) {
           .card { background: #1f2937; border-radius: 14px; padding: 24px; box-shadow: 0 12px 32px rgba(0,0,0,.25); }
           h1 { margin-top: 0; font-size: 28px; }
           .row { display: flex; align-items: center; gap: 12px; margin: 16px 0; font-size: 18px; }
+          .row-inline { display: flex; align-items: center; gap: 12px; justify-content: space-between; margin: 16px 0; }
           input[type="checkbox"] { width: 22px; height: 22px; }
+          input[type="number"] { width: 180px; padding: 8px 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #e2e8f0; }
           button { margin-top: 12px; width: 100%; padding: 12px; border: none; border-radius: 10px; background: #4f46e5; color: white; font-size: 16px; cursor: pointer; }
           .note { margin-top: 18px; color: #cbd5e1; font-size: 13px; }
+          .small { font-size: 12px; color: #94a3b8; }
         </style>
       </head>
       <body>
@@ -60,9 +70,14 @@ function renderControlsPage(state = loadBotControls()) {
           <h1>Управление ботом</h1>
           <form method="POST" action="/controls">
             ${rows}
+            <label class="row-inline">
+              <span>Линкоров для автоэкспедиции</span>
+              <input type="number" name="expeditionShipCount" value="${expeditionShipCount}" min="0" step="100000000000" />
+            </label>
+            <div class="small">Если в доке меньше, бот отправит всё доступное на луне. Максимум по умолчанию: 500000000000.</div>
             <button type="submit">Сохранить</button>
           </form>
-          <div class="note">Флаги сохраняются в bot-controls.json и читаются ботом на каждом тике.</div>
+          <div class="note">Флаги и лимит сохраняются в bot-controls.json и читаются ботом на каждом тике.</div>
           <div class="note">Локально: http://localhost:&lt;PORT&gt;/controls</div>
         </div>
       </body>

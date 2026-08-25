@@ -3,6 +3,7 @@ const fs = require("fs");
 const farm = require("../app/farm");
 const { parseGalaxy, filterInactive } = require("../app/parsers/galaxy");
 const { filterSpyReports } = require("../app/parsers/messages");
+const { parseIncomingTarget } = require("../app/parsers/overview");
 
 const galaxyHtml = fs.readFileSync(
   "./debug/galaxy/galaxy-363-live.html",
@@ -298,6 +299,15 @@ assert.deepStrictEqual(
   currentSystemReports.map((m) => m.id),
   ["1", "3"],
   "current-system filter must exclude spy reports from other systems",
+);
+
+const attackText =
+  "Чужой [флот]() игрока [Kot] с луны Moon [[2:795:15]*](...) отправлен на луну Луна [[1:363:6]*](...). Задание: Атаковать";
+const attackTarget = parseIncomingTarget(attackText);
+assert.deepStrictEqual(
+  attackTarget,
+  { coords: "1:363:6", isMoon: true },
+  "live OGame attack rows with nested link markup must be parsed as the final home-moon target",
 );
 
 console.log("farm system cycle test: ok");

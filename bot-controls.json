@@ -1,5 +1,6 @@
 {
-  "farm": true,
-  "expedition": false,
-  "safety": true
+  "farm": false,
+  "expedition": true,
+  "safety": true,
+  "expeditionShipCount": 600000000000
 }
