@@ -85,7 +85,7 @@ async function runFarmCycle(context, config, missionsData) {
     // --- 4a. Если ждём отчёт: время пришло? ---
     if (F.pendingReport) {
       const pr = F.pendingReport;
-      const waitMs = fc.reportGraceMs || 120000;
+      const waitMs = fc.reportGraceMs || 60000;
       const elapsed = now - (pr.spiedAt || 0);
       console.log(
         `🌾 [farm] Ждём отчёт по ${pr.coords}: прошло ${Math.round(elapsed / 1000)}с из ${Math.round(waitMs / 1000)}с`,
@@ -105,8 +105,10 @@ async function runFarmCycle(context, config, missionsData) {
             return finishTarget(context, config, F, pr, state, { empty: true });
           }
           if (fc.minDiamond && rep.diamond < fc.minDiamond) {
-            console.log(`🌾 [farm] ${pr.coords}: алмазов ${rep.diamond} < минимума ${fc.minDiamond} — пропускаю, ищу дальше`);
-            return finishTarget(context, config, F, pr, state, { ok: false, lowDiamond: true, error: `diamonds ${rep.diamond} < minDiamond ${fc.minDiamond}` });
+            console.log(`🌾 [farm] ${pr.coords}: алмазов ${rep.diamond} < минимума ${fc.minDiamond} — отмечаю как атакованную (накопится к следующему кругу)`);
+            F.attacked[pr.coords] = Date.now();
+            dataStore.save(state);
+            return finishTarget(context, config, F, pr, state, { skipped: "low_diamond", diamonds: rep.diamond });
           }
           if (fc.maxLiners && liners > fc.maxLiners) {
             console.log(`🌾 [farm] ${pr.coords}: нужно ${liners} > лимита ${fc.maxLiners} — пропускаю цель`);
@@ -202,7 +204,7 @@ async function runFarmCycle(context, config, missionsData) {
       t.spiedAt = Date.now();
       F.pendingReport = { coords: t.coords, player: t.player, spiedAt: t.spiedAt };
       dataStore.save(state);
-      console.log(`🌾 [farm] Шпионы на [${t.coords}] отправлены — ждём отчёт ${fc.reportGraceMs || 120000}мс`);
+      console.log(`🌾 [farm] Шпионы на [${t.coords}] отправлены — ждём отчёт ${fc.reportGraceMs || 60000}мс`);
       return { spied: t.coords, waitingReport: true };
     }
     // Шпионаж не удался (кулдаун/ошибка) — снимаем с очереди
@@ -231,8 +233,6 @@ function finishTarget(context, config, F, target, state, info) {
     console.log(`🌾 [farm] [${target.coords}] помечено как атакованное (кулдаун ${Math.round(((config.farm || {}).farmCooldownMs || 3600000) / 3600000)}ч)`);
   } else if (info.noReport || info.spyFailed || info.empty) {
     F.failed[target.coords] = { ts: Date.now(), reason: info.noReport ? "no_report" : info.empty ? "empty" : "spy_failed" };
-  } else if (info.lowDiamond) {
-    F.failed[target.coords] = { ts: Date.now(), reason: `low_diamond < ${config.farm && config.farm.minDiamond}` };
   }
   F.current_goal = null;
   dataStore.save(state);

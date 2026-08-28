@@ -1,752 +1,419 @@
-[2026-08-28T01:15:29.436Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:15:30.365Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:15:30.366Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:15:30.367Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:15:30.368Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:15:30.369Z] INFO 🌾 [farm] ВХОД: analysis={"total":8,"outgoing":4,"returning":4,"byType":{"expedition":2,"unknown":3,"return":3},"activeSlots":4}
-[2026-08-28T01:15:30.369Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:15:30.369Z] INFO 🌾 [farm] Состояние: queue=2, pendingReport=null, scanSystem=363, attacked=1, failed=0
-[2026-08-28T01:15:30.370Z] INFO 🌾 [farm] current_goal = [1:363:7] Quasar — отправляем шпионов (зондов: 5000)
-[2026-08-28T01:15:31.148Z] INFO 📍 [mission] Цель: 1:363:7 (mission=6), корабли источника: {"203":null,"207":"842256141946","210":"164692815"}
-[2026-08-28T01:15:31.697Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"363","planet":"7","planet_type":"1"}
-[2026-08-28T01:15:32.269Z] INFO 🕵️ [spy] Шпионаж → 1:363:7 (Quasar) [sent]
-[2026-08-28T01:15:33.773Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:363:7","player":"Quasar","dryRun":false}], skipped=[], failed=[]
-[2026-08-28T01:15:33.775Z] INFO 🌾 [farm] Шпионы на [1:363:7] отправлены — ждём отчёт 120000мс
-[2026-08-28T01:15:33.776Z] INFO 🌾 [loop] farm результат: {"spied":"1:363:7","waitingReport":true}
-[2026-08-28T01:15:33.776Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:15:34.341Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 32 из 42 свободны — ждём.
-[2026-08-28T01:15:34.342Z] INFO 📊 [tick] миссий: 8 (expedition:2 unknown:3 return:3), атаки: 0
-[2026-08-28T01:17:07.771Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:17:13.622Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:17:13.623Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:17:13.624Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:17:13.625Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:17:13.625Z] INFO 🌾 [farm] ВХОД: analysis={"total":8,"outgoing":4,"returning":4,"byType":{"expedition":2,"unknown":3,"return":3},"activeSlots":4}
-[2026-08-28T01:17:13.625Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:17:13.626Z] INFO 🌾 [farm] Состояние: queue=2, pendingReport={"coords":"1:363:7","player":"Quasar","spiedAt":1787879733773}, scanSystem=363, attacked=1, failed=0
-[2026-08-28T01:17:13.626Z] INFO 🌾 [farm] Ждём отчёт по 1:363:7: прошло 100с из 120с
-[2026-08-28T01:17:13.626Z] INFO 🌾 [loop] farm результат: {"waiting":"1:363:7"}
-[2026-08-28T01:17:13.626Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:17:14.111Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 33 из 42 свободны — ждём.
-[2026-08-28T01:17:14.113Z] INFO 📊 [tick] миссий: 8 (expedition:2 unknown:3 return:3), атаки: 0
-[2026-08-28T01:18:49.182Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:18:50.812Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:18:50.815Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:18:50.818Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:18:50.820Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:18:50.820Z] INFO 🌾 [farm] ВХОД: analysis={"total":8,"outgoing":4,"returning":4,"byType":{"expedition":2,"unknown":3,"return":3},"activeSlots":4}
-[2026-08-28T01:18:50.821Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:18:50.822Z] INFO 🌾 [farm] Состояние: queue=2, pendingReport={"coords":"1:363:7","player":"Quasar","spiedAt":1787879733773}, scanSystem=363, attacked=1, failed=0
-[2026-08-28T01:18:50.823Z] INFO 🌾 [farm] Ждём отчёт по 1:363:7: прошло 197с из 120с
-[2026-08-28T01:18:50.823Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:363:7
-[2026-08-28T01:18:55.285Z] INFO 🌾 [farm] Сообщений: всего=0, шпионских по 1:363:7=0
-[2026-08-28T01:18:55.285Z] WARN 🌾 [farm] Шпионский отчёт по 1:363:7 не найден/не распарсен
-[2026-08-28T01:18:55.285Z] INFO 🌾 [farm] Отчёта по 1:363:7 пока нет — ждём до следующего тика
-[2026-08-28T01:18:55.285Z] INFO 🌾 [loop] farm результат: {"waiting":"1:363:7"}
-[2026-08-28T01:18:55.285Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:18:55.778Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 33 из 42 свободны — ждём.
-[2026-08-28T01:18:55.779Z] INFO 📊 [tick] миссий: 8 (expedition:2 unknown:3 return:3), атаки: 0
-[2026-08-28T01:20:15.126Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:20:15.995Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:20:15.996Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:20:15.998Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:20:15.999Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:20:15.999Z] INFO 🌾 [farm] ВХОД: analysis={"total":8,"outgoing":4,"returning":4,"byType":{"expedition":2,"unknown":3,"return":3},"activeSlots":4}
-[2026-08-28T01:20:15.999Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:20:16.000Z] INFO 🌾 [farm] Состояние: queue=2, pendingReport={"coords":"1:363:7","player":"Quasar","spiedAt":1787879733773}, scanSystem=363, attacked=1, failed=0
-[2026-08-28T01:20:16.000Z] INFO 🌾 [farm] Ждём отчёт по 1:363:7: прошло 282с из 120с
-[2026-08-28T01:20:16.000Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:363:7
-[2026-08-28T01:20:20.268Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:363:7=2 — #84050153(28.08 - 04:15:41|Колония [1:363:7]|Шпионский доклад) ; #83933959(26.08 - 16:38:53|Колония [1:363:7]|Шпионский доклад)
-[2026-08-28T01:20:20.269Z] INFO 🌾 [farm] #84050153 (inline): М=68261576361594, А=37924226804061, У=21070143827652, игрок= В момент шпионажа Место: 502 Очков: 38 712 725 694 989 ');
-[2026-08-28T01:20:20.269Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 502 Очков: 38 712 725 694 989 ');» [1:363:7] (msg#84050153, src=inline): Металл 68261576361594, Алмаз 37924226804061, Уран 21070143827652 → Итого 127255946993307 → линкоров: 84837297996
-[2026-08-28T01:20:20.269Z] INFO 🌾 [farm] Атака: target=1:363:7, mission=1, ships={207: 84837297996}, fromCp=31694, dryRun=false
-[2026-08-28T01:20:21.076Z] INFO 📍 [mission] Цель: 1:363:7 (mission=1), корабли источника: {"203":null,"207":"842775821946","210":"164692815"}
-[2026-08-28T01:20:21.928Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"363","planet":"7","planet_type":"1"}
-[2026-08-28T01:20:22.692Z] INFO 🌾 [farm] Результат sendMission: ok=true, stage=4, confirmed=true, error=-
-[2026-08-28T01:20:22.693Z] INFO 🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [1:363:7] (Quasar), линкоров: 84837297996, источник: главная луна cp=31694
-[2026-08-28T01:20:22.695Z] INFO 🌾 [farm] finishTarget [1:363:7]: queue 2→1, info={"ok":true,"liners":84837297996,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T01:20:22.696Z] INFO 🌾 [farm] [1:363:7] помечено как атакованное (кулдаун 12ч)
-[2026-08-28T01:20:22.698Z] INFO 🌾 [loop] farm результат: {"target":"1:363:7","ok":true,"liners":84837297996,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T01:20:22.699Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:20:23.213Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 32 из 42 свободны — ждём.
-[2026-08-28T01:20:23.215Z] INFO 📊 [tick] миссий: 8 (expedition:2 unknown:3 return:3), атаки: 0
-[2026-08-28T01:21:39.922Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:21:40.752Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:21:40.753Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:21:40.753Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:21:40.755Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:21:40.755Z] INFO 🌾 [farm] ВХОД: analysis={"total":9,"outgoing":4,"returning":5,"byType":{"return":4,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:21:40.755Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:21:40.756Z] INFO 🌾 [farm] Состояние: queue=1, pendingReport=null, scanSystem=363, attacked=2, failed=0
-[2026-08-28T01:21:40.756Z] INFO 🌾 [farm] current_goal = [1:363:10] Golileo45 — отправляем шпионов (зондов: 5000)
-[2026-08-28T01:21:41.548Z] INFO 📍 [mission] Цель: 1:363:10 (mission=6), корабли источника: {"203":null,"207":"758083675950","210":"164692815"}
-[2026-08-28T01:21:42.153Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"363","planet":"10","planet_type":"1"}
-[2026-08-28T01:21:42.732Z] INFO 🕵️ [spy] Шпионаж → 1:363:10 (Golileo45) [sent]
-[2026-08-28T01:21:44.236Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:363:10","player":"Golileo45","dryRun":false}], skipped=[], failed=[]
-[2026-08-28T01:21:44.239Z] INFO 🌾 [farm] Шпионы на [1:363:10] отправлены — ждём отчёт 120000мс
-[2026-08-28T01:21:44.239Z] INFO 🌾 [loop] farm результат: {"spied":"1:363:10","waitingReport":true}
-[2026-08-28T01:21:44.239Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:21:44.759Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 31 из 42 свободны — ждём.
-[2026-08-28T01:21:44.761Z] INFO 📊 [tick] миссий: 9 (return:4 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:23:11.309Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:23:12.206Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:23:12.207Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:23:12.207Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:23:12.209Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:23:12.209Z] INFO 🌾 [farm] ВХОД: analysis={"total":9,"outgoing":4,"returning":5,"byType":{"return":4,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:23:12.209Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:23:12.209Z] INFO 🌾 [farm] Состояние: queue=1, pendingReport={"coords":"1:363:10","player":"Golileo45","spiedAt":1787880104236}, scanSystem=363, attacked=2, failed=0
-[2026-08-28T01:23:12.210Z] INFO 🌾 [farm] Ждём отчёт по 1:363:10: прошло 88с из 120с
-[2026-08-28T01:23:12.210Z] INFO 🌾 [loop] farm результат: {"waiting":"1:363:10"}
-[2026-08-28T01:23:12.210Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:23:12.795Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 32 из 42 свободны — ждём.
-[2026-08-28T01:23:12.798Z] INFO 📊 [tick] миссий: 9 (return:4 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:24:42.818Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:24:43.689Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:24:43.689Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:24:43.690Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:24:43.691Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:24:43.691Z] INFO 🌾 [farm] ВХОД: analysis={"total":9,"outgoing":4,"returning":5,"byType":{"return":4,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:24:43.692Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:24:43.692Z] INFO 🌾 [farm] Состояние: queue=1, pendingReport={"coords":"1:363:10","player":"Golileo45","spiedAt":1787880104236}, scanSystem=363, attacked=2, failed=0
-[2026-08-28T01:24:43.692Z] INFO 🌾 [farm] Ждём отчёт по 1:363:10: прошло 179с из 120с
-[2026-08-28T01:24:43.692Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:363:10
-[2026-08-28T01:24:47.611Z] INFO 🌾 [farm] Сообщений: всего=0, шпионских по 1:363:10=0
-[2026-08-28T01:24:47.612Z] WARN 🌾 [farm] Шпионский отчёт по 1:363:10 не найден/не распарсен
-[2026-08-28T01:24:47.612Z] INFO 🌾 [farm] Отчёта по 1:363:10 пока нет — ждём до следующего тика
-[2026-08-28T01:24:47.612Z] INFO 🌾 [loop] farm результат: {"waiting":"1:363:10"}
-[2026-08-28T01:24:47.612Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:24:48.068Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 32 из 42 свободны — ждём.
-[2026-08-28T01:24:48.069Z] INFO 📊 [tick] миссий: 9 (return:4 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:26:23.732Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:26:24.676Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:26:24.676Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:26:24.677Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:26:24.679Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:26:24.679Z] INFO 🌾 [farm] ВХОД: analysis={"total":9,"outgoing":4,"returning":5,"byType":{"return":4,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:26:24.679Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:26:24.680Z] INFO 🌾 [farm] Состояние: queue=1, pendingReport={"coords":"1:363:10","player":"Golileo45","spiedAt":1787880104236}, scanSystem=363, attacked=2, failed=0
-[2026-08-28T01:26:24.680Z] INFO 🌾 [farm] Ждём отчёт по 1:363:10: прошло 280с из 120с
-[2026-08-28T01:26:24.680Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:363:10
-[2026-08-28T01:26:28.940Z] INFO 🌾 [farm] Сообщений: всего=0, шпионских по 1:363:10=0
-[2026-08-28T01:26:28.940Z] WARN 🌾 [farm] Шпионский отчёт по 1:363:10 не найден/не распарсен
-[2026-08-28T01:26:28.941Z] INFO 🌾 [farm] Отчёта по 1:363:10 пока нет — ждём до следующего тика
-[2026-08-28T01:26:28.941Z] INFO 🌾 [loop] farm результат: {"waiting":"1:363:10"}
-[2026-08-28T01:26:28.941Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:26:29.438Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 32 из 42 свободны — ждём.
-[2026-08-28T01:26:29.443Z] INFO 📊 [tick] миссий: 9 (return:4 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:27:49.087Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:27:49.992Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:27:49.993Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:27:49.993Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:27:49.995Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:27:49.995Z] INFO 🌾 [farm] ВХОД: analysis={"total":9,"outgoing":4,"returning":5,"byType":{"return":4,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:27:49.995Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:27:49.996Z] INFO 🌾 [farm] Состояние: queue=1, pendingReport={"coords":"1:363:10","player":"Golileo45","spiedAt":1787880104236}, scanSystem=363, attacked=2, failed=0
-[2026-08-28T01:27:49.996Z] INFO 🌾 [farm] Ждём отчёт по 1:363:10: прошло 366с из 120с
-[2026-08-28T01:27:49.996Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:363:10
-[2026-08-28T01:27:54.788Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:363:10=2 — #84050684(28.08 - 04:21:51|лёгкого поведения [1:363:10]|Шпионский доклад) ; #83933961(26.08 - 16:38:53|лёгкого поведения [1:363:10]|Шпионский доклад)
-[2026-08-28T01:27:54.792Z] INFO 🌾 [farm] #84050684 (inline): М=61811663634514, А=47748643952532, У=19622770149182, игрок= В момент шпионажа Место: 903 Очков: 4 634 925 479 392 Специальность: Летчик ');
-[2026-08-28T01:27:54.792Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 903 Очков: 4 634 925 479 392 Специальность: Летчик ');» [1:363:10] (msg#84050684, src=inline): Металл 61811663634514, Алмаз 47748643952532, Уран 19622770149182 → Итого 129183077736228 → линкоров: 86122051825
-[2026-08-28T01:27:54.792Z] INFO 🌾 [farm] Атака: target=1:363:10, mission=1, ships={207: 86122051825}, fromCp=31694, dryRun=false
-[2026-08-28T01:27:55.647Z] INFO 📍 [mission] Цель: 1:363:10 (mission=1), корабли источника: {"203":null,"207":"758753883950","210":"164692815"}
-[2026-08-28T01:27:56.336Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"363","planet":"10","planet_type":"1"}
-[2026-08-28T01:27:57.003Z] INFO 🌾 [farm] Результат sendMission: ok=true, stage=4, confirmed=true, error=-
-[2026-08-28T01:27:57.004Z] INFO 🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [1:363:10] (Golileo45), линкоров: 86122051825, источник: главная луна cp=31694
-[2026-08-28T01:27:57.004Z] INFO 🌾 [farm] finishTarget [1:363:10]: queue 1→0, info={"ok":true,"liners":86122051825,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T01:27:57.004Z] INFO 🌾 [farm] [1:363:10] помечено как атакованное (кулдаун 12ч)
-[2026-08-28T01:27:57.005Z] INFO 🌾 [loop] farm результат: {"target":"1:363:10","ok":true,"liners":86122051825,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T01:27:57.009Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:27:57.548Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 31 из 42 свободны — ждём.
-[2026-08-28T01:27:57.550Z] INFO 📊 [tick] миссий: 9 (return:4 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:29:30.708Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:29:32.107Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:29:32.108Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:29:32.108Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:29:32.110Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:29:32.110Z] INFO 🌾 [farm] ВХОД: analysis={"total":10,"outgoing":4,"returning":6,"byType":{"return":5,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:29:32.110Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:29:32.112Z] INFO 🌾 [farm] Состояние: queue=0, pendingReport=null, scanSystem=363, attacked=3, failed=0
-[2026-08-28T01:29:32.112Z] INFO 🌾 [farm] Переход к системе 1:364 (range=30, было 363)
-[2026-08-28T01:29:32.840Z] INFO 🌾 [farm] Система 1:364 получена: планет в таблице=10
-[2026-08-28T01:29:32.841Z] INFO 🌾 [farm] Фильтры: ourCoords=1:363:6,1:257:13,1:260:9,1:318:1,1:331:12,1:364:9,1:364:14,1:369:4,1:378:12,1:521:15,1:610:11,1:611:5,1:907:15,1:918:1, busyCoords=8
-[2026-08-28T01:29:32.842Z] INFO 🌾 [farm] Неактивных после базовых фильтров: 7 — ORACL[1](lolonginactive), нечто[3](lolonginactive), 84L4pe[4](lolonginactive), adff[5](lolonginactive), успешный[6](lolonginactive), олд мэн[7](lolonginactive), hardcored[15](lolonginactive)
-[2026-08-28T01:29:32.843Z] INFO 🌾 [farm] Система 1:364: в очередь 7 — ORACL[1], нечто[3], 84L4pe[4], adff[5], успешный[6], олд мэн[7], hardcored[15]
-[2026-08-28T01:29:32.843Z] INFO 🌾 [farm] current_goal = [1:364:1] ORACL — отправляем шпионов (зондов: 5000)
-[2026-08-28T01:29:33.930Z] INFO 📍 [mission] Цель: 1:364:1 (mission=6), корабли источника: {"203":null,"207":"672807448125","210":"164692815"}
-[2026-08-28T01:29:34.520Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"364","planet":"1","planet_type":"1"}
-[2026-08-28T01:29:35.216Z] INFO 🕵️ [spy] Шпионаж → 1:364:1 (ORACL) [sent]
-[2026-08-28T01:29:36.723Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:364:1","player":"ORACL","dryRun":false}], skipped=[], failed=[]
-[2026-08-28T01:29:36.725Z] INFO 🌾 [farm] Шпионы на [1:364:1] отправлены — ждём отчёт 120000мс
-[2026-08-28T01:29:36.726Z] INFO 🌾 [loop] farm результат: {"spied":"1:364:1","waitingReport":true}
-[2026-08-28T01:29:36.726Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:29:37.377Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 30 из 42 свободны — ждём.
-[2026-08-28T01:29:37.379Z] INFO 📊 [tick] миссий: 10 (return:5 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:31:07.258Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:31:08.959Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:31:08.959Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:31:08.960Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:31:08.962Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:31:08.962Z] INFO 🌾 [farm] ВХОД: analysis={"total":11,"outgoing":4,"returning":7,"byType":{"return":6,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:31:08.962Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:31:08.962Z] INFO 🌾 [farm] Состояние: queue=7, pendingReport={"coords":"1:364:1","player":"ORACL","spiedAt":1787880576723}, scanSystem=364, attacked=3, failed=0
-[2026-08-28T01:31:08.962Z] INFO 🌾 [farm] Ждём отчёт по 1:364:1: прошло 92с из 120с
-[2026-08-28T01:31:08.962Z] INFO 🌾 [loop] farm результат: {"waiting":"1:364:1"}
-[2026-08-28T01:31:08.962Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:31:09.605Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 30 из 42 свободны — ждём.
-[2026-08-28T01:31:09.608Z] INFO 📊 [tick] миссий: 11 (return:6 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:32:36.353Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:32:37.206Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:32:37.206Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:32:37.207Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:32:37.208Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:32:37.209Z] INFO 🌾 [farm] ВХОД: analysis={"total":10,"outgoing":4,"returning":6,"byType":{"return":5,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:32:37.209Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:32:37.209Z] INFO 🌾 [farm] Состояние: queue=7, pendingReport={"coords":"1:364:1","player":"ORACL","spiedAt":1787880576723}, scanSystem=364, attacked=3, failed=0
-[2026-08-28T01:32:37.209Z] INFO 🌾 [farm] Ждём отчёт по 1:364:1: прошло 180с из 120с
-[2026-08-28T01:32:37.209Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:364:1
-[2026-08-28T01:32:41.676Z] INFO 🌾 [farm] Сообщений: всего=0, шпионских по 1:364:1=0
-[2026-08-28T01:32:41.676Z] WARN 🌾 [farm] Шпионский отчёт по 1:364:1 не найден/не распарсен
-[2026-08-28T01:32:41.677Z] INFO 🌾 [farm] Отчёта по 1:364:1 пока нет — ждём до следующего тика
-[2026-08-28T01:32:41.677Z] INFO 🌾 [loop] farm результат: {"waiting":"1:364:1"}
-[2026-08-28T01:32:41.677Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:32:42.134Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 31 из 42 свободны — ждём.
-[2026-08-28T01:32:42.136Z] INFO 📊 [tick] миссий: 10 (return:5 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:34:13.019Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:34:14.046Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:34:14.051Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:34:14.052Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:34:14.055Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:34:14.056Z] INFO 🌾 [farm] ВХОД: analysis={"total":11,"outgoing":4,"returning":7,"byType":{"return":6,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:34:14.057Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:34:14.058Z] INFO 🌾 [farm] Состояние: queue=7, pendingReport={"coords":"1:364:1","player":"ORACL","spiedAt":1787880576723}, scanSystem=364, attacked=3, failed=0
-[2026-08-28T01:34:14.060Z] INFO 🌾 [farm] Ждём отчёт по 1:364:1: прошло 277с из 120с
-[2026-08-28T01:34:14.060Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:364:1
-[2026-08-28T01:34:19.061Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:364:1=1 — #84050896(28.08 - 04:29:47|Колонія [1:364:1]|Шпионский доклад)
-[2026-08-28T01:34:19.063Z] INFO 🌾 [farm] #84050896 (inline): М=91626041260171, А=20318244811086, У=18768044405017, игрок= В момент шпионажа Место: 596 Очков: 21 778 611 616 429 Специальность: Шахтер ');
-[2026-08-28T01:34:19.063Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 596 Очков: 21 778 611 616 429 Специальность: Шахтер ');» [1:364:1] (msg#84050896, src=inline): Металл 91626041260171, Алмаз 20318244811086, Уран 18768044405017 → Итого 130712330476274 → линкоров: 87141553651
-[2026-08-28T01:34:19.063Z] INFO 🌾 [farm] Атака: target=1:364:1, mission=1, ships={207: 87141553651}, fromCp=31694, dryRun=false
-[2026-08-28T01:34:19.890Z] INFO 📍 [mission] Цель: 1:364:1 (mission=1), корабли источника: {"203":null,"207":"758157258121","210":"164692815"}
-[2026-08-28T01:34:20.568Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"364","planet":"1","planet_type":"1"}
-[2026-08-28T01:34:21.325Z] INFO 🌾 [farm] Результат sendMission: ok=true, stage=4, confirmed=true, error=-
-[2026-08-28T01:34:21.325Z] INFO 🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [1:364:1] (ORACL), линкоров: 87141553651, источник: главная луна cp=31694
-[2026-08-28T01:34:21.328Z] INFO 🌾 [farm] finishTarget [1:364:1]: queue 7→6, info={"ok":true,"liners":87141553651,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T01:34:21.328Z] INFO 🌾 [farm] [1:364:1] помечено как атакованное (кулдаун 12ч)
-[2026-08-28T01:34:21.332Z] INFO 🌾 [loop] farm результат: {"target":"1:364:1","ok":true,"liners":87141553651,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T01:34:21.332Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:34:21.960Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 29 из 42 свободны — ждём.
-[2026-08-28T01:34:21.963Z] INFO 📊 [tick] миссий: 11 (return:6 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:35:48.302Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:35:49.214Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:35:49.215Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:35:49.216Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:35:49.217Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:35:49.217Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:35:49.218Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:35:49.219Z] INFO 🌾 [farm] Состояние: queue=6, pendingReport=null, scanSystem=364, attacked=4, failed=0
-[2026-08-28T01:35:49.219Z] INFO 🌾 [farm] current_goal = [1:364:3] нечто — отправляем шпионов (зондов: 5000)
-[2026-08-28T01:35:50.117Z] INFO 📍 [mission] Цель: 1:364:3 (mission=6), корабли источника: {"203":null,"207":"671176984470","210":"164692815"}
-[2026-08-28T01:35:50.751Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"364","planet":"3","planet_type":"1"}
-[2026-08-28T01:35:51.529Z] INFO 🕵️ [spy] Шпионаж → 1:364:3 (нечто) [sent]
-[2026-08-28T01:35:53.035Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:364:3","player":"нечто","dryRun":false}], skipped=[], failed=[]
-[2026-08-28T01:35:53.037Z] INFO 🌾 [farm] Шпионы на [1:364:3] отправлены — ждём отчёт 120000мс
-[2026-08-28T01:35:53.038Z] INFO 🌾 [loop] farm результат: {"spied":"1:364:3","waitingReport":true}
-[2026-08-28T01:35:53.038Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:35:53.616Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
-[2026-08-28T01:35:53.617Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:37:19.790Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:37:20.709Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:37:20.712Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:37:20.714Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:37:20.716Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:37:20.717Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:37:20.717Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:37:20.718Z] INFO 🌾 [farm] Состояние: queue=6, pendingReport={"coords":"1:364:3","player":"нечто","spiedAt":1787880953035}, scanSystem=364, attacked=4, failed=0
-[2026-08-28T01:37:20.718Z] INFO 🌾 [farm] Ждём отчёт по 1:364:3: прошло 88с из 120с
-[2026-08-28T01:37:20.718Z] INFO 🌾 [loop] farm результат: {"waiting":"1:364:3"}
-[2026-08-28T01:37:20.718Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:37:21.283Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 29 из 42 свободны — ждём.
-[2026-08-28T01:37:21.287Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:38:52.911Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:38:53.913Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:38:53.913Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:38:53.914Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:38:53.915Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:38:53.915Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:38:53.915Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:38:53.916Z] INFO 🌾 [farm] Состояние: queue=6, pendingReport={"coords":"1:364:3","player":"нечто","spiedAt":1787880953035}, scanSystem=364, attacked=4, failed=0
-[2026-08-28T01:38:53.916Z] INFO 🌾 [farm] Ждём отчёт по 1:364:3: прошло 181с из 120с
-[2026-08-28T01:38:53.916Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:364:3
-[2026-08-28T01:38:58.184Z] INFO 🌾 [farm] Сообщений: всего=0, шпионских по 1:364:3=0
-[2026-08-28T01:38:58.184Z] WARN 🌾 [farm] Шпионский отчёт по 1:364:3 не найден/не распарсен
-[2026-08-28T01:38:58.184Z] INFO 🌾 [farm] Отчёта по 1:364:3 пока нет — ждём до следующего тика
-[2026-08-28T01:38:58.184Z] INFO 🌾 [loop] farm результат: {"waiting":"1:364:3"}
-[2026-08-28T01:38:58.184Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:38:58.636Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 29 из 42 свободны — ждём.
-[2026-08-28T01:38:58.640Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:40:29.253Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:40:30.697Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:40:30.698Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:40:30.699Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:40:30.700Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:40:30.700Z] INFO 🌾 [farm] ВХОД: analysis={"total":11,"outgoing":4,"returning":7,"byType":{"return":6,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:40:30.700Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:40:30.701Z] INFO 🌾 [farm] Состояние: queue=6, pendingReport={"coords":"1:364:3","player":"нечто","spiedAt":1787880953035}, scanSystem=364, attacked=4, failed=0
-[2026-08-28T01:40:30.701Z] INFO 🌾 [farm] Ждём отчёт по 1:364:3: прошло 278с из 120с
-[2026-08-28T01:40:30.701Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:364:3
-[2026-08-28T01:40:35.359Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:364:3=1 — #84051095(28.08 - 04:36:03|Колония [1:364:3]|Шпионский доклад)
-[2026-08-28T01:40:35.360Z] INFO 🌾 [farm] #84051095 (inline): М=21070143827652, А=6504886779259, У=6504886779259, игрок= В момент шпионажа Место: 723 Очков: 11 168 899 426 244 ');
-[2026-08-28T01:40:35.360Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 723 Очков: 11 168 899 426 244 ');» [1:364:3] (msg#84051095, src=inline): Металл 21070143827652, Алмаз 6504886779259, Уран 6504886779259 → Итого 34079917386170 → линкоров: 22719944925
-[2026-08-28T01:40:35.360Z] INFO 🌾 [farm] Атака: target=1:364:3, mission=1, ships={207: 22719944925}, fromCp=31694, dryRun=false
-[2026-08-28T01:40:36.227Z] INFO 📍 [mission] Цель: 1:364:3 (mission=1), корабли источника: {"203":null,"207":"757811548295","210":"164692815"}
-[2026-08-28T01:40:36.810Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"364","planet":"3","planet_type":"1"}
-[2026-08-28T01:40:37.515Z] INFO 🌾 [farm] Результат sendMission: ok=true, stage=4, confirmed=true, error=-
-[2026-08-28T01:40:37.515Z] INFO 🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [1:364:3] (нечто), линкоров: 22719944925, источник: главная луна cp=31694
-[2026-08-28T01:40:37.515Z] INFO 🌾 [farm] finishTarget [1:364:3]: queue 6→5, info={"ok":true,"liners":22719944925,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T01:40:37.515Z] INFO 🌾 [farm] [1:364:3] помечено как атакованное (кулдаун 12ч)
-[2026-08-28T01:40:37.517Z] INFO 🌾 [loop] farm результат: {"target":"1:364:3","ok":true,"liners":22719944925,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T01:40:37.521Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:40:38.143Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 29 из 42 свободны — ждём.
-[2026-08-28T01:40:38.147Z] INFO 📊 [tick] миссий: 11 (return:6 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:42:05.436Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:42:06.415Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:42:06.417Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:42:06.419Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:42:06.421Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:42:06.422Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:42:06.423Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:42:06.424Z] INFO 🌾 [farm] Состояние: queue=5, pendingReport=null, scanSystem=364, attacked=5, failed=0
-[2026-08-28T01:42:06.424Z] INFO 🌾 [farm] current_goal = [1:364:4] 84L4pe — отправляем шпионов (зондов: 5000)
-[2026-08-28T01:42:07.327Z] INFO 📍 [mission] Цель: 1:364:4 (mission=6), корабли источника: {"203":null,"207":"735254675370","210":"164692815"}
-[2026-08-28T01:42:07.860Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"364","planet":"4","planet_type":"1"}
-[2026-08-28T01:42:08.523Z] INFO 🕵️ [spy] Шпионаж → 1:364:4 (84L4pe) [sent]
-[2026-08-28T01:42:10.031Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:364:4","player":"84L4pe","dryRun":false}], skipped=[], failed=[]
-[2026-08-28T01:42:10.035Z] INFO 🌾 [farm] Шпионы на [1:364:4] отправлены — ждём отчёт 120000мс
-[2026-08-28T01:42:10.036Z] INFO 🌾 [loop] farm результат: {"spied":"1:364:4","waitingReport":true}
-[2026-08-28T01:42:10.036Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:42:10.606Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
-[2026-08-28T01:42:10.609Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:43:42.081Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:43:43.077Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:43:43.078Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:43:43.078Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:43:43.080Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:43:43.081Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:43:43.081Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:43:43.082Z] INFO 🌾 [farm] Состояние: queue=5, pendingReport={"coords":"1:364:4","player":"84L4pe","spiedAt":1787881330031}, scanSystem=364, attacked=5, failed=0
-[2026-08-28T01:43:43.082Z] INFO 🌾 [farm] Ждём отчёт по 1:364:4: прошло 93с из 120с
-[2026-08-28T01:43:43.082Z] INFO 🌾 [loop] farm результат: {"waiting":"1:364:4"}
-[2026-08-28T01:43:43.082Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:43:43.651Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 29 из 42 свободны — ждём.
-[2026-08-28T01:43:43.657Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:45:06.797Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:45:07.875Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:45:07.876Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:45:07.877Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:45:07.878Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:45:07.878Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:45:07.879Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:45:07.879Z] INFO 🌾 [farm] Состояние: queue=5, pendingReport={"coords":"1:364:4","player":"84L4pe","spiedAt":1787881330031}, scanSystem=364, attacked=5, failed=0
-[2026-08-28T01:45:07.879Z] INFO 🌾 [farm] Ждём отчёт по 1:364:4: прошло 178с из 120с
-[2026-08-28T01:45:07.879Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:364:4
-[2026-08-28T01:45:12.856Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:364:4=1 — #84051269(28.08 - 04:42:20|Колония [1:364:4]|Шпионский доклад)
-[2026-08-28T01:45:12.857Z] INFO 🌾 [farm] #84051269 (inline): М=87546976921634, А=19714679504564, У=15798533033927, игрок= В момент шпионажа Место: 483 Очков: 43 828 182 412 345 ');
-[2026-08-28T01:45:12.859Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 483 Очков: 43 828 182 412 345 ');» [1:364:4] (msg#84051269, src=inline): Металл 87546976921634, Алмаз 19714679504564, Уран 15798533033927 → Итого 123060189460125 → линкоров: 82040126307
-[2026-08-28T01:45:12.859Z] INFO 🌾 [farm] Атака: target=1:364:4, mission=1, ships={207: 82040126307}, fromCp=31694, dryRun=false
-[2026-08-28T01:45:13.763Z] INFO 📍 [mission] Цель: 1:364:4 (mission=1), корабли источника: {"203":null,"207":"735589779370","210":"164692815"}
-[2026-08-28T01:45:14.271Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"364","planet":"4","planet_type":"1"}
-[2026-08-28T01:45:14.983Z] INFO 🌾 [farm] Результат sendMission: ok=true, stage=4, confirmed=true, error=-
-[2026-08-28T01:45:14.984Z] INFO 🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [1:364:4] (84L4pe), линкоров: 82040126307, источник: главная луна cp=31694
-[2026-08-28T01:45:14.984Z] INFO 🌾 [farm] finishTarget [1:364:4]: queue 5→4, info={"ok":true,"liners":82040126307,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T01:45:14.984Z] INFO 🌾 [farm] [1:364:4] помечено как атакованное (кулдаун 12ч)
-[2026-08-28T01:45:14.985Z] INFO 🌾 [loop] farm результат: {"target":"1:364:4","ok":true,"liners":82040126307,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T01:45:14.985Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:45:15.588Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
-[2026-08-28T01:45:15.590Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:46:42.686Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:46:44.290Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:46:44.291Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:46:44.292Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:46:44.294Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:46:44.294Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:46:44.294Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:46:44.296Z] INFO 🌾 [farm] Состояние: queue=4, pendingReport=null, scanSystem=364, attacked=6, failed=0
-[2026-08-28T01:46:44.296Z] INFO 🌾 [farm] current_goal = [1:364:5] adff — отправляем шпионов (зондов: 5000)
-[2026-08-28T01:46:45.268Z] INFO 📍 [mission] Цель: 1:364:5 (mission=6), корабли источника: {"203":null,"207":"653712725063","210":"164692815"}
-[2026-08-28T01:46:45.812Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"364","planet":"5","planet_type":"1"}
-[2026-08-28T01:46:46.477Z] INFO 🕵️ [spy] Шпионаж → 1:364:5 (adff) [sent]
-[2026-08-28T01:46:47.982Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:364:5","player":"adff","dryRun":false}], skipped=[], failed=[]
-[2026-08-28T01:46:47.985Z] INFO 🌾 [farm] Шпионы на [1:364:5] отправлены — ждём отчёт 120000мс
-[2026-08-28T01:46:47.985Z] INFO 🌾 [loop] farm результат: {"spied":"1:364:5","waitingReport":true}
-[2026-08-28T01:46:47.985Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:46:48.556Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 27 из 42 свободны — ждём.
-[2026-08-28T01:46:48.557Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:48:17.877Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:48:18.978Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:48:18.979Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:48:18.980Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:48:18.981Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:48:18.981Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:48:18.981Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:48:18.982Z] INFO 🌾 [farm] Состояние: queue=4, pendingReport={"coords":"1:364:5","player":"adff","spiedAt":1787881607982}, scanSystem=364, attacked=6, failed=0
-[2026-08-28T01:48:18.982Z] INFO 🌾 [farm] Ждём отчёт по 1:364:5: прошло 91с из 120с
-[2026-08-28T01:48:18.982Z] INFO 🌾 [loop] farm результат: {"waiting":"1:364:5"}
-[2026-08-28T01:48:18.982Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:48:19.654Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
-[2026-08-28T01:48:19.655Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:49:56.903Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:49:57.884Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:49:57.884Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:49:57.885Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:49:57.886Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:49:57.886Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:49:57.887Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:49:57.888Z] INFO 🌾 [farm] Состояние: queue=4, pendingReport={"coords":"1:364:5","player":"adff","spiedAt":1787881607982}, scanSystem=364, attacked=6, failed=0
-[2026-08-28T01:49:57.888Z] INFO 🌾 [farm] Ждём отчёт по 1:364:5: прошло 190с из 120с
-[2026-08-28T01:49:57.888Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:364:5
-[2026-08-28T01:50:02.859Z] INFO 🌾 [farm] Сообщений: всего=0, шпионских по 1:364:5=0
-[2026-08-28T01:50:02.859Z] WARN 🌾 [farm] Шпионский отчёт по 1:364:5 не найден/не распарсен
-[2026-08-28T01:50:02.859Z] INFO 🌾 [farm] Отчёта по 1:364:5 пока нет — ждём до следующего тика
-[2026-08-28T01:50:02.859Z] INFO 🌾 [loop] farm результат: {"waiting":"1:364:5"}
-[2026-08-28T01:50:02.859Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:50:03.348Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
-[2026-08-28T01:50:03.351Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:51:33.157Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:51:34.069Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:51:34.071Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:51:34.072Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:51:34.073Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:51:34.073Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:51:34.073Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:51:34.074Z] INFO 🌾 [farm] Состояние: queue=4, pendingReport={"coords":"1:364:5","player":"adff","spiedAt":1787881607982}, scanSystem=364, attacked=6, failed=0
-[2026-08-28T01:51:34.074Z] INFO 🌾 [farm] Ждём отчёт по 1:364:5: прошло 286с из 120с
-[2026-08-28T01:51:34.074Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:364:5
-[2026-08-28T01:51:40.390Z] INFO 🌾 [farm] Сообщений: всего=0, шпионских по 1:364:5=0
-[2026-08-28T01:51:40.391Z] WARN 🌾 [farm] Шпионский отчёт по 1:364:5 не найден/не распарсен
-[2026-08-28T01:51:40.391Z] INFO 🌾 [farm] Отчёта по 1:364:5 пока нет — ждём до следующего тика
-[2026-08-28T01:51:40.391Z] INFO 🌾 [loop] farm результат: {"waiting":"1:364:5"}
-[2026-08-28T01:51:40.391Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:51:40.961Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
-[2026-08-28T01:51:40.965Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:53:09.357Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:53:10.362Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:53:10.364Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:53:10.365Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:53:10.368Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:53:10.368Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:53:10.368Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:53:10.370Z] INFO 🌾 [farm] Состояние: queue=4, pendingReport={"coords":"1:364:5","player":"adff","spiedAt":1787881607982}, scanSystem=364, attacked=6, failed=0
-[2026-08-28T01:53:10.370Z] INFO 🌾 [farm] Ждём отчёт по 1:364:5: прошло 382с из 120с
-[2026-08-28T01:53:10.370Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:364:5
-[2026-08-28T01:53:15.605Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:364:5=1 — #84051507(28.08 - 04:46:58|Колония [1:364:5]|Шпионский доклад)
-[2026-08-28T01:53:15.608Z] INFO 🌾 [farm] #84051507 (inline): М=33444987417755, А=18581544162969, У=18581544162969, игрок= В момент шпионажа Место: 880 Очков: 5 335 817 714 490 Альянс: Україна Специальность: Шахтер ');
-[2026-08-28T01:53:15.608Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 880 Очков: 5 335 817 714 490 Альянс: Україна Специальность: Шахтер ');» [1:364:5] (msg#84051507, src=inline): Металл 33444987417755, Алмаз 18581544162969, Уран 18581544162969 → Итого 70608075743693 → линкоров: 47072050496
-[2026-08-28T01:53:15.608Z] INFO 🌾 [farm] Атака: target=1:364:5, mission=1, ships={207: 47072050496}, fromCp=31694, dryRun=false
-[2026-08-28T01:53:16.576Z] INFO 📍 [mission] Цель: 1:364:5 (mission=1), корабли источника: {"203":null,"207":"654415189063","210":"164692815"}
-[2026-08-28T01:53:17.247Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"364","planet":"5","planet_type":"1"}
-[2026-08-28T01:53:17.938Z] INFO 🌾 [farm] Результат sendMission: ok=true, stage=4, confirmed=true, error=-
-[2026-08-28T01:53:17.939Z] INFO 🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [1:364:5] (adff), линкоров: 47072050496, источник: главная луна cp=31694
-[2026-08-28T01:53:17.940Z] INFO 🌾 [farm] finishTarget [1:364:5]: queue 4→3, info={"ok":true,"liners":47072050496,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T01:53:17.940Z] INFO 🌾 [farm] [1:364:5] помечено как атакованное (кулдаун 12ч)
-[2026-08-28T01:53:17.943Z] INFO 🌾 [loop] farm результат: {"target":"1:364:5","ok":true,"liners":47072050496,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T01:53:17.944Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:53:18.605Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 27 из 42 свободны — ждём.
-[2026-08-28T01:53:18.607Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:54:47.299Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:54:48.444Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:54:48.445Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:54:48.447Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:54:48.448Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:54:48.449Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:54:48.449Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:54:48.451Z] INFO 🌾 [farm] Состояние: queue=3, pendingReport=null, scanSystem=364, attacked=7, failed=0
-[2026-08-28T01:54:48.451Z] INFO 🌾 [farm] current_goal = [1:364:6] успешный — отправляем шпионов (зондов: 5000)
-[2026-08-28T01:54:49.306Z] INFO 📍 [mission] Цель: 1:364:6 (mission=6), корабли источника: {"203":null,"207":"694649556218","210":"164692815"}
-[2026-08-28T01:54:49.826Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"364","planet":"6","planet_type":"1"}
-[2026-08-28T01:54:50.450Z] INFO 🕵️ [spy] Шпионаж → 1:364:6 (успешный) [sent]
-[2026-08-28T01:54:51.956Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:364:6","player":"успешный","dryRun":false}], skipped=[], failed=[]
-[2026-08-28T01:54:51.959Z] INFO 🌾 [farm] Шпионы на [1:364:6] отправлены — ждём отчёт 120000мс
-[2026-08-28T01:54:51.959Z] INFO 🌾 [loop] farm результат: {"spied":"1:364:6","waitingReport":true}
-[2026-08-28T01:54:51.959Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:54:52.588Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 27 из 42 свободны — ждём.
-[2026-08-28T01:54:52.590Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:56:21.812Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:56:22.886Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:56:22.887Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:56:22.887Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:56:22.889Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:56:22.889Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:56:22.889Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:56:22.889Z] INFO 🌾 [farm] Состояние: queue=3, pendingReport={"coords":"1:364:6","player":"успешный","spiedAt":1787882091956}, scanSystem=364, attacked=7, failed=0
-[2026-08-28T01:56:22.889Z] INFO 🌾 [farm] Ждём отчёт по 1:364:6: прошло 91с из 120с
-[2026-08-28T01:56:22.890Z] INFO 🌾 [loop] farm результат: {"waiting":"1:364:6"}
-[2026-08-28T01:56:22.890Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:56:23.455Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
-[2026-08-28T01:56:23.457Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:58:03.896Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:58:05.453Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:58:05.453Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:58:05.454Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:58:05.455Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:58:05.455Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:58:05.455Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:58:05.456Z] INFO 🌾 [farm] Состояние: queue=3, pendingReport={"coords":"1:364:6","player":"успешный","spiedAt":1787882091956}, scanSystem=364, attacked=7, failed=0
-[2026-08-28T01:58:05.456Z] INFO 🌾 [farm] Ждём отчёт по 1:364:6: прошло 194с из 120с
-[2026-08-28T01:58:05.456Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:364:6
-[2026-08-28T01:58:09.798Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:364:6=1 — #84052155(28.08 - 04:55:02|Колония [1:364:6]|Шпионский доклад)
-[2026-08-28T01:58:09.800Z] INFO 🌾 [farm] #84052155 (inline): М=122868805565152, А=25659074366941, У=23451479469281, игрок= В момент шпионажа Место: 727 Очков: 11 015 609 934 621 ');
-[2026-08-28T01:58:09.800Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 727 Очков: 11 015 609 934 621 ');» [1:364:6] (msg#84052155, src=inline): Металл 122868805565152, Алмаз 25659074366941, Уран 23451479469281 → Итого 171979359401374 → линкоров: 114652906268
-[2026-08-28T01:58:09.800Z] INFO 🌾 [farm] Атака: target=1:364:6, mission=1, ships={207: 114652906268}, fromCp=31694, dryRun=false
-[2026-08-28T01:58:10.614Z] INFO 📍 [mission] Цель: 1:364:6 (mission=1), корабли источника: {"203":null,"207":"695011540218","210":"164692815"}
-[2026-08-28T01:58:11.097Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"364","planet":"6","planet_type":"1"}
-[2026-08-28T01:58:11.748Z] INFO 🌾 [farm] Результат sendMission: ok=true, stage=4, confirmed=true, error=-
-[2026-08-28T01:58:11.748Z] INFO 🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [1:364:6] (успешный), линкоров: 114652906268, источник: главная луна cp=31694
-[2026-08-28T01:58:11.748Z] INFO 🌾 [farm] finishTarget [1:364:6]: queue 3→2, info={"ok":true,"liners":114652906268,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T01:58:11.748Z] INFO 🌾 [farm] [1:364:6] помечено как атакованное (кулдаун 12ч)
-[2026-08-28T01:58:11.750Z] INFO 🌾 [loop] farm результат: {"target":"1:364:6","ok":true,"liners":114652906268,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T01:58:11.750Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:58:12.360Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 27 из 42 свободны — ждём.
-[2026-08-28T01:58:12.363Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T01:59:34.164Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T01:59:35.879Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T01:59:35.879Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T01:59:35.880Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T01:59:35.882Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T01:59:35.882Z] INFO 🌾 [farm] ВХОД: analysis={"total":14,"outgoing":4,"returning":10,"byType":{"return":9,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T01:59:35.882Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T01:59:35.882Z] INFO 🌾 [farm] Состояние: queue=2, pendingReport=null, scanSystem=364, attacked=8, failed=0
-[2026-08-28T01:59:35.882Z] INFO 🌾 [farm] current_goal = [1:364:7] олд мэн — отправляем шпионов (зондов: 5000)
-[2026-08-28T01:59:36.708Z] INFO 📍 [mission] Цель: 1:364:7 (mission=6), корабли источника: {"203":null,"207":"580512745950","210":"164692815"}
-[2026-08-28T01:59:37.091Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"364","planet":"7","planet_type":"1"}
-[2026-08-28T01:59:37.718Z] INFO 🕵️ [spy] Шпионаж → 1:364:7 (олд мэн) [sent]
-[2026-08-28T01:59:39.222Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:364:7","player":"олд мэн","dryRun":false}], skipped=[], failed=[]
-[2026-08-28T01:59:39.225Z] INFO 🌾 [farm] Шпионы на [1:364:7] отправлены — ждём отчёт 120000мс
-[2026-08-28T01:59:39.225Z] INFO 🌾 [loop] farm результат: {"spied":"1:364:7","waitingReport":true}
-[2026-08-28T01:59:39.225Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T01:59:39.868Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 26 из 42 свободны — ждём.
-[2026-08-28T01:59:39.869Z] INFO 📊 [tick] миссий: 14 (return:9 expedition:2 unknown:3), атаки: 0
-[2026-08-28T02:01:04.883Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T02:01:05.992Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T02:01:05.994Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T02:01:05.997Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T02:01:05.999Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T02:01:05.999Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T02:01:05.999Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T02:01:06.001Z] INFO 🌾 [farm] Состояние: queue=2, pendingReport={"coords":"1:364:7","player":"олд мэн","spiedAt":1787882379222}, scanSystem=364, attacked=8, failed=0
-[2026-08-28T02:01:06.001Z] INFO 🌾 [farm] Ждём отчёт по 1:364:7: прошло 87с из 120с
-[2026-08-28T02:01:06.001Z] INFO 🌾 [loop] farm результат: {"waiting":"1:364:7"}
-[2026-08-28T02:01:06.001Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T02:01:06.661Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
-[2026-08-28T02:01:06.662Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T02:02:40.261Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T02:02:41.194Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T02:02:41.195Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T02:02:41.197Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T02:02:41.200Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T02:02:41.200Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T02:02:41.200Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T02:02:41.202Z] INFO 🌾 [farm] Состояние: queue=2, pendingReport={"coords":"1:364:7","player":"олд мэн","spiedAt":1787882379222}, scanSystem=364, attacked=8, failed=0
-[2026-08-28T02:02:41.202Z] INFO 🌾 [farm] Ждём отчёт по 1:364:7: прошло 182с из 120с
-[2026-08-28T02:02:41.202Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:364:7
-[2026-08-28T02:02:46.422Z] INFO 🌾 [farm] Сообщений: всего=0, шпионских по 1:364:7=0
-[2026-08-28T02:02:46.422Z] WARN 🌾 [farm] Шпионский отчёт по 1:364:7 не найден/не распарсен
-[2026-08-28T02:02:46.423Z] INFO 🌾 [farm] Отчёта по 1:364:7 пока нет — ждём до следующего тика
-[2026-08-28T02:02:46.423Z] INFO 🌾 [loop] farm результат: {"waiting":"1:364:7"}
-[2026-08-28T02:02:46.423Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T02:02:46.998Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
-[2026-08-28T02:02:47.002Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T02:04:05.088Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T02:04:06.027Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T02:04:06.030Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T02:04:06.031Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T02:04:06.034Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T02:04:06.034Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T02:04:06.034Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T02:04:06.036Z] INFO 🌾 [farm] Состояние: queue=2, pendingReport={"coords":"1:364:7","player":"олд мэн","spiedAt":1787882379222}, scanSystem=364, attacked=8, failed=0
-[2026-08-28T02:04:06.036Z] INFO 🌾 [farm] Ждём отчёт по 1:364:7: прошло 267с из 120с
-[2026-08-28T02:04:06.036Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:364:7
-[2026-08-28T02:04:11.185Z] INFO 🌾 [farm] Сообщений: всего=0, шпионских по 1:364:7=0
-[2026-08-28T02:04:11.186Z] WARN 🌾 [farm] Шпионский отчёт по 1:364:7 не найден/не распарсен
-[2026-08-28T02:04:11.186Z] INFO 🌾 [farm] Отчёта по 1:364:7 пока нет — ждём до следующего тика
-[2026-08-28T02:04:11.186Z] INFO 🌾 [loop] farm результат: {"waiting":"1:364:7"}
-[2026-08-28T02:04:11.187Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T02:04:11.676Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
-[2026-08-28T02:04:11.677Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T02:05:41.719Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T02:05:42.658Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T02:05:42.659Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T02:05:42.659Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T02:05:42.660Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T02:05:42.661Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T02:05:42.661Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T02:05:42.661Z] INFO 🌾 [farm] Состояние: queue=2, pendingReport={"coords":"1:364:7","player":"олд мэн","spiedAt":1787882379222}, scanSystem=364, attacked=8, failed=0
-[2026-08-28T02:05:42.661Z] INFO 🌾 [farm] Ждём отчёт по 1:364:7: прошло 363с из 120с
-[2026-08-28T02:05:42.661Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:364:7
-[2026-08-28T02:05:46.647Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:364:7=1 — #84052262(28.08 - 04:59:49|Эрилон [1:364:7]|Шпионский доклад)
-[2026-08-28T02:05:46.648Z] INFO 🌾 [farm] #84052262 (inline): М=71494039753765, А=15797474586095, У=8734679175032, игрок= В момент шпионажа Место: 321 Очков: 126 090 955 977 070 ');
-[2026-08-28T02:05:46.648Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 321 Очков: 126 090 955 977 070 ');» [1:364:7] (msg#84052262, src=inline): Металл 71494039753765, Алмаз 15797474586095, Уран 8734679175032 → Итого 96026193514892 → линкоров: 64017462344
-[2026-08-28T02:05:46.649Z] INFO 🌾 [farm] Атака: target=1:364:7, mission=1, ships={207: 64017462344}, fromCp=31694, dryRun=false
-[2026-08-28T02:05:47.561Z] INFO 📍 [mission] Цель: 1:364:7 (mission=1), корабли источника: {"203":null,"207":"685937649182","210":"164692815"}
-[2026-08-28T02:05:48.080Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"364","planet":"7","planet_type":"1"}
-[2026-08-28T02:05:48.768Z] INFO 🌾 [farm] Результат sendMission: ok=true, stage=4, confirmed=true, error=-
-[2026-08-28T02:05:48.768Z] INFO 🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [1:364:7] (олд мэн), линкоров: 64017462344, источник: главная луна cp=31694
-[2026-08-28T02:05:48.768Z] INFO 🌾 [farm] finishTarget [1:364:7]: queue 2→1, info={"ok":true,"liners":64017462344,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T02:05:48.768Z] INFO 🌾 [farm] [1:364:7] помечено как атакованное (кулдаун 12ч)
-[2026-08-28T02:05:48.770Z] INFO 🌾 [loop] farm результат: {"target":"1:364:7","ok":true,"liners":64017462344,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T02:05:48.770Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T02:05:49.273Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
-[2026-08-28T02:05:49.274Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
-[2026-08-28T02:07:20.728Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T02:07:21.729Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T02:07:21.729Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T02:07:21.730Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T02:07:21.732Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T02:07:21.732Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T02:07:21.732Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T02:07:21.735Z] INFO 🌾 [farm] Состояние: queue=1, pendingReport=null, scanSystem=364, attacked=9, failed=0
-[2026-08-28T02:07:21.735Z] INFO 🌾 [farm] current_goal = [1:364:15] hardcored — отправляем шпионов (зондов: 5000)
-[2026-08-28T02:07:22.646Z] INFO 📍 [mission] Цель: 1:364:15 (mission=6), корабли источника: {"203":null,"207":"622090426838","210":"164692815"}
-[2026-08-28T02:07:23.288Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"364","planet":"15","planet_type":"1"}
-[2026-08-28T02:07:23.916Z] INFO 🕵️ [spy] Шпионаж → 1:364:15 (hardcored) [sent]
-[2026-08-28T02:07:25.427Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:364:15","player":"hardcored","dryRun":false}], skipped=[], failed=[]
-[2026-08-28T02:07:25.430Z] INFO 🌾 [farm] Шпионы на [1:364:15] отправлены — ждём отчёт 120000мс
-[2026-08-28T02:07:25.430Z] INFO 🌾 [loop] farm результат: {"spied":"1:364:15","waitingReport":true}
-[2026-08-28T02:07:25.430Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T02:07:26.007Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 27 из 42 свободны — ждём.
-[2026-08-28T02:07:26.010Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T02:08:48.245Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T02:08:49.163Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T02:08:49.165Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T02:08:49.166Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T02:08:49.168Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T02:08:49.168Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T02:08:49.169Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T02:08:49.170Z] INFO 🌾 [farm] Состояние: queue=1, pendingReport={"coords":"1:364:15","player":"hardcored","spiedAt":1787882845427}, scanSystem=364, attacked=9, failed=0
-[2026-08-28T02:08:49.171Z] INFO 🌾 [farm] Ждём отчёт по 1:364:15: прошло 84с из 120с
-[2026-08-28T02:08:49.171Z] INFO 🌾 [loop] farm результат: {"waiting":"1:364:15"}
-[2026-08-28T02:08:49.171Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T02:08:49.651Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
-[2026-08-28T02:08:49.653Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T02:10:29.123Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T02:10:30.628Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T02:10:30.630Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T02:10:30.632Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T02:10:30.633Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T02:10:30.633Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T02:10:30.634Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T02:10:30.635Z] INFO 🌾 [farm] Состояние: queue=1, pendingReport={"coords":"1:364:15","player":"hardcored","spiedAt":1787882845427}, scanSystem=364, attacked=9, failed=0
-[2026-08-28T02:10:30.635Z] INFO 🌾 [farm] Ждём отчёт по 1:364:15: прошло 185с из 120с
-[2026-08-28T02:10:30.635Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:364:15
-[2026-08-28T02:10:35.398Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:364:15=1 — #84052528(28.08 - 05:07:35|Hard [1:364:15]|Шпионский доклад)
-[2026-08-28T02:10:35.399Z] INFO 🌾 [farm] #84052528 (inline): М=75332225373030, А=36455545775826, У=16798265960809, игрок= В момент шпионажа Место: 702 Очков: 12 385 785 952 882 Специальность: Шахтер ');
-[2026-08-28T02:10:35.399Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 702 Очков: 12 385 785 952 882 Специальность: Шахтер ');» [1:364:15] (msg#84052528, src=inline): Металл 75332225373030, Алмаз 36455545775826, Уран 16798265960809 → Итого 128586037109665 → линкоров: 85724024740
-[2026-08-28T02:10:35.399Z] INFO 🌾 [farm] Атака: target=1:364:15, mission=1, ships={207: 85724024740}, fromCp=31694, dryRun=false
-[2026-08-28T02:10:36.248Z] INFO 📍 [mission] Цель: 1:364:15 (mission=1), корабли источника: {"203":null,"207":"622436282838","210":"164692815"}
-[2026-08-28T02:10:36.725Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"364","planet":"15","planet_type":"1"}
-[2026-08-28T02:10:37.366Z] INFO 🌾 [farm] Результат sendMission: ok=true, stage=4, confirmed=true, error=-
-[2026-08-28T02:10:37.367Z] INFO 🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [1:364:15] (hardcored), линкоров: 85724024740, источник: главная луна cp=31694
-[2026-08-28T02:10:37.367Z] INFO 🌾 [farm] finishTarget [1:364:15]: queue 1→0, info={"ok":true,"liners":85724024740,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T02:10:37.367Z] INFO 🌾 [farm] [1:364:15] помечено как атакованное (кулдаун 12ч)
-[2026-08-28T02:10:37.368Z] INFO 🌾 [loop] farm результат: {"target":"1:364:15","ok":true,"liners":85724024740,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
-[2026-08-28T02:10:37.368Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T02:10:38.128Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 27 из 42 свободны — ждём.
-[2026-08-28T02:10:38.131Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T02:12:10.003Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T02:12:11.036Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T02:12:11.038Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T02:12:11.040Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T02:12:11.043Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T02:12:11.043Z] INFO 🌾 [farm] ВХОД: analysis={"total":14,"outgoing":4,"returning":10,"byType":{"return":9,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T02:12:11.043Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T02:12:11.045Z] INFO 🌾 [farm] Состояние: queue=0, pendingReport=null, scanSystem=364, attacked=10, failed=0
-[2026-08-28T02:12:11.045Z] INFO 🌾 [farm] Переход к системе 1:365 (range=30, было 364)
-[2026-08-28T02:12:11.768Z] INFO 🌾 [farm] Система 1:365 получена: планет в таблице=12
-[2026-08-28T02:12:11.769Z] INFO 🌾 [farm] Фильтры: ourCoords=1:363:6,1:257:13,1:260:9,1:318:1,1:331:12,1:364:9,1:364:14,1:369:4,1:378:12,1:521:15,1:610:11,1:611:5,1:907:15,1:918:1, busyCoords=8
-[2026-08-28T02:12:11.770Z] INFO 🌾 [farm] Неактивных после базовых фильтров: 7 — Вездесущий[2](lolonginactive), Вечно Молодой[3](lolonginactive), Zhoo[6](lolonginactive), Crush[8](lolonginactive), Александерсонский[10](lolonginactive), куля[11](lolonginactive), лисберг[14](lolonginactive)
-[2026-08-28T02:12:11.771Z] INFO 🌾 [farm] Система 1:365: в очередь 7 — Вездесущий[2], Вечно Молодой[3], Zhoo[6], Crush[8], Александерсонский[10], куля[11], лисберг[14]
-[2026-08-28T02:12:11.771Z] INFO 🌾 [farm] current_goal = [1:365:2] Вездесущий — отправляем шпионов (зондов: 5000)
-[2026-08-28T02:12:12.642Z] INFO 📍 [mission] Цель: 1:365:2 (mission=6), корабли источника: {"203":null,"207":"536886082098","210":"164692815"}
-[2026-08-28T02:12:13.081Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"365","planet":"2","planet_type":"1"}
-[2026-08-28T02:12:13.711Z] INFO 🕵️ [spy] Шпионаж → 1:365:2 (Вездесущий) [sent]
-[2026-08-28T02:12:15.218Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:365:2","player":"Вездесущий","dryRun":false}], skipped=[], failed=[]
-[2026-08-28T02:12:15.221Z] INFO 🌾 [farm] Шпионы на [1:365:2] отправлены — ждём отчёт 120000мс
-[2026-08-28T02:12:15.221Z] INFO 🌾 [loop] farm результат: {"spied":"1:365:2","waitingReport":true}
-[2026-08-28T02:12:15.221Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T02:12:15.868Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 26 из 42 свободны — ждём.
-[2026-08-28T02:12:15.869Z] INFO 📊 [tick] миссий: 14 (return:9 expedition:2 unknown:3), атаки: 0
-[2026-08-28T02:13:39.596Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T02:13:40.591Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T02:13:40.592Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T02:13:40.594Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T02:13:40.596Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T02:13:40.597Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T02:13:40.597Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T02:13:40.598Z] INFO 🌾 [farm] Состояние: queue=7, pendingReport={"coords":"1:365:2","player":"Вездесущий","spiedAt":1787883135218}, scanSystem=365, attacked=10, failed=0
-[2026-08-28T02:13:40.598Z] INFO 🌾 [farm] Ждём отчёт по 1:365:2: прошло 85с из 120с
-[2026-08-28T02:13:40.598Z] INFO 🌾 [loop] farm результат: {"waiting":"1:365:2"}
-[2026-08-28T02:13:40.598Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T02:13:41.175Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
-[2026-08-28T02:13:41.180Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T02:15:06.850Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T02:15:07.826Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T02:15:07.828Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T02:15:07.830Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T02:15:07.833Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T02:15:07.834Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T02:15:07.834Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T02:15:07.837Z] INFO 🌾 [farm] Состояние: queue=7, pendingReport={"coords":"1:365:2","player":"Вездесущий","spiedAt":1787883135218}, scanSystem=365, attacked=10, failed=0
-[2026-08-28T02:15:07.837Z] INFO 🌾 [farm] Ждём отчёт по 1:365:2: прошло 173с из 120с
-[2026-08-28T02:15:07.837Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:365:2
-[2026-08-28T02:15:12.941Z] INFO 🌾 [farm] Сообщений: всего=0, шпионских по 1:365:2=0
-[2026-08-28T02:15:12.941Z] WARN 🌾 [farm] Шпионский отчёт по 1:365:2 не найден/не распарсен
-[2026-08-28T02:15:12.942Z] INFO 🌾 [farm] Отчёта по 1:365:2 пока нет — ждём до следующего тика
-[2026-08-28T02:15:12.942Z] INFO 🌾 [loop] farm результат: {"waiting":"1:365:2"}
-[2026-08-28T02:15:12.942Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T02:15:13.442Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
-[2026-08-28T02:15:13.448Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T02:15:27.469Z] INFO 👋 [server] Остановка...
-[2026-08-28T02:15:27.559Z] EXIT Процесс завершён, exit code: 130
-[2026-08-28T02:15:29.449Z] INFO 🚀 [server] Запускаем...
-[2026-08-28T02:15:29.450Z] INFO 🖥️  [server] Режим браузера: с UI
-[2026-08-28T02:15:29.967Z] INFO 🧭 [server] PORT из env: 3000
-[2026-08-28T02:15:29.970Z] INFO 🌐 [server] Health-сервер реально запущен на :3000
-[2026-08-28T02:15:29.970Z] INFO 🌐 [server] Живая страница: http://localhost:3000/controls
-[2026-08-28T02:15:29.973Z] INFO 🍪 [session] Найдена сохранённая сессия, проверяем...
-[2026-08-28T02:15:30.623Z] INFO ✅ [session] Сессия активна — логин не нужен
-[2026-08-28T02:15:30.651Z] INFO 🤖 Бот запущен. Интервал: 90с (±10%)
-[2026-08-28T02:15:30.651Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T02:15:31.705Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T02:15:31.707Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T02:15:31.709Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T02:15:31.710Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T02:15:31.712Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T02:15:31.712Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T02:15:31.713Z] INFO 🌾 [farm] Состояние: queue=7, pendingReport={"coords":"1:365:2","player":"Вездесущий","spiedAt":1787883135218}, scanSystem=365, attacked=10, failed=0
-[2026-08-28T02:15:31.713Z] INFO 🌾 [farm] Ждём отчёт по 1:365:2: прошло 196с из 120с
-[2026-08-28T02:15:31.714Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:365:2
-[2026-08-28T02:15:35.570Z] INFO 🌾 [farm] Сообщений: всего=0, шпионских по 1:365:2=0
-[2026-08-28T02:15:35.570Z] WARN 🌾 [farm] Шпионский отчёт по 1:365:2 не найден/не распарсен
-[2026-08-28T02:15:35.571Z] INFO 🌾 [farm] Отчёта по 1:365:2 пока нет — ждём до следующего тика
-[2026-08-28T02:15:35.571Z] INFO 🌾 [loop] farm результат: {"waiting":"1:365:2"}
-[2026-08-28T02:15:35.571Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T02:15:36.076Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
-[2026-08-28T02:15:36.078Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
-[2026-08-28T02:17:04.283Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=20
-[2026-08-28T02:17:05.564Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
-[2026-08-28T02:17:05.566Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
-[2026-08-28T02:17:05.567Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
-[2026-08-28T02:17:05.568Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
-[2026-08-28T02:17:05.569Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
-[2026-08-28T02:17:05.569Z] INFO 🌾 [farm] Свободных миссий: 16 (занято 4/20)
-[2026-08-28T02:17:05.570Z] INFO 🌾 [farm] Состояние: queue=7, pendingReport={"coords":"1:365:2","player":"Вездесущий","spiedAt":1787883135218}, scanSystem=365, attacked=10, failed=0
-[2026-08-28T02:17:05.571Z] INFO 🌾 [farm] Ждём отчёт по 1:365:2: прошло 290с из 120с
-[2026-08-28T02:17:05.571Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:365:2
-[2026-08-28T02:17:10.646Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:365:2=1 — #84052695(28.08 - 05:12:25|первая [1:365:2]|Шпионский доклад)
-[2026-08-28T02:17:10.648Z] INFO 🌾 [farm] #84052695 (inline): М=141065749001181, А=10600613357869, У=5890251807991, игрок= В момент шпионажа Место: 918 Очков: 4 338 566 876 805 Специальность: Шахтер ');
-[2026-08-28T02:17:10.648Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 918 Очков: 4 338 566 876 805 Специальность: Шахтер ');» [1:365:2] (msg#84052695, src=inline): Металл 141065749001181, Алмаз 10600613357869, Уран 5890251807991 → Итого 157556614167041 → линкоров: 105037742779
-[2026-08-28T02:17:10.649Z] INFO 🌾 [farm] 1:365:2: алмазов 10600613357869 < минимума 15000000000000 — пропускаю, ищу дальше
-[2026-08-28T02:17:10.649Z] INFO 🌾 [farm] finishTarget [1:365:2]: queue 7→6, info={"ok":false,"lowDiamond":true,"error":"diamonds 10600613357869 < minDiamond 15000000000000"}
-[2026-08-28T02:17:10.650Z] INFO 🌾 [loop] farm результат: {"target":"1:365:2","ok":false,"lowDiamond":true,"error":"diamonds 10600613357869 < minDiamond 15000000000000"}
-[2026-08-28T02:17:10.650Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
-[2026-08-28T02:17:11.316Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
-[2026-08-28T02:17:11.318Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:17:05.237Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:17:06.042Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
+[2026-08-28T18:17:06.046Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:18:19.338Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:18:20.570Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:18:20.572Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:18:20.575Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:18:20.578Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:18:20.578Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:18:20.578Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:18:20.581Z] INFO 🌾 [farm] Состояние: queue=1, pendingReport=null, scanSystem=364, attacked=231, failed=5
+[2026-08-28T18:18:20.581Z] INFO 🌾 [farm] current_goal = [1:364:15] hardcored — отправляем шпионов (зондов: 5000)
+[2026-08-28T18:18:21.627Z] INFO 📍 [mission] Цель: 1:364:15 (mission=6), корабли источника: {"203":null,"207":"693828315487","210":"164692815"}
+[2026-08-28T18:18:22.492Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"364","planet":"15","planet_type":"1"}
+[2026-08-28T18:18:23.264Z] INFO 🕵️ [spy] Шпионаж → 1:364:15 (hardcored) [sent]
+[2026-08-28T18:18:24.768Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:364:15","player":"hardcored","dryRun":false}], skipped=[], failed=[]
+[2026-08-28T18:18:24.770Z] INFO 🌾 [farm] Шпионы на [1:364:15] отправлены — ждём отчёт 60000мс
+[2026-08-28T18:18:24.770Z] INFO 🌾 [loop] farm результат: {"spied":"1:364:15","waitingReport":true}
+[2026-08-28T18:18:24.770Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:18:25.601Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
+[2026-08-28T18:18:25.605Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:19:49.275Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:19:50.975Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:19:50.975Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:19:50.976Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:19:50.978Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:19:50.978Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:19:50.978Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:19:50.979Z] INFO 🌾 [farm] Состояние: queue=1, pendingReport={"coords":"1:364:15","player":"hardcored","spiedAt":1787941104768}, scanSystem=364, attacked=231, failed=5
+[2026-08-28T18:19:50.979Z] INFO 🌾 [farm] Ждём отчёт по 1:364:15: прошло 86с из 60с
+[2026-08-28T18:19:50.979Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:364:15
+[2026-08-28T18:19:56.003Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:364:15=1 — #84110448(28.08 - 21:18:23|Hard [1:364:15]|Шпионский доклад)
+[2026-08-28T18:19:56.004Z] INFO 🌾 [farm] #84110448 (inline): М=45558383723488, А=22046703058780, У=10158848935644, игрок= В момент шпионажа Место: 702 Очков: 12 385 785 952 882 Специальность: Шахтер ');
+[2026-08-28T18:19:56.004Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 702 Очков: 12 385 785 952 882 Специальность: Шахтер ');» [1:364:15] (msg#84110448, src=inline): Металл 45558383723488, Алмаз 22046703058780, Уран 10158848935644 → Итого 77763935717912 → линкоров: 51842623812
+[2026-08-28T18:19:56.004Z] INFO 🌾 [farm] Атака: target=1:364:15, mission=1, ships={207: 51842623812}, fromCp=31694, dryRun=false
+[2026-08-28T18:19:57.283Z] INFO 📍 [mission] Цель: 1:364:15 (mission=1), корабли источника: {"203":null,"207":"776831794640","210":"164692815"}
+[2026-08-28T18:19:57.821Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"364","planet":"15","planet_type":"1"}
+[2026-08-28T18:19:58.672Z] INFO 🌾 [farm] Результат sendMission: ok=true, stage=4, confirmed=true, error=-
+[2026-08-28T18:19:58.672Z] INFO 🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [1:364:15] (hardcored), линкоров: 51842623812, источник: главная луна cp=31694
+[2026-08-28T18:19:58.672Z] INFO 🌾 [farm] finishTarget [1:364:15]: queue 1→0, info={"ok":true,"liners":51842623812,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
+[2026-08-28T18:19:58.673Z] INFO 🌾 [farm] [1:364:15] помечено как атакованное (кулдаун 1ч)
+[2026-08-28T18:19:58.673Z] INFO 🌾 [loop] farm результат: {"target":"1:364:15","ok":true,"liners":51842623812,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
+[2026-08-28T18:19:58.673Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:19:59.590Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
+[2026-08-28T18:19:59.596Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:21:20.151Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:21:21.778Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:21:21.780Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:21:21.781Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:21:21.783Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:21:21.784Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:21:21.784Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:21:21.786Z] INFO 🌾 [farm] Состояние: queue=0, pendingReport=null, scanSystem=364, attacked=231, failed=5
+[2026-08-28T18:21:21.786Z] INFO 🌾 [farm] Переход к системе 1:365 (range=30, было 364)
+[2026-08-28T18:21:22.687Z] INFO 🌾 [farm] Система 1:365 получена: планет в таблице=12
+[2026-08-28T18:21:22.688Z] INFO 🌾 [farm] Фильтры: ourCoords=1:363:6,1:257:13,1:260:9,1:318:1,1:331:12,1:364:9,1:364:14,1:369:4,1:378:12,1:521:15,1:610:11,1:611:5,1:907:15,1:918:1, busyCoords=8
+[2026-08-28T18:21:22.688Z] INFO 🌾 [farm] Неактивных после базовых фильтров: 7 — Вездесущий[2](lolonginactive), Вечно Молодой[3](lolonginactive), Zhoo[6](lolonginactive), Crush[8](lolonginactive), Александерсонский[10](lolonginactive), куля[11](lolonginactive), лисберг[14](lolonginactive)
+[2026-08-28T18:21:22.688Z] INFO 🌾 [farm] Система 1:365: в очередь 7 — Вездесущий[2], Вечно Молодой[3], Zhoo[6], Crush[8], Александерсонский[10], куля[11], лисберг[14]
+[2026-08-28T18:21:22.688Z] INFO 🌾 [farm] current_goal = [1:365:2] Вездесущий — отправляем шпионов (зондов: 5000)
+[2026-08-28T18:21:23.675Z] INFO 📍 [mission] Цель: 1:365:2 (mission=6), корабли источника: {"203":null,"207":"725145074828","210":"164692815"}
+[2026-08-28T18:21:24.422Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"365","planet":"2","planet_type":"1"}
+[2026-08-28T18:21:25.243Z] INFO 🕵️ [spy] Шпионаж → 1:365:2 (Вездесущий) [sent]
+[2026-08-28T18:21:26.752Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:365:2","player":"Вездесущий","dryRun":false}], skipped=[], failed=[]
+[2026-08-28T18:21:26.755Z] INFO 🌾 [farm] Шпионы на [1:365:2] отправлены — ждём отчёт 60000мс
+[2026-08-28T18:21:26.755Z] INFO 🌾 [loop] farm результат: {"spied":"1:365:2","waitingReport":true}
+[2026-08-28T18:21:26.755Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:21:27.607Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
+[2026-08-28T18:21:27.612Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:22:54.234Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:22:55.695Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:22:55.696Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:22:55.696Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:22:55.697Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:22:55.697Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:22:55.697Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:22:55.698Z] INFO 🌾 [farm] Состояние: queue=7, pendingReport={"coords":"1:365:2","player":"Вездесущий","spiedAt":1787941286752}, scanSystem=365, attacked=231, failed=5
+[2026-08-28T18:22:55.698Z] INFO 🌾 [farm] Ждём отчёт по 1:365:2: прошло 89с из 60с
+[2026-08-28T18:22:55.698Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:365:2
+[2026-08-28T18:22:59.335Z] INFO 🌾 [farm] Сообщений: всего=0, шпионских по 1:365:2=0
+[2026-08-28T18:22:59.335Z] WARN 🌾 [farm] Шпионский отчёт по 1:365:2 не найден/не распарсен
+[2026-08-28T18:22:59.335Z] INFO 🌾 [farm] Отчёта по 1:365:2 пока нет — ждём до следующего тика
+[2026-08-28T18:22:59.335Z] INFO 🌾 [loop] farm результат: {"waiting":"1:365:2"}
+[2026-08-28T18:22:59.335Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:23:00.183Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
+[2026-08-28T18:23:00.187Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:24:17.055Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:24:18.379Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:24:18.381Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:24:18.383Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:24:18.385Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:24:18.385Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:24:18.385Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:24:18.387Z] INFO 🌾 [farm] Состояние: queue=7, pendingReport={"coords":"1:365:2","player":"Вездесущий","spiedAt":1787941286752}, scanSystem=365, attacked=231, failed=5
+[2026-08-28T18:24:18.388Z] INFO 🌾 [farm] Ждём отчёт по 1:365:2: прошло 172с из 60с
+[2026-08-28T18:24:18.388Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:365:2
+[2026-08-28T18:24:21.799Z] INFO 🌾 [farm] Сообщений: всего=0, шпионских по 1:365:2=0
+[2026-08-28T18:24:21.799Z] WARN 🌾 [farm] Шпионский отчёт по 1:365:2 не найден/не распарсен
+[2026-08-28T18:24:21.800Z] INFO 🌾 [farm] Отчёта по 1:365:2 пока нет — ждём до следующего тика
+[2026-08-28T18:24:21.800Z] INFO 🌾 [loop] farm результат: {"waiting":"1:365:2"}
+[2026-08-28T18:24:21.800Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:24:22.536Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
+[2026-08-28T18:24:22.540Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:25:48.231Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:25:49.659Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:25:49.660Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:25:49.660Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:25:49.662Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:25:49.662Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:25:49.662Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:25:49.663Z] INFO 🌾 [farm] Состояние: queue=7, pendingReport={"coords":"1:365:2","player":"Вездесущий","spiedAt":1787941286752}, scanSystem=365, attacked=231, failed=5
+[2026-08-28T18:25:49.663Z] INFO 🌾 [farm] Ждём отчёт по 1:365:2: прошло 263с из 60с
+[2026-08-28T18:25:49.663Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:365:2
+[2026-08-28T18:25:56.257Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:365:2=1 — #84110579(28.08 - 21:21:25|первая [1:365:2]|Шпионский доклад)
+[2026-08-28T18:25:56.257Z] INFO 🌾 [farm] #84110579 (inline): М=85072425153724, А=10600613357869, У=5890251807991, игрок= В момент шпионажа Место: 918 Очков: 4 338 566 876 805 Специальность: Шахтер ');
+[2026-08-28T18:25:56.259Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 918 Очков: 4 338 566 876 805 Специальность: Шахтер ');» [1:365:2] (msg#84110579, src=inline): Металл 85072425153724, Алмаз 10600613357869, Уран 5890251807991 → Итого 101563290319584 → линкоров: 67708860214
+[2026-08-28T18:25:56.260Z] INFO 🌾 [farm] 1:365:2: алмазов 10600613357869 < минимума 15000000000000 — отмечаю как атакованную (накопится к следующему кругу)
+[2026-08-28T18:25:56.260Z] INFO 🌾 [farm] finishTarget [1:365:2]: queue 7→6, info={"skipped":"low_diamond","diamonds":10600613357869}
+[2026-08-28T18:25:56.261Z] INFO 🌾 [loop] farm результат: {"target":"1:365:2","skipped":"low_diamond","diamonds":10600613357869}
+[2026-08-28T18:25:56.261Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:25:57.185Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
+[2026-08-28T18:25:57.189Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:27:09.888Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:27:11.104Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:27:11.104Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:27:11.105Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:27:11.107Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:27:11.107Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:27:11.107Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:27:11.107Z] INFO 🌾 [farm] Состояние: queue=6, pendingReport=null, scanSystem=365, attacked=232, failed=5
+[2026-08-28T18:27:11.107Z] INFO 🌾 [farm] current_goal = [1:365:3] Вечно Молодой — отправляем шпионов (зондов: 5000)
+[2026-08-28T18:27:12.103Z] INFO 📍 [mission] Цель: 1:365:3 (mission=6), корабли источника: {"203":null,"207":"835356030977","210":"164692815"}
+[2026-08-28T18:27:12.844Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"365","planet":"3","planet_type":"1"}
+[2026-08-28T18:27:13.672Z] INFO 🕵️ [spy] Шпионаж → 1:365:3 (Вечно Молодой) [sent]
+[2026-08-28T18:27:15.186Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:365:3","player":"Вечно Молодой","dryRun":false}], skipped=[], failed=[]
+[2026-08-28T18:27:15.188Z] INFO 🌾 [farm] Шпионы на [1:365:3] отправлены — ждём отчёт 60000мс
+[2026-08-28T18:27:15.188Z] INFO 🌾 [loop] farm результат: {"spied":"1:365:3","waitingReport":true}
+[2026-08-28T18:27:15.189Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:27:15.908Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 29 из 42 свободны — ждём.
+[2026-08-28T18:27:15.909Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:28:41.877Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:28:43.111Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:28:43.113Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:28:43.115Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:28:43.117Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:28:43.117Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:28:43.118Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:28:43.120Z] INFO 🌾 [farm] Состояние: queue=6, pendingReport={"coords":"1:365:3","player":"Вечно Молодой","spiedAt":1787941635186}, scanSystem=365, attacked=232, failed=5
+[2026-08-28T18:28:43.120Z] INFO 🌾 [farm] Ждём отчёт по 1:365:3: прошло 88с из 60с
+[2026-08-28T18:28:43.120Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:365:3
+[2026-08-28T18:28:47.594Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:365:3=1 — #84110918(28.08 - 21:27:13|Колония [1:365:3]|Шпионский доклад)
+[2026-08-28T18:28:47.595Z] INFO 🌾 [farm] #84110918 (inline): М=74163312750408, А=28153067240574, У=17205323021090, игрок= В момент шпионажа Место: 622 Очков: 19 337 844 464 893 ');
+[2026-08-28T18:28:47.595Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 622 Очков: 19 337 844 464 893 ');» [1:365:3] (msg#84110918, src=inline): Металл 74163312750408, Алмаз 28153067240574, Уран 17205323021090 → Итого 119521703012072 → линкоров: 79681135342
+[2026-08-28T18:28:47.595Z] INFO 🌾 [farm] Атака: target=1:365:3, mission=1, ships={207: 79681135342}, fromCp=31694, dryRun=false
+[2026-08-28T18:28:48.481Z] INFO 📍 [mission] Цель: 1:365:3 (mission=1), корабли источника: {"203":null,"207":"835528062977","210":"164692815"}
+[2026-08-28T18:28:49.062Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"365","planet":"3","planet_type":"1"}
+[2026-08-28T18:28:49.755Z] INFO 🌾 [farm] Результат sendMission: ok=true, stage=4, confirmed=true, error=-
+[2026-08-28T18:28:49.755Z] INFO 🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [1:365:3] (Вечно Молодой), линкоров: 79681135342, источник: главная луна cp=31694
+[2026-08-28T18:28:49.755Z] INFO 🌾 [farm] finishTarget [1:365:3]: queue 6→5, info={"ok":true,"liners":79681135342,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
+[2026-08-28T18:28:49.755Z] INFO 🌾 [farm] [1:365:3] помечено как атакованное (кулдаун 1ч)
+[2026-08-28T18:28:49.756Z] INFO 🌾 [loop] farm результат: {"target":"1:365:3","ok":true,"liners":79681135342,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
+[2026-08-28T18:28:49.756Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:28:50.490Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
+[2026-08-28T18:28:50.491Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:30:09.371Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:30:10.439Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:30:10.442Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:30:10.443Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:30:10.446Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:30:10.446Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:30:10.446Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:30:10.448Z] INFO 🌾 [farm] Состояние: queue=5, pendingReport=null, scanSystem=365, attacked=232, failed=5
+[2026-08-28T18:30:10.448Z] INFO 🌾 [farm] current_goal = [1:365:6] Zhoo — отправляем шпионов (зондов: 5000)
+[2026-08-28T18:30:11.388Z] INFO 📍 [mission] Цель: 1:365:6 (mission=6), корабли источника: {"203":null,"207":"803067714131","210":"164692815"}
+[2026-08-28T18:30:12.114Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"365","planet":"6","planet_type":"1"}
+[2026-08-28T18:30:12.879Z] INFO 🕵️ [spy] Шпионаж → 1:365:6 (Zhoo) [sent]
+[2026-08-28T18:30:14.388Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:365:6","player":"Zhoo","dryRun":false}], skipped=[], failed=[]
+[2026-08-28T18:30:14.391Z] INFO 🌾 [farm] Шпионы на [1:365:6] отправлены — ждём отчёт 60000мс
+[2026-08-28T18:30:14.391Z] INFO 🌾 [loop] farm результат: {"spied":"1:365:6","waitingReport":true}
+[2026-08-28T18:30:14.391Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:30:15.117Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 29 из 42 свободны — ждём.
+[2026-08-28T18:30:15.119Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:31:39.850Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:31:41.524Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:31:41.524Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:31:41.525Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:31:41.526Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:31:41.526Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:31:41.526Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:31:41.527Z] INFO 🌾 [farm] Состояние: queue=5, pendingReport={"coords":"1:365:6","player":"Zhoo","spiedAt":1787941814389}, scanSystem=365, attacked=232, failed=5
+[2026-08-28T18:31:41.527Z] INFO 🌾 [farm] Ждём отчёт по 1:365:6: прошло 87с из 60с
+[2026-08-28T18:31:41.527Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:365:6
+[2026-08-28T18:31:45.241Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:365:6=1 — #84111211(28.08 - 21:30:12|Colony [1:365:6]|Шпионский доклад)
+[2026-08-28T18:31:45.243Z] INFO 🌾 [farm] #84111211 (inline): М=120922494435253, А=29749023778753, У=13034760376884, игрок= В момент шпионажа Место: 678 Очков: 14 327 074 584 492 Специальность: Летчик ');
+[2026-08-28T18:31:45.245Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 678 Очков: 14 327 074 584 492 Специальность: Летчик ');» [1:365:6] (msg#84111211, src=inline): Металл 120922494435253, Алмаз 29749023778753, Уран 13034760376884 → Итого 163706278590890 → линкоров: 109137519061
+[2026-08-28T18:31:45.245Z] INFO 🌾 [farm] Атака: target=1:365:6, mission=1, ships={207: 109137519061}, fromCp=31694, dryRun=false
+[2026-08-28T18:31:46.276Z] INFO 📍 [mission] Цель: 1:365:6 (mission=1), корабли источника: {"203":null,"207":"803237954131","210":"164692815"}
+[2026-08-28T18:31:46.763Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"365","planet":"6","planet_type":"1"}
+[2026-08-28T18:31:47.472Z] INFO 🌾 [farm] Результат sendMission: ok=true, stage=4, confirmed=true, error=-
+[2026-08-28T18:31:47.472Z] INFO 🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [1:365:6] (Zhoo), линкоров: 109137519061, источник: главная луна cp=31694
+[2026-08-28T18:31:47.473Z] INFO 🌾 [farm] finishTarget [1:365:6]: queue 5→4, info={"ok":true,"liners":109137519061,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
+[2026-08-28T18:31:47.473Z] INFO 🌾 [farm] [1:365:6] помечено как атакованное (кулдаун 1ч)
+[2026-08-28T18:31:47.474Z] INFO 🌾 [loop] farm результат: {"target":"1:365:6","ok":true,"liners":109137519061,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
+[2026-08-28T18:31:47.474Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:31:48.041Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
+[2026-08-28T18:31:48.045Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:33:09.069Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:33:10.374Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:33:10.376Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:33:10.378Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:33:10.380Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:33:10.380Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:33:10.380Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:33:10.382Z] INFO 🌾 [farm] Состояние: queue=4, pendingReport=null, scanSystem=365, attacked=232, failed=5
+[2026-08-28T18:33:10.382Z] INFO 🌾 [farm] current_goal = [1:365:8] Crush — отправляем шпионов (зондов: 5000)
+[2026-08-28T18:33:11.457Z] INFO 📍 [mission] Цель: 1:365:8 (mission=6), корабли источника: {"203":null,"207":"694252755070","210":"164692815"}
+[2026-08-28T18:33:12.191Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"365","planet":"8","planet_type":"1"}
+[2026-08-28T18:33:13.026Z] INFO 🕵️ [spy] Шпионаж → 1:365:8 (Crush) [sent]
+[2026-08-28T18:33:14.530Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:365:8","player":"Crush","dryRun":false}], skipped=[], failed=[]
+[2026-08-28T18:33:14.533Z] INFO 🌾 [farm] Шпионы на [1:365:8] отправлены — ждём отчёт 60000мс
+[2026-08-28T18:33:14.533Z] INFO 🌾 [loop] farm результат: {"spied":"1:365:8","waitingReport":true}
+[2026-08-28T18:33:14.533Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:33:15.341Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
+[2026-08-28T18:33:15.345Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:34:35.885Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:34:37.080Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:34:37.081Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:34:37.081Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:34:37.083Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:34:37.083Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:34:37.083Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:34:37.084Z] INFO 🌾 [farm] Состояние: queue=4, pendingReport={"coords":"1:365:8","player":"Crush","spiedAt":1787941994530}, scanSystem=365, attacked=232, failed=5
+[2026-08-28T18:34:37.084Z] INFO 🌾 [farm] Ждём отчёт по 1:365:8: прошло 83с из 60с
+[2026-08-28T18:34:37.084Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:365:8
+[2026-08-28T18:34:40.878Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:365:8=1 — #84111364(28.08 - 21:33:12|Колония [1:365:8]|Шпионский доклад)
+[2026-08-28T18:34:40.878Z] INFO 🌾 [farm] #84111364 (inline): М=117063980105381, А=20074703961779, У=6197569293625, игрок= В момент шпионажа Место: 740 Очков: 10 233 300 531 088 ');
+[2026-08-28T18:34:40.879Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 740 Очков: 10 233 300 531 088 ');» [1:365:8] (msg#84111364, src=inline): Металл 117063980105381, Алмаз 20074703961779, Уран 6197569293625 → Итого 143336253360785 → линкоров: 95557502241
+[2026-08-28T18:34:40.879Z] INFO 🌾 [farm] Атака: target=1:365:8, mission=1, ships={207: 95557502241}, fromCp=31694, dryRun=false
+[2026-08-28T18:34:41.852Z] INFO 📍 [mission] Цель: 1:365:8 (mission=1), корабли источника: {"203":null,"207":"781492771817","210":"164692815"}
+[2026-08-28T18:34:42.594Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"365","planet":"8","planet_type":"1"}
+[2026-08-28T18:34:43.379Z] INFO 🌾 [farm] Результат sendMission: ok=true, stage=4, confirmed=true, error=-
+[2026-08-28T18:34:43.380Z] INFO 🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [1:365:8] (Crush), линкоров: 95557502241, источник: главная луна cp=31694
+[2026-08-28T18:34:43.380Z] INFO 🌾 [farm] finishTarget [1:365:8]: queue 4→3, info={"ok":true,"liners":95557502241,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
+[2026-08-28T18:34:43.380Z] INFO 🌾 [farm] [1:365:8] помечено как атакованное (кулдаун 1ч)
+[2026-08-28T18:34:43.380Z] INFO 🌾 [loop] farm результат: {"target":"1:365:8","ok":true,"liners":95557502241,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
+[2026-08-28T18:34:43.381Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:34:44.169Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
+[2026-08-28T18:34:44.174Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:35:55.764Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:35:57.622Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:35:57.626Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:35:57.628Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:35:57.630Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:35:57.630Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:35:57.631Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:35:57.633Z] INFO 🌾 [farm] Состояние: queue=3, pendingReport=null, scanSystem=365, attacked=232, failed=5
+[2026-08-28T18:35:57.633Z] INFO 🌾 [farm] current_goal = [1:365:10] Александерсонский — отправляем шпионов (зондов: 5000)
+[2026-08-28T18:35:58.703Z] INFO 📍 [mission] Цель: 1:365:10 (mission=6), корабли источника: {"203":null,"207":"686073253576","210":"164692815"}
+[2026-08-28T18:35:59.482Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"365","planet":"10","planet_type":"1"}
+[2026-08-28T18:36:00.259Z] INFO 🕵️ [spy] Шпионаж → 1:365:10 (Александерсонский) [sent]
+[2026-08-28T18:36:01.769Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:365:10","player":"Александерсонский","dryRun":false}], skipped=[], failed=[]
+[2026-08-28T18:36:01.772Z] INFO 🌾 [farm] Шпионы на [1:365:10] отправлены — ждём отчёт 60000мс
+[2026-08-28T18:36:01.772Z] INFO 🌾 [loop] farm результат: {"spied":"1:365:10","waitingReport":true}
+[2026-08-28T18:36:01.772Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:36:02.615Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
+[2026-08-28T18:36:02.620Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:37:29.485Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:37:30.545Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:37:30.546Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:37:30.547Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:37:30.548Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:37:30.548Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:37:30.548Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:37:30.549Z] INFO 🌾 [farm] Состояние: queue=3, pendingReport={"coords":"1:365:10","player":"Александерсонский","spiedAt":1787942161769}, scanSystem=365, attacked=232, failed=5
+[2026-08-28T18:37:30.550Z] INFO 🌾 [farm] Ждём отчёт по 1:365:10: прошло 89с из 60с
+[2026-08-28T18:37:30.550Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:365:10
+[2026-08-28T18:37:33.925Z] INFO 🌾 [farm] Сообщений: всего=0, шпионских по 1:365:10=0
+[2026-08-28T18:37:33.925Z] WARN 🌾 [farm] Шпионский отчёт по 1:365:10 не найден/не распарсен
+[2026-08-28T18:37:33.925Z] INFO 🌾 [farm] Отчёта по 1:365:10 пока нет — ждём до следующего тика
+[2026-08-28T18:37:33.926Z] INFO 🌾 [loop] farm результат: {"waiting":"1:365:10"}
+[2026-08-28T18:37:33.926Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:37:34.632Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 29 из 42 свободны — ждём.
+[2026-08-28T18:37:34.637Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:38:54.005Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:38:55.165Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:38:55.167Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:38:55.170Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:38:55.173Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:38:55.174Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:38:55.174Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:38:55.176Z] INFO 🌾 [farm] Состояние: queue=3, pendingReport={"coords":"1:365:10","player":"Александерсонский","spiedAt":1787942161769}, scanSystem=365, attacked=232, failed=5
+[2026-08-28T18:38:55.177Z] INFO 🌾 [farm] Ждём отчёт по 1:365:10: прошло 173с из 60с
+[2026-08-28T18:38:55.177Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:365:10
+[2026-08-28T18:38:59.215Z] INFO 🌾 [farm] Сообщений: всего=0, шпионских по 1:365:10=0
+[2026-08-28T18:38:59.215Z] WARN 🌾 [farm] Шпионский отчёт по 1:365:10 не найден/не распарсен
+[2026-08-28T18:38:59.216Z] INFO 🌾 [farm] Отчёта по 1:365:10 пока нет — ждём до следующего тика
+[2026-08-28T18:38:59.216Z] INFO 🌾 [loop] farm результат: {"waiting":"1:365:10"}
+[2026-08-28T18:38:59.216Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:39:00.204Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 29 из 42 свободны — ждём.
+[2026-08-28T18:39:00.208Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:40:17.529Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:40:18.662Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:40:18.663Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:40:18.663Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:40:18.665Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:40:18.665Z] INFO 🌾 [farm] ВХОД: analysis={"total":11,"outgoing":4,"returning":7,"byType":{"return":6,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:40:18.665Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:40:18.666Z] INFO 🌾 [farm] Состояние: queue=3, pendingReport={"coords":"1:365:10","player":"Александерсонский","spiedAt":1787942161769}, scanSystem=365, attacked=232, failed=5
+[2026-08-28T18:40:18.666Z] INFO 🌾 [farm] Ждём отчёт по 1:365:10: прошло 257с из 60с
+[2026-08-28T18:40:18.666Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:365:10
+[2026-08-28T18:40:23.327Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:365:10=1 — #84111415(28.08 - 21:36:00|Колония [1:365:10]|Шпионский доклад)
+[2026-08-28T18:40:23.328Z] INFO 🌾 [farm] #84111415 (inline): М=34340835295016, А=19079264095906, У=19079264095906, игрок= В момент шпионажа Место: 912 Очков: 4 495 133 868 991 Специальность: Ученый ');
+[2026-08-28T18:40:23.328Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 912 Очков: 4 495 133 868 991 Специальность: Ученый ');» [1:365:10] (msg#84111415, src=inline): Металл 34340835295016, Алмаз 19079264095906, Уран 19079264095906 → Итого 72499363486828 → линкоров: 48332908992
+[2026-08-28T18:40:23.328Z] INFO 🌾 [farm] Атака: target=1:365:10, mission=1, ships={207: 48332908992}, fromCp=31694, dryRun=false
+[2026-08-28T18:40:24.297Z] INFO 📍 [mission] Цель: 1:365:10 (mission=1), корабли источника: {"203":null,"207":"807815538913","210":"164692815"}
+[2026-08-28T18:40:25.027Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"365","planet":"10","planet_type":"1"}
+[2026-08-28T18:40:25.765Z] INFO 🌾 [farm] Результат sendMission: ok=true, stage=4, confirmed=true, error=-
+[2026-08-28T18:40:25.765Z] INFO 🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [1:365:10] (Александерсонский), линкоров: 48332908992, источник: главная луна cp=31694
+[2026-08-28T18:40:25.765Z] INFO 🌾 [farm] finishTarget [1:365:10]: queue 3→2, info={"ok":true,"liners":48332908992,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
+[2026-08-28T18:40:25.765Z] INFO 🌾 [farm] [1:365:10] помечено как атакованное (кулдаун 1ч)
+[2026-08-28T18:40:25.766Z] INFO 🌾 [loop] farm результат: {"target":"1:365:10","ok":true,"liners":48332908992,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
+[2026-08-28T18:40:25.766Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:40:26.468Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 29 из 42 свободны — ждём.
+[2026-08-28T18:40:26.470Z] INFO 📊 [tick] миссий: 11 (return:6 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:41:50.547Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:41:51.819Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:41:51.821Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:41:51.822Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:41:51.824Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:41:51.824Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:41:51.824Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:41:51.826Z] INFO 🌾 [farm] Состояние: queue=2, pendingReport=null, scanSystem=365, attacked=232, failed=5
+[2026-08-28T18:41:51.827Z] INFO 🌾 [farm] current_goal = [1:365:11] куля — отправляем шпионов (зондов: 5000)
+[2026-08-28T18:41:52.877Z] INFO 📍 [mission] Цель: 1:365:11 (mission=6), корабли источника: {"203":null,"207":"759642117921","210":"164692815"}
+[2026-08-28T18:41:53.637Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"365","planet":"11","planet_type":"1"}
+[2026-08-28T18:41:54.465Z] INFO 🕵️ [spy] Шпионаж → 1:365:11 (куля) [sent]
+[2026-08-28T18:41:55.976Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:365:11","player":"куля","dryRun":false}], skipped=[], failed=[]
+[2026-08-28T18:41:55.979Z] INFO 🌾 [farm] Шпионы на [1:365:11] отправлены — ждём отчёт 60000мс
+[2026-08-28T18:41:55.979Z] INFO 🌾 [loop] farm результат: {"spied":"1:365:11","waitingReport":true}
+[2026-08-28T18:41:55.980Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:41:56.894Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 29 из 42 свободны — ждём.
+[2026-08-28T18:41:56.896Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:43:24.415Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=15
+[2026-08-28T18:43:26.020Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:43:26.022Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:43:26.023Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:43:26.024Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:43:26.024Z] INFO 🌾 [farm] ВХОД: analysis={"total":12,"outgoing":4,"returning":8,"byType":{"return":7,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:43:26.024Z] INFO 🌾 [farm] Свободных миссий: 11 (занято 4/15)
+[2026-08-28T18:43:26.025Z] INFO 🌾 [farm] Состояние: queue=2, pendingReport={"coords":"1:365:11","player":"куля","spiedAt":1787942515976}, scanSystem=365, attacked=232, failed=5
+[2026-08-28T18:43:26.025Z] INFO 🌾 [farm] Ждём отчёт по 1:365:11: прошло 90с из 60с
+[2026-08-28T18:43:26.025Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:365:11
+[2026-08-28T18:43:29.362Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:365:11=1 — #84111777(28.08 - 21:41:54|Колония [1:365:11]|Шпионский доклад)
+[2026-08-28T18:43:29.363Z] INFO 🌾 [farm] #84111777 (inline): М=111259154645610, А=25420682381401, У=34252904905133, игрок= В момент шпионажа Место: 629 Очков: 18 610 559 335 562 Специальность: Шахтер ');
+[2026-08-28T18:43:29.363Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 629 Очков: 18 610 559 335 562 Специальность: Шахтер ');» [1:365:11] (msg#84111777, src=inline): Металл 111259154645610, Алмаз 25420682381401, Уран 34252904905133 → Итого 170932741932144 → линкоров: 113955161289
+[2026-08-28T18:43:29.363Z] INFO 🌾 [farm] Атака: target=1:365:11, mission=1, ships={207: 113955161289}, fromCp=31694, dryRun=false
+[2026-08-28T18:43:30.224Z] INFO 📍 [mission] Цель: 1:365:11 (mission=1), корабли источника: {"203":null,"207":"759815941921","210":"164692815"}
+[2026-08-28T18:43:30.896Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"365","planet":"11","planet_type":"1"}
+[2026-08-28T18:43:31.615Z] INFO 🌾 [farm] Результат sendMission: ok=true, stage=4, confirmed=true, error=-
+[2026-08-28T18:43:31.615Z] INFO 🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [1:365:11] (куля), линкоров: 113955161289, источник: главная луна cp=31694
+[2026-08-28T18:43:31.615Z] INFO 🌾 [farm] finishTarget [1:365:11]: queue 2→1, info={"ok":true,"liners":113955161289,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
+[2026-08-28T18:43:31.615Z] INFO 🌾 [farm] [1:365:11] помечено как атакованное (кулдаун 1ч)
+[2026-08-28T18:43:31.616Z] INFO 🌾 [loop] farm результат: {"target":"1:365:11","ok":true,"liners":113955161289,"atk":{"ok":true,"stage":4,"confirmed":true,"resources":null}}
+[2026-08-28T18:43:31.617Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:43:32.249Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
+[2026-08-28T18:43:32.251Z] INFO 📊 [tick] миссий: 12 (return:7 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:44:55.243Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=10
+[2026-08-28T18:44:56.375Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:44:56.376Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:44:56.377Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:44:56.378Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:44:56.378Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:44:56.378Z] INFO 🌾 [farm] Свободных миссий: 6 (занято 4/10)
+[2026-08-28T18:44:56.379Z] INFO 🌾 [farm] Состояние: queue=1, pendingReport=null, scanSystem=365, attacked=232, failed=5
+[2026-08-28T18:44:56.379Z] INFO 🌾 [farm] current_goal = [1:365:14] лисберг — отправляем шпионов (зондов: 5000)
+[2026-08-28T18:44:57.407Z] INFO 📍 [mission] Цель: 1:365:14 (mission=6), корабли источника: {"203":null,"207":"646016684632","210":"164692815"}
+[2026-08-28T18:44:57.885Z] INFO 🎯 [mission] Цель (стадия 2): {"galaxy":"1","system":"365","planet":"14","planet_type":"1"}
+[2026-08-28T18:44:58.687Z] INFO 🕵️ [spy] Шпионаж → 1:365:14 (лисберг) [sent]
+[2026-08-28T18:45:00.189Z] INFO 🌾 [farm] spyTargets: sent=[{"coords":"1:365:14","player":"лисберг","dryRun":false}], skipped=[], failed=[]
+[2026-08-28T18:45:00.192Z] INFO 🌾 [farm] Шпионы на [1:365:14] отправлены — ждём отчёт 60000мс
+[2026-08-28T18:45:00.192Z] INFO 🌾 [loop] farm результат: {"spied":"1:365:14","waitingReport":true}
+[2026-08-28T18:45:00.192Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:45:01.118Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
+[2026-08-28T18:45:01.119Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:46:17.983Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=10
+[2026-08-28T18:46:19.876Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:46:19.877Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:46:19.878Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:46:19.878Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:46:19.878Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:46:19.878Z] INFO 🌾 [farm] Свободных миссий: 6 (занято 4/10)
+[2026-08-28T18:46:19.879Z] INFO 🌾 [farm] Состояние: queue=1, pendingReport={"coords":"1:365:14","player":"лисберг","spiedAt":1787942700189}, scanSystem=365, attacked=232, failed=5
+[2026-08-28T18:46:19.879Z] INFO 🌾 [farm] Ждём отчёт по 1:365:14: прошло 80с из 60с
+[2026-08-28T18:46:19.879Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:365:14
+[2026-08-28T18:46:24.923Z] INFO 🌾 [farm] Сообщений: всего=0, шпионских по 1:365:14=0
+[2026-08-28T18:46:24.924Z] WARN 🌾 [farm] Шпионский отчёт по 1:365:14 не найден/не распарсен
+[2026-08-28T18:46:24.924Z] INFO 🌾 [farm] Отчёта по 1:365:14 пока нет — ждём до следующего тика
+[2026-08-28T18:46:24.924Z] INFO 🌾 [loop] farm результат: {"waiting":"1:365:14"}
+[2026-08-28T18:46:24.924Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:46:25.716Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
+[2026-08-28T18:46:25.719Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0
+[2026-08-28T18:47:50.075Z] INFO 🔘 [loop] флаги: farm=ON, expedition=ON, safety=ON; reserveSlots=10
+[2026-08-28T18:47:51.183Z] INFO 🔒 [loop] safety: включён → запускаем runSafetyCheck
+[2026-08-28T18:47:51.184Z] INFO 🛡️ [safety] Главная луна 1:363:6: входящие=0
+[2026-08-28T18:47:51.184Z] INFO 🛡️ [safety] Атак на главную луну нет, эвакуированных флотов нет
+[2026-08-28T18:47:51.186Z] INFO 🌾 [loop] farm: включён → запускаем runFarmCycle
+[2026-08-28T18:47:51.186Z] INFO 🌾 [farm] ВХОД: analysis={"total":13,"outgoing":4,"returning":9,"byType":{"return":8,"expedition":2,"unknown":3},"activeSlots":4}
+[2026-08-28T18:47:51.186Z] INFO 🌾 [farm] Свободных миссий: 6 (занято 4/10)
+[2026-08-28T18:47:51.187Z] INFO 🌾 [farm] Состояние: queue=1, pendingReport={"coords":"1:365:14","player":"лисберг","spiedAt":1787942700189}, scanSystem=365, attacked=232, failed=5
+[2026-08-28T18:47:51.187Z] INFO 🌾 [farm] Ждём отчёт по 1:365:14: прошло 171с из 60с
+[2026-08-28T18:47:51.187Z] INFO 🌾 [farm] Время вышло — ищем отчёт по 1:365:14
+[2026-08-28T18:47:55.193Z] INFO 🌾 [farm] Сообщений: всего=100, шпионских по 1:365:14=1 — #84111991(28.08 - 21:44:58|чык-чырык [1:365:14]|Шпионский доклад)
+[2026-08-28T18:47:55.194Z] INFO 🌾 [farm] #84111991 (inline): М=71680638477840, А=11600327378557, У=8937912445267, игрок= В момент шпионажа Место: 339 Очков: 113 200 364 863 120 Специальность: Шахтер ');
+[2026-08-28T18:47:55.195Z] INFO 🌾 [farm] Доклад « В момент шпионажа Место: 339 Очков: 113 200 364 863 120 Специальность: Шахтер ');» [1:365:14] (msg#84111991, src=inline): Металл 71680638477840, Алмаз 11600327378557, Уран 8937912445267 → Итого 92218878301664 → линкоров: 61479252202
+[2026-08-28T18:47:55.195Z] INFO 🌾 [farm] 1:365:14: алмазов 11600327378557 < минимума 15000000000000 — отмечаю как атакованную (накопится к следующему кругу)
+[2026-08-28T18:47:55.198Z] INFO 🌾 [farm] finishTarget [1:365:14]: queue 1→0, info={"skipped":"low_diamond","diamonds":11600327378557}
+[2026-08-28T18:47:55.201Z] INFO 🌾 [loop] farm результат: {"target":"1:365:14","skipped":"low_diamond","diamonds":11600327378557}
+[2026-08-28T18:47:55.201Z] INFO 🚀 [loop] expedition: включён → запускаем launchExpeditions
+[2026-08-28T18:47:55.912Z] INFO 🧪 [expedition] Экспедиционные слоты заняты (6/6), общие миссии: 28 из 42 свободны — ждём.
+[2026-08-28T18:47:55.914Z] INFO 📊 [tick] миссий: 13 (return:8 expedition:2 unknown:3), атаки: 0

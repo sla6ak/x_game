@@ -37,7 +37,7 @@
   "minDiamond": 15000000000000,
     "systemRange": 30,
     "maxScanPerTick": 10,
-    "reportGraceMs": 120000,
+    "reportGraceMs": 60000,
     "maxSystemWaitMs": 1200000
   },
   "safety": {
