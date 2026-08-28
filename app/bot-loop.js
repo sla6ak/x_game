@@ -34,7 +34,15 @@ async function botTick(context, config) {
   };
 
   const controls = loadBotControls();
-  config.farm = { ...(config.farm || {}), enabled: !!controls.farm };
+  const reserveSlots = Number.isFinite(Number(controls.farmReserveSlots))
+    ? Number(controls.farmReserveSlots)
+    : 3;
+  config.farm = {
+    ...(config.farm || {}),
+    enabled: !!controls.farm,
+    minFreeSlots: reserveSlots,
+    slotsFL: reserveSlots,
+  };
   config.expedition = {
     ...(config.expedition || {}),
     enabled: !!controls.expedition,
@@ -47,7 +55,7 @@ async function botTick(context, config) {
   config.safety = { ...(config.safety || {}), enabled: !!controls.safety };
 
   console.log(
-    `🔘 [loop] флаги: farm=${!!controls.farm ? "ON" : "OFF"}, expedition=${!!controls.expedition ? "ON" : "OFF"}, safety=${!!controls.safety ? "ON" : "OFF"}`,
+    `🔘 [loop] флаги: farm=${!!controls.farm ? "ON" : "OFF"}, expedition=${!!controls.expedition ? "ON" : "OFF"}, safety=${!!controls.safety ? "ON" : "OFF"}; reserveSlots=${reserveSlots}`,
   );
 
   // 1. Миссии (всегда)
@@ -74,6 +82,7 @@ async function botTick(context, config) {
   if (farmCfg.enabled && !mainMoonUnderAttack) {
     console.log("🌾 [loop] farm: включён → запускаем runFarmCycle");
     tick.farm = await runFarmCycle(context, config, missionsData);
+    console.log(`🌾 [loop] farm результат: ${JSON.stringify(tick.farm).slice(0, 300)}`);
   } else if (farmCfg.enabled && mainMoonUnderAttack) {
     console.log(
       "🌾 [loop] farm: включён, но пропускаем из-за атаки на главную луну",
@@ -125,7 +134,7 @@ async function botLoop(context, config, opts = {}) {
         console.warn("⚠️ Сессия истекла — требуется повторный логин");
         throw e;
       }
-      console.error(`❌ Ошибка цикла: ${e.message}`);
+      console.error(`❌ Ошибка цикла: ${e.message}\n${e.stack}`);
     }
     const elapsed = Date.now() - started;
     const nextDelay = Math.max(5000, interval - elapsed);

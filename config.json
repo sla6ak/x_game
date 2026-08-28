@@ -33,10 +33,11 @@
     "resFL": true,
     "includeVacation": false,
     "spyCooldownMs": 60000,
-    "farmCooldownMs": 43200000,
+    "farmCooldownMs": 3600000,
+  "minDiamond": 15000000000000,
     "systemRange": 30,
     "maxScanPerTick": 10,
-    "reportGraceMs": 120000,
+    "reportGraceMs": 60000,
     "maxSystemWaitMs": 1200000
   },
   "safety": {

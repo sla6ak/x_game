@@ -21,6 +21,13 @@ function timestamp() {
   return new Date().toISOString();
 }
 
+/** Локальное "YYYY-MM-DD HH:MM:SS" для префикса консольных логов. */
+function tsLocal() {
+  const d = new Date();
+  const p = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+
 function formatValue(value) {
   if (value instanceof Error) return value.stack || value.message;
   if (typeof value === "string") return value;
@@ -54,33 +61,35 @@ function appendToFile(filePath, level, message, err) {
 /** Логирование ошибки: консоль + errors.log */
 function error(message, err) {
   const detail = err ? ` ${err.message}` : "";
-  nativeConsole.error(`❌ [error] ${message}${detail}`);
+  nativeConsole.error(`[${tsLocal()}] ❌ [error] ${message}${detail}`);
   appendToFile(ERRORS_FILE, "ERROR", `${message}${detail}`, err);
 }
 
 /** Предупреждение: консоль + errors.log */
 function warn(message, ...extra) {
-  nativeConsole.warn(`⚠️ [warn] ${message}`, ...extra);
+  nativeConsole.warn(`[${tsLocal()}] ⚠️ [warn] ${message}`, ...extra);
   appendToFile(ERRORS_FILE, "WARN", formatArgs([message, ...extra]));
 }
 
 /** Простой лог: консоль + errors.log */
 function log(message, ...extra) {
-  nativeConsole.log(message, ...extra);
+  nativeConsole.log(`[${tsLocal()}] ${message}`, ...extra);
   appendToFile(ERRORS_FILE, "INFO", formatArgs([message, ...extra]));
 }
 
 function installGlobalHandlers() {
+  if (installGlobalHandlers.installed) return;
+  installGlobalHandlers.installed = true;
   console.log = (...args) => {
-    nativeConsole.log(...args);
+    nativeConsole.log(`[${tsLocal()}]`, ...args);
     appendToFile(ERRORS_FILE, "INFO", formatArgs(args));
   };
   console.warn = (...args) => {
-    nativeConsole.warn(...args);
+    nativeConsole.warn(`[${tsLocal()}]`, ...args);
     appendToFile(ERRORS_FILE, "WARN", formatArgs(args));
   };
   console.error = (...args) => {
-    nativeConsole.error(...args);
+    nativeConsole.error(`[${tsLocal()}]`, ...args);
     appendToFile(ERRORS_FILE, "ERROR", formatArgs(args));
   };
 
