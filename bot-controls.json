@@ -1,6 +1,7 @@
 {
-  "farm": false,
+  "farm": true,
   "expedition": true,
   "safety": true,
-  "expeditionShipCount": 600000000000
+  "expeditionShipCount": 600000000000,
+  "farmReserveSlots": 20
 }

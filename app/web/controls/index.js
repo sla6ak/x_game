@@ -24,6 +24,7 @@ const CONTROL_FIELDS = [
 function resolveControlsFromBody(body = "") {
   const params = new URLSearchParams(body);
   const expeditionShipCount = Number(params.get("expeditionShipCount"));
+  const farmReserveSlots = Number(params.get("farmReserveSlots"));
   return {
     farm: params.has("farm"),
     expedition: params.has("expedition"),
@@ -32,6 +33,10 @@ function resolveControlsFromBody(body = "") {
       Number.isFinite(expeditionShipCount) && expeditionShipCount > 0
         ? expeditionShipCount
         : 500000000000,
+    farmReserveSlots:
+      Number.isFinite(farmReserveSlots) && farmReserveSlots >= 0
+        ? Math.min(42, Math.round(farmReserveSlots))
+        : 3,
   };
 }
 
@@ -46,6 +51,7 @@ function renderControlsPage(state = loadBotControls()) {
   ).join("");
 
   const expeditionShipCount = Number(state.expeditionShipCount ?? 500000000000);
+  const farmReserveSlots = Number(state.farmReserveSlots ?? 3);
 
   return `<!doctype html>
     <html lang="ru">
@@ -53,7 +59,7 @@ function renderControlsPage(state = loadBotControls()) {
         <meta charset="utf-8" />
         <title>Bot controls</title>
         <style>
-          body { font-family: sans-serif; max-width: 480px; margin: 40px auto; background: #101827; color: #eef2ff; }
+          body { font-family: sans-serif; max-width: 520px; margin: 40px auto; background: #101827; color: #eef2ff; }
           .card { background: #1f2937; border-radius: 14px; padding: 24px; box-shadow: 0 12px 32px rgba(0,0,0,.25); }
           h1 { margin-top: 0; font-size: 28px; }
           .row { display: flex; align-items: center; gap: 12px; margin: 16px 0; font-size: 18px; }
@@ -71,13 +77,18 @@ function renderControlsPage(state = loadBotControls()) {
           <form method="POST" action="/controls">
             ${rows}
             <label class="row-inline">
+              <span>Не занимать последние миссий</span>
+              <input type="number" name="farmReserveSlots" value="${farmReserveSlots}" min="0" max="42" step="1" />
+            </label>
+            <label class="row-inline">
               <span>Линкоров для автоэкспедиции</span>
               <input type="number" name="expeditionShipCount" value="${expeditionShipCount}" min="0" step="100000000000" />
             </label>
+            <div class="small">Используется как резерв слотов для автофарма и как лимит свободных слотов в форме ишкофарма.</div>
             <div class="small">Если в доке меньше, бот отправит всё доступное на луне. Максимум по умолчанию: 500000000000.</div>
             <button type="submit">Сохранить</button>
           </form>
-          <div class="note">Флаги и лимит сохраняются в bot-controls.json и читаются ботом на каждом тике.</div>
+          <div class="note">Флаги и лимиты сохраняются в bot-controls.json и читаются ботом на каждом тике.</div>
           <div class="note">Локально: http://localhost:&lt;PORT&gt;/controls</div>
         </div>
       </body>
