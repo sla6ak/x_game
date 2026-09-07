@@ -28,8 +28,9 @@
  *   5=Защита, 6=Шпионаж
  * «Оставить» (4): флот НЕ возвращается после прибытия — остаётся на цели.
  * Используется для сейва: эвакуация на безопасную луну и возврат домой.
- * Коды кораблей (ship<ID>): 203 Танкер, 208 Колонизатор, 206 Крейсер,
- *   207 Линкор, 210 Шпионский зонд
+ * Коды кораблей (ship<ID>): 203 Большой танкер, 206 Крейсер, 207 Линкор,
+ *   208 Колонизатор, 209 Переработчик, 210 Шпионский зонд, 211 Броненосец,
+ *   215 Линейный крейсер, 216 Эсминец, 217 Авианосец
  *
  * Ресурсы (стадия 3, окно выбора ресурсов):
  *   resources: { r1, r2, r3 } — точные значения (как раньше), ИЛИ
@@ -128,15 +129,31 @@ async function sendMission(context, opts) {
       .catch(() => null);
     if (dbg) console.log(`📍 [mission] Цель: ${dbg.target} (mission=${dbg.target_mission}), корабли источника: ${JSON.stringify(dbg.maxShips)}`);
 
-    // заполняем корабли
+    // заполняем корабли. Если поля корабля НЕТ в форме (например, танкеры не
+    // доступны для этой миссии/тела) — ошибка, а не тихая отправка пустого флота.
+    const missingShips = [];
     for (const [id, count] of Object.entries(ships)) {
-      await page.evaluate(
-        ([id, count]) => {
-          const el = document.querySelector(`input[name="ship${id}"]`);
-          if (el) el.value = String(count);
-        },
-        [id, count]
-      );
+      const filled = await page
+        .evaluate(
+          ([id, count]) => {
+            const el = document.querySelector(`input[name="ship${id}"]`);
+            if (el) {
+              el.value = String(count);
+              return true;
+            }
+            return false;
+          },
+          [id, count]
+        )
+        .catch(() => false);
+      if (!filled) missingShips.push(id);
+    }
+    if (missingShips.length) {
+      return {
+        ok: false,
+        stage: 1,
+        error: `Поля кораблей не найдены в форме: ${missingShips.join(", ")} — тип недоступен для этой миссии/тела`,
+      };
     }
     if (moreFL != null) {
       await page

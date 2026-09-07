@@ -87,6 +87,20 @@ function findHome(html, homeCoords) {
  * Миссии в raw-HTML отделены маркерами: <!-- class="holding " --> / <!-- class="return " -->
  * Внутри div: текст "Ваш флот ... Задание: <тип>", координаты [g:s:p].
  */
+/**
+ * Класс <tr class="..."> → направление миссии.
+ * holding=исходящая, return=возвращающаяся, flight=в пути, incoming=входящая (чужая).
+ * Неизвестный класс → "incoming" (безопасно: чужой флот лучше распознать, чем пропустить).
+ * @param {string} cls
+ */
+function classToDirection(cls) {
+  const c = String(cls || "");
+  if (/holding/.test(c)) return "holding";
+  if (/return/.test(c)) return "return";
+  if (/flight/.test(c)) return "flight";
+  return "incoming";
+}
+
 function parseMissions(html) {
   const missions = [];
   const seen = new Set();
@@ -126,14 +140,21 @@ function parseMissions(html) {
     });
   };
 
-  // --- Мобильный формат: миссии внутри <tr class="holding|return"> ---
-  // <tr class="holding"> ... <div>...Задание: Экспедиция [10]</div> <!-- class="holding " --> ... </tr>
-  const parts = html.split(/<tr class="(holding|return)">/);
+  // --- Мобильный формат: миссии внутри <tr class="..."> ---
+  // <tr class="holding"> ... <div>...Задание: Экспедиция [10]</div> ... </tr>
+  //
+  // ВАЖНО: парсим ВСЕ <tr class="..."> строки, содержащие "Задание:", а не только
+  // holding/return. Входящий ЧУЖОЙ флот («Чужой флот ... Задание: Атаковать») может
+  // иметь ДРУГОЙ tr class (например "incoming"/"flight"). Если парсить только
+  // holding/return, бот вообще не увидит входящую атаку и safety-чек отработает
+  // с входящие=0 — именно так и произошло: чужой флот летел на луну, а бот не увидел.
+  const parts = html.split(/<tr class="([^"]+)">/);
   for (let i = 1; i < parts.length; i += 2) {
-    const direction = parts[i]; // holding | return
+    const cls = parts[i];
     const content = parts[i + 1] || "";
     const z = content.indexOf("Задание:");
     if (z < 0) continue;
+    const direction = classToDirection(cls);
     const divStart = content.lastIndexOf("<div", z);
     const divEnd = content.indexOf("</div>", z);
     const divHtml =
@@ -144,12 +165,13 @@ function parseMissions(html) {
   }
 
   // --- Десктопный формат: маркер <!-- class="..." --> ПЕРЕД div (fallback) ---
+  // Парсим маркер с ЛЮБЫМ class (не только holding/return/flight) — см. classToDirection.
   if (missions.length === 0) {
     const markerRegex =
-      /<!--\s*class="(holding|return|flight)\s*"\s*-->\s*(<div[\s\S]*?<\/div>)/g;
+      /<!--\s*class="([^"]+)"\s*-->\s*(<div[\s\S]*?<\/div>)/g;
     let m;
     while ((m = markerRegex.exec(html)) !== null) {
-      extract(m[1], m[2]);
+      extract(classToDirection(m[1]), m[2]);
     }
   }
 
@@ -250,7 +272,31 @@ function parseAttacks(html, missions, extraKeywords = []) {
     });
   }
 
-  // Fallback: ключевые слова в HTML (если формат строки изменился)
+  // Fallback: ключевые слова (если формат строки изменился).
+  //
+  // ВАЖНО: ищем по ТЕКСТУ БЕЗ ТЕГОВ, потому что в raw-HTML фраза «Чужой флот»
+  // разбита тегами: «Чужой <a ...>флот</a> игрока ...». Простой indexOf по raw-HTML
+  // её НЕ найдёт — и именно поэтому бот не видел входящую атаку (входящие=0),
+  // даже когда чужой флот уже летел на луну. Ищем ВСЕ вхождения, дубликаты
+  // отсеивает pushIncoming (по coords + началу snippet).
+  const plainHtml = html
+    // СНАЧАЛА убираем onmouseover/onmouseout/title-атрибуты: в них overlib-тултипы
+    // с вложенным HTML, который ломает простую очистку тегов (см. extract()).
+    .replace(
+      /\son(?:mouseover|mouseout|mousemove|click|focus|blur)="[^"]*"/g,
+      " ",
+    )
+    .replace(
+      /\son(?:mouseover|mouseout|mousemove|click|focus|blur)='[^']*'/g,
+      " ",
+    )
+    .replace(/\stitle="[^"]*"/g, " ")
+    .replace(/\stitle='[^']*'/g, " ")
+    .replace(/<script[\s\S]*?<\/script>/g, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ");
+  const lowerPlain = plainHtml.toLowerCase();
   const incomingKeywords = [
     "Чужой флот игрока",
     "Чужой флот",
@@ -259,23 +305,23 @@ function parseAttacks(html, missions, extraKeywords = []) {
     ...extraKeywords,
   ];
   for (const kw of incomingKeywords) {
-    const idx = html.toLowerCase().indexOf(kw.toLowerCase());
-    if (idx < 0) continue;
-    const snippet = html
-      .substring(Math.max(0, idx - 200), idx + 400)
-      .replace(/<[^>]+>/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-    const plain = snippet;
-    const { coords, isMoon } = parseIncomingTarget(plain);
-    pushIncoming({
-      keyword: kw,
-      coords,
-      isMoon,
-      etaMs: parseMissionEtaMs(html, plain.substring(0, 80)),
-      snippet: plain.substring(0, 300),
-      source: "keyword",
-    });
+    const kwLower = kw.toLowerCase();
+    let from = 0;
+    while (from < lowerPlain.length) {
+      const idx = lowerPlain.indexOf(kwLower, from);
+      if (idx < 0) break;
+      const snippet = plainHtml.substring(idx, idx + 400).trim();
+      const { coords, isMoon } = parseIncomingTarget(snippet);
+      pushIncoming({
+        keyword: kw,
+        coords,
+        isMoon,
+        etaMs: null,
+        snippet: snippet.substring(0, 300),
+        source: "keyword",
+      });
+      from = idx + kw.length;
+    }
   }
 
   return { outgoing, incoming };

@@ -7,11 +7,14 @@
  *      планет в очередь (state.farm.queue), логим систему и список.
  *   3. current_goal = первая цель из очереди → шпионим (spyTargets,
  *      только неактивные планеты), координаты → state.farm.current_goal.
- *   4. Ждём отчёт (reportGraceMs ~2 мин, не блокируя луп: pendingReport).
+ *   4. Ждём отчёт (reportGraceMs ~1 мин, не блокируя луп: pendingReport).
  *      Сообщения → шпионский доклад по координатам current_goal →
- *      логим, считаем линкоры = ceil((Металл+Алмаз+Уран) / 1500).
- *   5. Атака: sendMission(mission=1, ships={207: N}, fromCp=fromMoonCp) —
- *      СТРОГО с главной луны, только линкоры. Лог: флот, координаты, кол-во.
+ *      логим, считаем корабли = ceil((Металл+Алмаз+Уран) / вместимость корабля).
+ *      Тип корабля выбирается на живой странице (farmShipName: Линкор/Авианосец/
+ *      Большой танкер), ID и вместимость — из config.shipIds/shipCapacities.
+ *   5. Атака: sendMission(mission=1, ships={shipId: N}, fromCp=fromMoonCp) —
+ *      СТРОГО с главной луны, только выбранный тип корабля.
+ *      Лог: флот, координаты, кол-во.
  *   6. Следующая цель; если система закончилась — следующая система.
  */
 
@@ -23,6 +26,8 @@ const { parseMessages } = require("./parsers/messages");
 const dataStore = require("./data-store");
 const { delay } = require("./helpers/async");
 const { splitCoords } = require("./helpers/coords");
+const fs = require("fs");
+const path = require("path");
 
 // Вместимость линкора для расчёта (формула пользователя: (M+A+U)/1500)
 const LINER_CAPACITY = 1500;
@@ -37,6 +42,12 @@ const LINER_CAPACITY = 1500;
 async function runFarmCycle(context, config, missionsData) {
   const fc = config.farm || {};
   if (!fc.enabled) return { skipped: "farm disabled" };
+
+  // Атакующий тип корабля: выбирается на живой странице (bot-controls.farmShipName),
+  // мержится в config.farm.shipName. ID и вместимость — из config.shipIds/shipCapacities.
+  const farmShipName = fc.shipName || "Линкор";
+  const farmShipId = (config.shipIds && config.shipIds[farmShipName]) || fc.typeFL || 207;
+  const farmShipCapacity = (config.shipCapacities && config.shipCapacities[farmShipName]) || LINER_CAPACITY;
 
   // --- 1. Свободные миссии в резерве ---
   const { loadBotControls } = require("./helpers/config");
@@ -95,9 +106,9 @@ async function runFarmCycle(context, config, missionsData) {
         const rep = await findSpyReport(context, pr.coords);
         if (rep) {
           const total = rep.metal + rep.diamond + rep.uran;
-          const liners = Math.ceil(total / LINER_CAPACITY);
+          const count = Math.ceil(total / farmShipCapacity);
           console.log(
-            `🌾 [farm] Доклад «${rep.player}» [${pr.coords}] (msg#${rep.msgId}, src=${rep.source}): Металл ${rep.metal}, Алмаз ${rep.diamond}, Уран ${rep.uran} → Итого ${total} → линкоров: ${liners}`,
+            `🌾 [farm] Доклад «${rep.player}» [${pr.coords}] (msg#${rep.msgId}, src=${rep.source}): Металл ${rep.metal}, Алмаз ${rep.diamond}, Уран ${rep.uran} → Итого ${total} → ${count} × ${farmShipName} (вместимость ${farmShipCapacity})`,
           );
           F.pendingReport = null;
           if (total === 0) {
@@ -110,19 +121,19 @@ async function runFarmCycle(context, config, missionsData) {
             dataStore.save(state);
             return finishTarget(context, config, F, pr, state, { skipped: "low_diamond", diamonds: rep.diamond });
           }
-          if (fc.maxLiners && liners > fc.maxLiners) {
-            console.log(`🌾 [farm] ${pr.coords}: нужно ${liners} > лимита ${fc.maxLiners} — пропускаю цель`);
-            return finishTarget(context, config, F, pr, state, { ok: false, error: `liners ${liners} > maxLiners ${fc.maxLiners}` });
+          if (fc.maxLiners && count > fc.maxLiners) {
+            console.log(`🌾 [farm] ${pr.coords}: нужно ${count} > лимита ${fc.maxLiners} — пропускаю цель`);
+            return finishTarget(context, config, F, pr, state, { ok: false, error: `${farmShipName} ${count} > maxLiners ${fc.maxLiners}` });
           }
-          // --- 5. Атака линкорами с главной луны ---
+          // --- 5. Атака выбранным типом корабля с главной луны ---
           console.log(
-            `🌾 [farm] Атака: target=${pr.coords}, mission=1, ships={${fc.typeFL || 207}: ${liners}}, fromCp=${fc.fromMoonCp}, dryRun=${fc.dryRun !== false}`,
+            `🌾 [farm] Атака: target=${pr.coords}, mission=1, ships={${farmShipId}: ${count}} (${farmShipName}), fromCp=${fc.fromMoonCp}, dryRun=${fc.dryRun !== false}`,
           );
           const atk = await sendMission(context, {
             fromCp: fc.fromMoonCp, // главная луна из config
             target: { ...splitCoords(pr.coords), planettype: "1" },
             mission: 1, // Атака
-            ships: { [fc.typeFL || 207]: liners },
+            ships: { [farmShipId]: count },
             dryRun: fc.dryRun !== false,
           });
           console.log(
@@ -130,9 +141,9 @@ async function runFarmCycle(context, config, missionsData) {
           );
           if (atk.ok) {
             console.log(
-              `🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [${pr.coords}] (${pr.player}), линкоров: ${liners}, источник: главная луна cp=${fc.fromMoonCp}`,
+              `🌾 [farm] ✅ ФЛОТ ОТПРАВЛЕН: [${pr.coords}] (${pr.player}), ${count} × ${farmShipName}, источник: главная луна cp=${fc.fromMoonCp}`,
             );
-            return finishTarget(context, config, F, pr, state, { ok: true, liners, atk });
+            return finishTarget(context, config, F, pr, state, { ok: true, count, ship: farmShipName, atk });
           }
           console.warn(`🌾 [farm] Атака не удалась (стадия ${atk.stage}): ${atk.error}`);
           return finishTarget(context, config, F, pr, state, { ok: false, error: atk.error, stage: atk.stage });
@@ -308,15 +319,54 @@ function pickNumber(text, label) {
   return parseInt(num, 10) || 0;
 }
 
-async function findSpyReport(context, coords) {
-  let html = null;
-  try {
-    html = await fetchHtml(context, "/messages.php?mode=show&messcat=100");
-  } catch (e) {
-    console.warn(`🌾 [farm] Не удалось открыть список сообщений: ${e.message}`);
-    return null;
+/**
+ * Запрос списка сообщений с диагностикой.
+ * Известная проблема: после отправки миссии первый GET messages.php может
+ * вернуть страницу без строк (пустое тело/кэш/состояние сессии) — на второй
+ * попытке по тому же URL приходит полный список. Поэтому: логим байты/title/строки,
+ * при 0 строках сохраняем снэпшот страницы в debug/messages/ и повторяем
+ * через 2с с cache-buster'ом.
+ * @returns {Promise<{html: string|null, list: Array, url: string|null}>}
+ */
+async function fetchMessagesList(context) {
+  const urls = [
+    "/messages.php?mode=show&messcat=100",
+    "/messages.php?mode=show&messcat=100&_cb=" + Date.now(),
+  ];
+  let last = { html: null, list: [], url: null };
+  for (let i = 0; i < urls.length; i++) {
+    const url = urls[i];
+    let html;
+    try {
+      html = await fetchHtml(context, url);
+    } catch (e) {
+      console.warn(`🌾 [farm] Список сообщений (попытка ${i + 1}, ${url}): не открылся — ${e.message}`);
+      continue;
+    }
+    const title = (html.match(/<title>([^<]*)<\/title>/i) || [])[1] || "(нет title)";
+    const list = parseMessages(html);
+    console.log(`🌾 [farm] Список сообщений (попытка ${i + 1}): байт=${html.length}, title="${title}", строк=${list.length}`);
+    last = { html, list, url };
+    if (list.length > 0) return last;
+    // 0 строк — сохраняем доказательство: что именно вернул сервер
+    try {
+      const dir = path.join(__dirname, "..", "debug", "messages");
+      fs.mkdirSync(dir, { recursive: true });
+      const file = path.join(dir, `empty-${new Date().toISOString().replace(/[:.]/g, "-")}.html`);
+      fs.writeFileSync(file, html);
+      const snippet = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 400);
+      console.log(`🌾 [farm] строк=0 → снэпшот: ${file}. Кусок: ${snippet}`);
+    } catch (e) {
+      console.warn(`🌾 [farm] Не удалось сохранить снэпшот пустой страницы: ${e.message}`);
+    }
+    if (i < urls.length - 1) await delay(2000);
   }
-  const list = parseMessages(html);
+  return last;
+}
+
+async function findSpyReport(context, coords) {
+  const { html, list } = await fetchMessagesList(context);
+  if (!html) return null;
   const candidates = list.filter(
     (m) => m.coords === coords && (/шпион/i.test(m.action) || /шпион/i.test(m.theme))
   );
@@ -387,6 +437,7 @@ function parseReportResources(text, coords) {
 module.exports = {
   runFarmCycle,
   findSpyReport,
+  fetchMessagesList,
   parseReportResources,
   stripTags,
   extractBodySection,

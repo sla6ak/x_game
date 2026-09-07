@@ -129,3 +129,44 @@ bot-controls.json: farm=false (СЕЙЧАС ВЫКЛЮЧЕН — включит�
 - fromCp=31694: проверить что это именно главная луна (config: moonCp=31694 ✓).
 - Двойная атака при рестарте: protected attacked[] кулдауном farmCooldownMs (12ч).
 - URL тела сообщения (rand= vs id=) — не подтверждено, findSpyReport пробует оба.
+
+## КАРТА КОРАБЛЕЙ (проверено вживую, форма fleet.php?cp=31694)
+Вместимости — из overlib-тултипов формы (Вместимость: N), вместимость танкера —
+со страницы строительства buildings.php?mode=fleet&gid=203 («Вместимость трюмов: 25 500»,
+базовая 25000).
+
+| ID  | Название            | Вместимость |
+|-----|---------------------|-------------|
+| 203 | Большой танкер      | 25000       |
+| 206 | Крейсер             | 816         |
+| 207 | Линкор              | 1530 (формула фарма: 1500) |
+| 208 | Колонизатор         | 10200       |
+| 209 | Переработчик        | 20400       |
+| 210 | Шпионский зонд      | 5           |
+| 211 | Броненосец          | 612         |
+| 215 | Линейный крейсер    | 765         |
+| 216 | Эсминец             | 1020        |
+| 217 | Авианосец           | 153000      |
+
+Важно: ship203 (танкер) НЕТ ни в одной миссионной форме (target_mission=1..6,15 —
+только 206/207/208/209/210/211/215/216/217), ни с cp=31694, ни с home. Танкеры
+есть в доке (154 млрд), но стандартной формой не отправляются. Поэтому в
+mission-sender.js guard: если поле ship<ID> не найдено в форме — ошибка
+«Поля кораблей не найдены в форме», а не тихая отправка пустого флота.
+
+## ВЫБОР ТИПА КОРАБЛЯ (живая страница /controls)
+Блоки: АВТОФАРМ (farm, farmReserveSlots, farmShipName), ЭКСПЕДИЦИИ
+(expedition, expeditionShipName, expeditionShipCount), СЕЙФ (safety).
+- farmShipName: Линкор | Авианосец | Большой танкер (FARM_SHIP_NAMES).
+- expeditionShipName: Линкор | Броненосец | Эсминец | Авианосец | Крейсер | Линейный крейсер
+  (EXPEDITION_SHIP_NAMES).
+- bot-controls.json: farmShipName, expeditionShipName — валидируются списками
+  в helpers/config.js (loadBotControls/saveBotControls), невалидный → «Линкор».
+- bot-loop.js мержит в config.farm.shipName / config.expedition.shipName.
+- farm.js: shipId = config.shipIds[shipName] (fallback fc.typeFL||207),
+  capacity = config.shipCapacities[shipName] (fallback 1500), count = ceil(total/capacity).
+- expedition.js: shipId = config.shipIds[shipName] (уже было), config.shipIds
+  дополнен всеми 9 типами.
+- config.json: shipIds (9 кораблей) + shipCapacities (9 кораблей).
+- app/web/controls/index.js: renderControlsPage (fieldset'ы), resolveControlsFromBody
+  (парсит farmShipName/expeditionShipName), handleControlsRequest (GET/POST).

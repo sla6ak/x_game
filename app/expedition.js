@@ -16,7 +16,23 @@ const { blockResources } = require("./helpers/browser");
 const { sendMission } = require("./mission-sender");
 
 /**
+ * Запрошенные типы кораблей из config.expedition.ships: [{ name, count }].
+ * count может быть "all" — взять всё, что стоит на луне.
+ * @param {Object} config
+ * @returns {Array<{name: string, count: *}>}
+ */
+function resolveRequestedShips(config) {
+  const exp = config.expedition || {};
+  if (!Array.isArray(exp.ships)) return [];
+  return exp.ships
+    .map((s) => ({ name: String(s?.name || ""), count: s?.count }))
+    .filter((s) => s.name);
+}
+
+/**
  * Построить план экспедиции по raw-HTML флот-страницы луны.
+ * Поддерживает НЕСКОЛЬКО типов кораблей (смешанный флот): у каждого типа
+ * свой лимит, количество ограничивается числом кораблей на луне.
  * @param {import('playwright').BrowserContext} context
  * @param {Object} config
  */
@@ -25,45 +41,65 @@ async function getExpeditionPlan(context, config) {
   const html = await fetchHtml(context, `/fleet.php?cp=${moonCp}`);
   const fleet = parseFleet(html);
 
-  const shipName = config.expedition.shipName;
-  const shipId = config.shipIds ? config.shipIds[shipName] || null : null;
-  const liveShip = (fleet.ships || []).find((s) => s.name === shipName);
-  const dockShip = (fleet.dockShips || []).find((s) => s.name === shipName);
-  const availableShips =
-    liveShip && liveShip.available != null
-      ? Number(liveShip.available)
-      : dockShip && dockShip.available != null
-        ? Number(dockShip.available)
-        : 0;
+  const requested = resolveRequestedShips(config);
 
-  const requestedCount = config.expedition.shipCount;
-  const resolvedCount =
-    requestedCount === "all" ||
-    requestedCount === "ALL" ||
-    requestedCount === null ||
-    requestedCount === undefined ||
-    requestedCount === ""
-      ? "all"
-      : Number(requestedCount);
+  // Для каждого запрошенного типа: id, доступные на луне/в доке, эффективное кол-во
+  const ships = requested.map((item) => {
+    const shipName = item.name;
+    const shipId = config.shipIds ? config.shipIds[shipName] || null : null;
+    const liveShip = (fleet.ships || []).find((s) => s.name === shipName);
+    const dockShip = (fleet.dockShips || []).find((s) => s.name === shipName);
+    const availableShips =
+      liveShip && liveShip.available != null
+        ? Number(liveShip.available)
+        : dockShip && dockShip.available != null
+          ? Number(dockShip.available)
+          : 0;
+
+    const raw = item.count;
+    const isAll =
+      raw === "all" ||
+      raw === "ALL" ||
+      raw == null ||
+      raw === undefined ||
+      raw === "";
+    const requestedCount = isAll ? "all" : Number(raw);
+    const effective = isAll
+      ? availableShips
+      : Math.min(Number(requestedCount) || 0, availableShips);
+
+    return {
+      name: shipName,
+      shipId,
+      requested: requestedCount,
+      available: availableShips,
+      effective,
+    };
+  });
 
   const reasons = [];
   if (!config.expedition.enabled) reasons.push("expedition disabled");
   if (!moonCp) reasons.push("missing moonCp");
   if (!config.expedition.targets || config.expedition.targets.length === 0)
     reasons.push("missing target");
-  if (!shipId) reasons.push(`unknown shipId for ${shipName}`);
+  if (ships.length === 0) reasons.push("no ship types configured");
+  for (const s of ships) {
+    if (!s.shipId) reasons.push(`unknown shipId for ${s.name}`);
+  }
   if ((fleet.freeExpeditionSlots || 0) <= 0)
     reasons.push("no free expedition slots");
-  if (availableShips <= 0) reasons.push("no ships available on moon");
-  if (
-    resolvedCount !== "all" &&
-    (!Number.isFinite(Number(resolvedCount)) || Number(resolvedCount) <= 0)
-  ) {
-    reasons.push("invalid ship limit");
+  if (ships.length > 0 && ships.every((s) => s.effective <= 0))
+    reasons.push("no ships available on moon");
+  for (const s of ships) {
+    if (Number.isFinite(Number(s.requested)) && Number(s.requested) <= 0)
+      reasons.push(`invalid ship limit for ${s.name}`);
   }
 
   const ready = reasons.length === 0;
   const effectiveDryRun = Boolean(config.expedition.dryRun) || !ready;
+
+  // legacy-поля плана — первый тип (для совместимости логов/отладки)
+  const first = ships[0] || { name: null, shipId: null, requested: "all", available: 0, effective: 0 };
 
   return {
     fromMoonCp: moonCp,
@@ -75,10 +111,11 @@ async function getExpeditionPlan(context, config) {
     fleetFree: fleet.freeSlots,
     fleetMax: fleet.fleetMax,
     target: config.expedition.targets[0],
-    shipName,
-    shipId,
-    shipCount: resolvedCount,
-    availableShips,
+    ships,
+    shipName: first.name,
+    shipId: first.shipId,
+    shipCount: first.requested,
+    availableShips: first.available,
     ready,
     readinessReasons: reasons,
     dryRun: effectiveDryRun,
@@ -105,9 +142,11 @@ async function launchExpeditions(context, config) {
   console.log(`🚀 [expedition] Свободных слотов: ${plan.freeSlots}. План:`);
   console.log(`   Откуда: ${plan.fromCoords} (cp=${plan.fromMoonCp})`);
   console.log(`   Куда:     ${plan.target}`);
-  console.log(
-    `   Корабль:  ${plan.shipName} (id=${plan.shipId}), лимит=${plan.shipCount}, реально на луне=${plan.availableShips}`,
-  );
+  for (const s of plan.ships) {
+    console.log(
+      `   Корабль:  ${s.name} (id=${s.shipId}), лимит=${s.requested}, на луне=${s.available}, отправим=${s.effective}`,
+    );
+  }
 
   if (plan.readinessReasons && plan.readinessReasons.length) {
     console.log(
@@ -144,23 +183,21 @@ async function doRealLaunch(context, config, plan) {
   try {
     await blockResources(page);
 
-    const shipId = plan.shipId;
-    if (!shipId) {
-      console.error(
-        `❌ [expedition] Неизвестный shipId для "${plan.shipName}" — добавьте в config.shipIds.`,
-      );
+    // Смешанный флот: все типы с effective > 0. Типы без shipId пропускаем.
+    const shipsMap = {};
+    for (const s of plan.ships || []) {
+      if (!s.shipId) {
+        console.warn(
+          `⚠️ [expedition] Неизвестный shipId для "${s.name}" — тип пропускается (добавьте в config.shipIds).`,
+        );
+        continue;
+      }
+      if (s.effective > 0) shipsMap[s.shipId] = s.effective;
+    }
+    if (!Object.keys(shipsMap).length) {
+      console.error("❌ [expedition] Нет кораблей для отправки (все типы пустые) — пропускаем.");
       return;
     }
-
-    const rawRequested =
-      plan.shipCount === "all" || plan.shipCount === "ALL"
-        ? Number.MAX_SAFE_INTEGER
-        : Number(plan.shipCount) || 0;
-    const available = Number(plan.availableShips || 0);
-    const requestedCount =
-      Number.isFinite(available) && available > 0
-        ? Math.min(rawRequested, available)
-        : rawRequested;
 
     const targetParts = String(plan.target || "")
       .split(":")
@@ -192,15 +229,18 @@ async function doRealLaunch(context, config, plan) {
           : { galaxy: 1, system: 363, planet: 6, planettype: 1 };
       })();
 
+    const shipsSummary = Object.entries(shipsMap)
+      .map(([id, count]) => `ship${id}=${count}`)
+      .join(", ");
     console.log(
-      `🚀 [expedition] Реальный запуск через mission-sender: target=${finalTarget.galaxy}:${finalTarget.system}:${finalTarget.planet} mission=${targetMission} ship${shipId}=${requestedCount}`,
+      `🚀 [expedition] Реальный запуск через mission-sender: target=${finalTarget.galaxy}:${finalTarget.system}:${finalTarget.planet} mission=${targetMission} ${shipsSummary}`,
     );
 
     const result = await sendMission(context, {
       fromCp: plan.fromMoonCp,
       target: finalTarget,
       mission: targetMission,
-      ships: { [shipId]: requestedCount },
+      ships: shipsMap,
       page,
       moreFL: 0,
       dryRun: false,

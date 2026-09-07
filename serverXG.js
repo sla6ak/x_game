@@ -10,10 +10,11 @@ const path = require("path");
 const dotenv = require("dotenv");
 const { chromium } = require("playwright");
 const { ensureLoggedIn } = require("./app/session-manager");
-const { botLoop } = require("./app/bot-loop");
+const { botLoop, isSessionExpired } = require("./app/bot-loop");
 const logger = require("./app/logger");
 const { loadConfig, loadBotControls } = require("./app/helpers/config");
 const { handleControlsRequest } = require("./app/web/controls");
+const { ensureLoggedInResilient } = require("./app/helpers/reconnect");
 
 dotenv.config({ path: path.join(__dirname, ".env") });
 
@@ -42,12 +43,13 @@ function resolveHeadless() {
  */
 function startHealthServer(port) {
   let lastTick = null;
+  let waitingForGame = false;
   const server = http.createServer((req, res) => {
     if (req.url === "/health" || req.url === "/") {
       res.writeHead(200, { "content-type": "application/json" });
       res.end(
         JSON.stringify({
-          status: "ok",
+          status: waitingForGame ? "waiting_for_game" : "ok",
           uptime_s: Math.round(process.uptime()),
           last_tick: lastTick,
           controls: loadBotControls(),
@@ -70,7 +72,11 @@ function startHealthServer(port) {
       `🌐 [server] Живая страница: http://localhost:${port}/controls`,
     );
   });
-  return { server, setLastTick: (t) => (lastTick = t) };
+  return {
+    server,
+    setLastTick: (t) => (lastTick = t),
+    setWaitingForGame: (v) => (waitingForGame = !!v),
+  };
 }
 
 async function main() {
@@ -107,47 +113,53 @@ async function main() {
   }
   const health = port ? startHealthServer(port) : null;
 
+  // Обработчик тика: консоль + health-эндпоинт
+  const onTick = (tick) => {
+    const m = tick.missions || {};
+    const f = tick.farm && tick.farm.conditions;
+    const s = tick.safety;
+    console.log(
+      `📊 [tick] миссий: ${m.total || 0} ` +
+        `(${Object.entries(m.byType || {})
+          .map(([k, v]) => `${k}:${v}`)
+          .join(" ")}), ` +
+        `атаки: ${(s && s.incoming) || 0}` +
+        (f
+          ? ` | farm: слоты=${f.freeSlots ?? "?"}/${f.fleetMax ?? "?"}, линкоры=${f.battleships ?? "?"}${f.ok ? " ✅" : " ❌ " + f.reasons.join("; ")}`
+          : ""),
+    );
+    if (health) health.setLastTick(tick);
+  };
+
   try {
-    // ШАГ 1: сессия
-    let ok = await ensureLoggedIn(context);
+    // ШАГ 1: сессия. Если игра недоступна — ждём и переподключаемся
+    // каждые RECONNECT_INTERVAL_MS (по умолчанию 10 мин), а не падаем.
+    const ok = await ensureLoggedInResilient(ensureLoggedIn, context, {
+      stop: () => stopped,
+      onWaiting: (waiting) => {
+        if (health) health.setWaitingForGame(waiting);
+      },
+    });
     if (!ok) {
-      logger.error("Авторизация не удалась — все попытки исчерпаны");
-      await browser.close();
-      process.exit(1);
+      // Остановка по SIGINT/SIGTERM — выходим штатно
+      console.log("👋 [server] Остановлено — не запускаем цикл");
+      return;
     }
 
     // ШАГ 2: главный цикл
-    await botLoop(context, config, {
-      stop: () => stopped,
-      onTick: (tick) => {
-        const m = tick.missions || {};
-        const f = tick.farm && tick.farm.conditions;
-        const s = tick.safety;
-        console.log(
-          `📊 [tick] миссий: ${m.total || 0} ` +
-            `(${Object.entries(m.byType || {})
-              .map(([k, v]) => `${k}:${v}`)
-              .join(" ")}), ` +
-            `атаки: ${(s && s.incoming) || 0}` +
-            (f
-              ? ` | farm: слоты=${f.freeSlots ?? "?"}/${f.fleetMax ?? "?"}, линкоры=${f.battleships ?? "?"}${f.ok ? " ✅" : " ❌ " + f.reasons.join("; ")}`
-              : ""),
-        );
-        if (health) health.setLastTick(tick);
-      },
-    });
+    await botLoop(context, config, { stop: () => stopped, onTick });
   } catch (err) {
-    if (err && err.code === "SESSION_EXPIRED") {
+    if (isSessionExpired(err)) {
       console.warn("⚠️ [server] Сессия истекла — повторяем логин");
-      const ok = await ensureLoggedIn(context);
+      const ok = await ensureLoggedInResilient(ensureLoggedIn, context, {
+        stop: () => stopped,
+        onWaiting: (waiting) => {
+          if (health) health.setWaitingForGame(waiting);
+        },
+      });
       if (ok) {
         console.log("✅ [server] Сессия восстановлена, продолжаем");
-        await botLoop(context, config, {
-          stop: () => stopped,
-          onTick: (tick) => {
-            if (health) health.setLastTick(tick);
-          },
-        });
+        await botLoop(context, config, { stop: () => stopped, onTick });
       }
     } else {
       logger.error(`Критическая ошибка: ${err.message}`, err);

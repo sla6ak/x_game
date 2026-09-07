@@ -16,7 +16,20 @@ const { runFarmCycle } = require("./farm");
 const { launchExpeditions } = require("./expedition");
 const { delay, randomizeMs } = require("./helpers/async");
 const { loadBotControls } = require("./helpers/config");
+const { isNetworkError } = require("./helpers/reconnect");
 const dataStore = require("./data-store");
+
+/**
+ * Признак истёкшей сессии: err.code === "SESSION_EXPIRED"
+ * или сообщение с этим маркером (запасной вариант).
+ */
+function isSessionExpired(e) {
+  return (
+    !!e &&
+    (e.code === "SESSION_EXPIRED" ||
+      /SESSION_EXPIRED/.test(String(e.message || "")))
+  );
+}
 
 /**
  * Один итерация цикла.
@@ -42,20 +55,27 @@ async function botTick(context, config) {
     enabled: !!controls.farm,
     minFreeSlots: reserveSlots,
     slotsFL: reserveSlots,
+    shipName: controls.farmShipName || config.farm?.shipName || "Линкор",
   };
   config.expedition = {
     ...(config.expedition || {}),
     enabled: !!controls.expedition,
-    shipCount:
-      Number.isFinite(Number(controls.expeditionShipCount)) &&
-      Number(controls.expeditionShipCount) > 0
-        ? Number(controls.expeditionShipCount)
-        : (config.expedition?.shipCount ?? 500000000000),
+    // Новый формат: список типов кораблей [{ name, count }].
+    // loadBotControls гарантирует непустой expeditionShips (fallback из legacy).
+    ships: Array.isArray(controls.expeditionShips) && controls.expeditionShips.length
+      ? controls.expeditionShips
+      : [{ name: "Линкор", count: 500000000000 }],
   };
   config.safety = { ...(config.safety || {}), enabled: !!controls.safety };
 
+  const expSummary = (Array.isArray(controls.expeditionShips) && controls.expeditionShips.length
+    ? controls.expeditionShips
+    : [{ name: "Линкор", count: 500000000000 }]
+  )
+    .map((s) => `${s.name}×${Number(s.count) / 1e9}e9`)
+    .join(", ");
   console.log(
-    `🔘 [loop] флаги: farm=${!!controls.farm ? "ON" : "OFF"}, expedition=${!!controls.expedition ? "ON" : "OFF"}, safety=${!!controls.safety ? "ON" : "OFF"}; reserveSlots=${reserveSlots}`,
+    `🔘 [loop] флаги: farm=${!!controls.farm ? "ON" : "OFF"} (${config.farm.shipName}), expedition=${!!controls.expedition ? "ON" : "OFF"} (${expSummary}), safety=${!!controls.safety ? "ON" : "OFF"}; reserveSlots=${reserveSlots}`,
   );
 
   // 1. Миссии (всегда)
@@ -130,11 +150,19 @@ async function botLoop(context, config, opts = {}) {
       const tick = await botTick(context, config);
       if (opts.onTick) opts.onTick(tick);
     } catch (e) {
-      if (e && e.code === "SESSION_EXPIRED") {
+      if (isSessionExpired(e)) {
         console.warn("⚠️ Сессия истекла — требуется повторный логин");
         throw e;
       }
-      console.error(`❌ Ошибка цикла: ${e.message}\n${e.stack}`);
+      if (isNetworkError(e)) {
+        // Игра недоступна (работы/авария) — не критично: цикл живёт
+        // и будет пробовать каждый тик, пока игра не заработает.
+        console.warn(
+          `🌐 [loop] Игра недоступна: ${e.message} — продолжу попытки на следующем тике`,
+        );
+      } else {
+        console.error(`❌ Ошибка цикла: ${e.message}\n${e.stack}`);
+      }
     }
     const elapsed = Date.now() - started;
     const nextDelay = Math.max(5000, interval - elapsed);
@@ -142,4 +170,4 @@ async function botLoop(context, config, opts = {}) {
   }
 }
 
-module.exports = { botTick, botLoop };
+module.exports = { botTick, botLoop, isSessionExpired };

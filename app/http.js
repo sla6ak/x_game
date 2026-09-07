@@ -48,9 +48,12 @@ async function fetchHtml(context, urlPath) {
   if (status !== 200) {
     throw new Error(`HTTP ${status} для ${url}`);
   }
-  // Если вернулась страница логина — сессия протухла
+  // Если вернулась страница логина — сессия протухла.
+  // ВАЖНО: ставим err.code — bot-loop.js и serverXG.js проверяют именно его.
   if (html.includes("login.php") && html.includes('name="aAt"')) {
-    throw new Error("SESSION_EXPIRED: страница вернула форму логина");
+    const err = new Error("SESSION_EXPIRED: страница вернула форму логина");
+    err.code = "SESSION_EXPIRED";
+    throw err;
   }
   return html;
 }

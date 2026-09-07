@@ -7,6 +7,14 @@
  *  2. Если ближайшая атака < warnBeforeMs (15 мин) — эвакуация на случайную другую луну.
  *  3. Скорость 10%, миссия «Оставить», ресурсы: алмазы → уран (−keep / половина) → металл.
  *  4. Когда атаки на главную луну закончились — отзыв/возврат флота домой.
+ *
+ * ВАЖНО: проверки «уже эвакуирован» НЕТ — спасение флота первостепенно.
+ * Бот ВСЕГДА пытается эвакуировать флот при срочной атаке. Дублирование запуска
+ * предотвращается естественной проверкой «есть ли корабли на луне»:
+ *  - после успешной эвакуации на луне кораблей нет → пропускаем;
+ *  - если предыдущий запуск не удался — корабли на месте → повторяем.
+ * Запись state.safety.evacuated пишется ТОЛЬКО при реальной отправке (не dry-run).
+ * Устаревшие записи (флота нет ни в полёте, ни на целевом теле) удаляются.
  */
 
 const { fetchHtml } = require("./http");
@@ -73,6 +81,32 @@ function expandIncoming(html, incoming) {
 }
 
 /**
+ * Есть ли на теле (cp) эвакуированный флот?
+ * Сравниваем доступные корабли с ev.ships: если по какому-либо типу доступно
+ * >= 50% от эвакуированного количества — считаем, что флот на месте.
+ * При ошибке чтения возвращаем true (безопаснее оставить запись и повторить).
+ */
+async function fleetAtDestination(context, ev) {
+  try {
+    const html = await fetchHtml(context, `/fleet.php?cp=${ev.moonCp}`);
+    const fleet = parseFleet(html);
+    const available = {};
+    for (const s of fleet.ships || []) {
+      const n = parseInt(s.available || "0", 10);
+      if (n > 0 && s.id) available[s.id] = n;
+    }
+    for (const [id, count] of Object.entries(ev.ships || {})) {
+      const need = Math.ceil((parseInt(count, 10) || 0) / 2);
+      if (need > 0 && (available[id] || 0) >= need) return true;
+    }
+    return false;
+  } catch (e) {
+    console.warn(`🛡️ [safety] Не удалось прочитать флот cp=${ev.moonCp}: ${e.message}`);
+    return true;
+  }
+}
+
+/**
  * Основной цикл сейва.
  */
 async function runSafetyCheck(context, config, missionsData) {
@@ -126,6 +160,7 @@ async function runSafetyCheck(context, config, missionsData) {
     let returnedHome = 0;
     for (const [coords, ev] of Object.entries(state.safety.evacuated)) {
       let active = null;
+      let fleetReadOk = true;
       const searchCp = ev.fromCp || homeMoonCp;
       if (searchCp) {
         try {
@@ -140,18 +175,21 @@ async function runSafetyCheck(context, config, missionsData) {
               normalizeCoords(m.to) === toN,
           );
         } catch (e) {
+          fleetReadOk = false;
           console.warn(`🛡️ [safety] Не удалось прочитать флот cp=${searchCp}: ${e.message}`);
         }
       }
 
       if (active) {
         const res = await recallMission(context, active.fleetId, { dryRun });
-        if (res.ok) {
+        if (res.ok && !res.dryRun) {
           delete state.safety.evacuated[coords];
           returnedHome++;
           console.log(
-            `🛡️ [safety] Отзыв «Оставить» (флот ${active.fleetId}, ${coords} → ${ev.moonCoords}) — возврат домой [${dryRun ? "dry-run" : "sent"}]`,
+            `🛡️ [safety] Отзыв «Оставить» (флот ${active.fleetId}, ${coords} → ${ev.moonCoords}) — возврат домой [sent]`,
           );
+        } else if (res.ok) {
+          console.log(`🛡️ [safety] dry-run: отзыв миссии ${active.fleetId} (${coords} → ${ev.moonCoords}) — состояние не меняем`);
         } else {
           console.warn(`❌ [safety] Отзыв миссии ${coords} не удался: ${res.error}`);
         }
@@ -171,14 +209,25 @@ async function runSafetyCheck(context, config, missionsData) {
         resources: { maxAll: true, keepUranium },
         dryRun,
       });
-      if (res.ok) {
+      if (res.ok && !res.dryRun) {
         delete state.safety.evacuated[coords];
         returnedHome++;
-        console.log(
-          `🛡️ [safety] Флот возвращается: ${ev.moonCoords} → ${homeCoords}* [${dryRun ? "dry-run" : "sent"}]`,
+        console.log(`🛡️ [safety] Флот возвращается: ${ev.moonCoords} → ${homeCoords}* [sent]`);
+      } else if (res.ok) {
+        console.log(`🛡️ [safety] dry-run: возврат ${ev.moonCoords} → ${homeCoords}* — состояние не меняем`);
+      } else if (fleetReadOk && ev.moonCp && !(await fleetAtDestination(context, ev))) {
+        // Возврат не удался И на целевом теле эвакуированного флота НЕТ —
+        // запись устарела (например, осталась от dry-run, который флот не отправил).
+        // Удаляем: иначе она будет засорять следующие циклы.
+        console.warn(
+          `🛡️ [safety] ${coords}*: запись «эвакуирован» устарела (на ${ev.moonCoords} флота нет) — удаляю`,
         );
+        delete state.safety.evacuated[coords];
       } else {
-        console.warn(`❌ [safety] Возврат с ${ev.moonCoords} не удался (стадия ${res.stage}): ${res.error}`);
+        console.warn(
+          `❌ [safety] Возврат с ${ev.moonCoords} не удался (стадия ${res.stage}): ${res.error}` +
+            (ev.moonCp ? " — флот на месте, повторим позже" : ""),
+        );
       }
     }
 
@@ -211,10 +260,12 @@ async function runSafetyCheck(context, config, missionsData) {
     return report;
   }
 
+  // ВАЖНО: проверки «уже эвакуирован» НЕТ — спасение флота первостепенно.
+  // Дублирование запуска предотвращается естественной проверкой «есть ли корабли
+  // на луне»: после успешной эвакуации на луне кораблей нет → пропускаем;
+  // если предыдущий запуск не удался — корабли на месте → повторяем.
   if (state.safety.evacuated[homeCoords]) {
-    console.log(`🛡️ [safety] ${homeCoords}*: уже эвакуирован`);
-    dataStore.save(state);
-    return report;
+    console.log(`🛡️ [safety] ${homeCoords}*: есть старая запись об эвакуации — проверяем флот на луне`);
   }
 
   const moon = pickRandomSafeMoon(bodies, attackedCoords, { excludeHome: homeCoords });
@@ -232,7 +283,9 @@ async function runSafetyCheck(context, config, missionsData) {
     if (n > 0 && s.id) ships[s.id] = n;
   }
   if (!Object.keys(ships).length) {
-    console.warn(`🛡️ [safety] ${homeCoords}*: на главной луне нет кораблей для эвакуации`);
+    console.log(
+      `🛡️ [safety] ${homeCoords}*: на главной луне нет кораблей — флот, вероятно, уже в полёте/на другой луне`,
+    );
     dataStore.save(state);
     return report;
   }
@@ -249,21 +302,28 @@ async function runSafetyCheck(context, config, missionsData) {
   });
 
   if (res.ok) {
-    state.safety.evacuated[homeCoords] = {
-      at: Date.now(),
-      fromCp: homeMoonCp,
-      fromCoords: homeCoords,
-      moonCp: moon.moon_cp,
-      moonCoords: moon.coords,
-      ships,
-    };
-    report.evacuated.push({ coords: homeCoords, moon: moon.coords, dryRun });
-    fleetState.setMainFleet(moon.moon_cp, moon.coords, { cp: homeMoonCp, coords: homeCoords });
+    // Состояние «эвакуирован» и положение основного флота меняем ТОЛЬКО при
+    // реальной отправке. Dry-run флот НЕ отправляет — именно dry-run-запись
+    // из прошлого цикла блокировала реальную эвакуацию («уже эвакуирован»).
+    if (!res.dryRun) {
+      state.safety.evacuated[homeCoords] = {
+        at: Date.now(),
+        fromCp: homeMoonCp,
+        fromCoords: homeCoords,
+        moonCp: moon.moon_cp,
+        moonCoords: moon.coords,
+        ships,
+      };
+      fleetState.setMainFleet(moon.moon_cp, moon.coords, { cp: homeMoonCp, coords: homeCoords });
+    }
+    report.evacuated.push({ coords: homeCoords, moon: moon.coords, dryRun: !!res.dryRun });
     console.log(
-      `🛡️ [safety] ЭВАКУАЦИЯ ${homeCoords}* → ${moon.coords}*, скорость ${evacSpeed}%, «Оставить» [${dryRun ? "dry-run" : "sent"}]`,
+      `🛡️ [safety] ЭВАКУАЦИЯ ${homeCoords}* → ${moon.coords}*, скорость ${evacSpeed}%, «Оставить» [${res.dryRun ? "dry-run" : "sent"}]`,
     );
   } else {
-    console.warn(`❌ [safety] Эвакуация не удалась (стадия ${res.stage}): ${res.error}`);
+    console.warn(
+      `❌ [safety] Эвакуация не удалась (стадия ${res.stage}): ${res.error} — повторим на следующем тике`,
+    );
   }
 
   dataStore.save(state);
@@ -275,4 +335,5 @@ module.exports = {
   expandIncoming,
   parseArrivalTimeMs,
   enrichEta,
+  fleetAtDestination,
 };

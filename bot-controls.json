@@ -1,7 +1,25 @@
 {
-  "farm": true,
-  "expedition": true,
+  "farm": false,
+  "expedition": false,
   "safety": true,
-  "expeditionShipCount": 700000000000,
-  "farmReserveSlots": 10
+  "expeditionShips": [
+    {
+      "name": "Линкор",
+      "count": 300000000000
+    },
+    {
+      "name": "Броненосец",
+      "count": 3000000000
+    },
+    {
+      "name": "Эсминец",
+      "count": 2000000000
+    },
+    {
+      "name": "Крейсер",
+      "count": 7000000000
+    }
+  ],
+  "farmReserveSlots": 10,
+  "farmShipName": "Линкор"
 }
