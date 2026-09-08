@@ -100,24 +100,70 @@ function parseActiveFleets(html) {
  */
 function parseActiveMissions(html) {
   const missions = [];
-  const chunks = html.split(/<tr[\s>]/);
-  for (const chunk of chunks) {
-    const fm = chunk.match(/name="fleetback_(\d+)"/);
-    if (!fm) continue;
-    const fleetId = fm[1];
-    const text = chunk.replace(/<[^>]+>/g, " ");
-    // координаты вида [1:363:6] или [1:363:6]* (луна)
+  // ВАЖНО: нельзя резать html по <tr> — в тултипах overlib внутри атрибутов
+  // есть литеральные <tr> (например '<table width=100><tr><td class=h>08.09
+  // 06:08:45</td></tr></table>'), и split разрезает строку миссии посередине.
+  // Структура строки (данные ПЕРЕД формой fleetback_):
+  //   <th>№</th><th флот (тултип с кораблями)></th><th тип>Оставить</th>
+  //   <th численность</th><th [g:s:p]* источник (тултип: время прибытия)</th>
+  //   <th>— или время возврата</th><th [g:s:p]* цель или "-" (докован)</th>
+  //   <th><form name="fleetback_ID"><input fleetid>…
+  // Для каждой формы берём сегмент от предыдущей формы до этой — он содержит
+  // только текущую строку (форма предыдущей строки — в конце предыдущей).
+  const forms = [...html.matchAll(/name="fleetback_(\d+)"/g)];
+  for (let i = 0; i < forms.length; i++) {
+    const segStart = i > 0 ? forms[i - 1].index : 0;
+    const segEnd = Math.min(html.length, forms[i].index + 500);
+    const seg = html.substring(segStart, segEnd);
+    const text = seg
+      .replace(/\son(?:mouseover|mouseout|mousemove|click|focus|blur)="[^"]*"/g, " ")
+      .replace(/\stitle="[^"]*"/g, " ")
+      .replace(/<script[\s\S]*?<\/script>/g, " ")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;/g, " ")
+      .replace(/&amp;/g, "&")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    // Координаты: последние две в сегменте = [источник, цель] этой строки.
+    // У докованного флота цели нет (ячейка "-") → to = null.
     const coords = [...text.matchAll(/\[(\d+):(\d+):(\d+)(\*\d*)?\]/g)].map(
-      (x) => `${x[1]}:${x[2]}:${x[3]}`,
+      (c) => c[0].slice(1, -1),
     );
-    const typeM = text.match(
-      /Экспедиция|Атаковать|Атака|Транспорт|Оставить|Шпионаж|Добыча ТМ|Ишкофарм/,
-    );
+    let from = null;
+    let to = null;
+    if (coords.length >= 2) {
+      from = coords[coords.length - 2];
+      to = coords[coords.length - 1];
+    } else if (coords.length === 1) {
+      from = coords[0];
+    }
+
+    // Тип: ищем в хвостовом окне (ячейка типа — сразу перед координатами).
+    const typeWindow = text.substring(Math.max(0, text.length - 1500));
+    const TYPE_KEYWORDS = [
+      [/экспедиц/i, "expedition"],
+      [/атак|штурм/i, "attack"],
+      [/шпионаж|разведк/i, "spy"],
+      [/трансп|доставк/i, "transport"],
+      [/перераб/i, "recycle"],
+      [/добыч|ресурс|металл|уран|алмаз/i, "harvest"],
+      [/остав/i, "leave"],
+      [/возврат|возвраща/i, "return"],
+    ];
+    let type = null;
+    for (const [re, t] of TYPE_KEYWORDS) {
+      if (re.test(typeWindow)) {
+        type = t;
+        break;
+      }
+    }
+
     missions.push({
-      fleetId,
-      type: typeM ? typeM[0] : "unknown",
-      from: coords[0] || null,
-      to: coords[1] || null,
+      fleetId: forms[i][1],
+      type: type || "unknown",
+      from,
+      to,
     });
   }
   return missions;

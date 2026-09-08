@@ -1,0 +1,301 @@
+{
+  "fields": {
+    "thisresource1": {
+      "type": "hidden",
+      "value": "3753100045780300",
+      "title": null
+    },
+    "thisresource2": {
+      "type": "hidden",
+      "value": "97236772613103",
+      "title": null
+    },
+    "thisresource3": {
+      "type": "hidden",
+      "value": "645525618253420",
+      "title": null
+    },
+    "consumption": {
+      "type": "hidden",
+      "value": "12",
+      "title": null
+    },
+    "dist": {
+      "type": "hidden",
+      "value": "35023",
+      "title": null
+    },
+    "acs": {
+      "type": "hidden",
+      "value": "0",
+      "title": null
+    },
+    "speedfactor": {
+      "type": "hidden",
+      "value": "3",
+      "title": null
+    },
+    "thisgalaxy": {
+      "type": "hidden",
+      "value": "1",
+      "title": null
+    },
+    "thissystem": {
+      "type": "hidden",
+      "value": "363",
+      "title": null
+    },
+    "thisplanet": {
+      "type": "hidden",
+      "value": "6",
+      "title": null
+    },
+    "galaxy": {
+      "type": "hidden",
+      "value": "1",
+      "title": null
+    },
+    "system": {
+      "type": "hidden",
+      "value": "918",
+      "title": null
+    },
+    "planet": {
+      "type": "hidden",
+      "value": "1",
+      "title": null
+    },
+    "thisplanettype": {
+      "type": "hidden",
+      "value": "3",
+      "title": null
+    },
+    "planettype": {
+      "type": "hidden",
+      "value": "3",
+      "title": null
+    },
+    "mt": {
+      "type": "hidden",
+      "value": "0",
+      "title": null
+    },
+    "bt": {
+      "type": "hidden",
+      "value": "0",
+      "title": null
+    },
+    "speedallsmin": {
+      "type": "hidden",
+      "value": "115000",
+      "title": null
+    },
+    "speed": {
+      "type": "hidden",
+      "value": "10",
+      "title": null
+    },
+    "usedfleet": {
+      "type": "hidden",
+      "value": "LGbkBagcBwVjAmgcBwR7sD==",
+      "title": null
+    },
+    "maxepedition": {
+      "type": "hidden",
+      "value": "6",
+      "title": null
+    },
+    "curepedition": {
+      "type": "hidden",
+      "value": "6",
+      "title": null
+    },
+    "asteroid": {
+      "type": "hidden",
+      "value": "0",
+      "title": null
+    },
+    "target_mission": {
+      "type": "hidden",
+      "value": "4",
+      "title": null
+    },
+    "ship207": {
+      "type": "hidden",
+      "value": "1",
+      "title": null
+    },
+    "capacity207": {
+      "type": "hidden",
+      "value": "1530",
+      "title": null
+    },
+    "consumption207": {
+      "type": "hidden",
+      "value": "500",
+      "title": null
+    },
+    "speed207": {
+      "type": "hidden",
+      "value": "115000",
+      "title": null
+    },
+    "uran_defend": {
+      "type": "hidden",
+      "value": "0",
+      "title": null
+    },
+    "art_uskor": {
+      "type": "hidden",
+      "value": "1",
+      "title": null
+    },
+    "col_lvl": {
+      "type": "hidden",
+      "value": "28",
+      "title": null
+    },
+    "ally_b1": {
+      "type": "hidden",
+      "value": "",
+      "title": null
+    },
+    "race_potr": {
+      "type": "hidden",
+      "value": "0",
+      "title": null
+    },
+    "art_potr": {
+      "type": "hidden",
+      "value": "4",
+      "title": null
+    },
+    "captain_skill_1": {
+      "type": "hidden",
+      "value": "",
+      "title": null
+    },
+    "art_otrajat": {
+      "type": "hidden",
+      "value": "1",
+      "title": null
+    },
+    "client_time_1": {
+      "type": "hidden",
+      "value": "0",
+      "title": null
+    },
+    "client_time_2": {
+      "type": "hidden",
+      "value": "0",
+      "title": null
+    },
+    "mission": {
+      "type": "radio",
+      "value": "4",
+      "title": null
+    },
+    "resource1": {
+      "type": "text",
+      "value": "",
+      "title": null
+    },
+    "resource2": {
+      "type": "text",
+      "value": "0",
+      "title": null
+    },
+    "resource3": {
+      "type": "text",
+      "value": "0",
+      "title": null
+    },
+    "submit": {
+      "type": "submit",
+      "value": "[ Отправить ]",
+      "title": null
+    }
+  },
+  "clickables": [
+    {
+      "tag": "A",
+      "text": "",
+      "onclick": "anchorOffset('modalDown')",
+      "title": "Вниз ▼"
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "onclick": "modalClose()",
+      "title": "Закрыть ×"
+    },
+    {
+      "tag": "A",
+      "text": "[1:363:6]",
+      "onclick": null,
+      "title": null
+    },
+    {
+      "tag": "A",
+      "text": "[1:918:1]",
+      "onclick": null,
+      "title": null
+    },
+    {
+      "tag": "A",
+      "text": "max",
+      "onclick": "maxResource('1');",
+      "title": null
+    },
+    {
+      "tag": "A",
+      "text": "min",
+      "onclick": "minResource('1');",
+      "title": null
+    },
+    {
+      "tag": "A",
+      "text": "max",
+      "onclick": "maxResource('2');",
+      "title": null
+    },
+    {
+      "tag": "A",
+      "text": "min",
+      "onclick": "minResource('2');",
+      "title": null
+    },
+    {
+      "tag": "A",
+      "text": "max",
+      "onclick": "maxResource('3');",
+      "title": null
+    },
+    {
+      "tag": "A",
+      "text": "min",
+      "onclick": "minResource('3');",
+      "title": null
+    },
+    {
+      "tag": "A",
+      "text": "Взять все ресурсы",
+      "onclick": "maxResources()",
+      "title": null
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "onclick": "anchorOffset('modalUp')",
+      "title": "Вверх ▲"
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "onclick": "modalClose()",
+      "title": "Закрыть ×"
+    }
+  ],
+  "fns": [],
+  "scripts": []
+}

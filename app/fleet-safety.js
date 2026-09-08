@@ -5,7 +5,11 @@
  *  1. На overview ищем «Чужой флот» только на ГЛАВНОЙ ЛУНЕ (config.home + moonCp).
  *     Атаки на другие луны/планеты — только лог, без действий.
  *  2. Если ближайшая атака < warnBeforeMs (15 мин) — эвакуация на случайную другую луну.
- *  3. Скорость 10%, миссия «Оставить», ресурсы: алмазы → уран (−keep / половина) → металл.
+ *  3. Скорость 10%, миссия «Оставить», ресурсы — поведение кнопки «max»:
+ *     заполнить флот ВСЕМ доступным (алмазы, уран − несгораемый keep, металл),
+ *     уместив во вместимость. Если сервер говорит «Недостаточно места: N» —
+ *     mission-sender повторяет с точной вместимостью (отправлено − N − 1).
+ *     Флот ВСЕГДА улетает: ресурсы второстепенны, главное — спасти флот.
  *  4. Когда атаки на главную луну закончились — отзыв/возврат флота домой.
  *
  * ВАЖНО: проверки «уже эвакуирован» НЕТ — спасение флота первостепенно.
@@ -18,7 +22,7 @@
  */
 
 const { fetchHtml } = require("./http");
-const { parseAttacks, parseMissionEtaMs } = require("./parsers/overview");
+const { parseAttacks, parseMissionEtaMs, parseOverview } = require("./parsers/overview");
 const { parseFleet, parseActiveMissions } = require("./parsers/fleet");
 const { pickRandomSafeMoon } = require("./bodies");
 const { sendMission, recallMission } = require("./mission-sender");
@@ -30,45 +34,118 @@ const fleetState = require("./fleet-state");
 
 /**
  * Время "HH:MM:SS" → ms до прибытия (сегодня или завтра).
+ * offsetMs — сдвиг игрового часового пояса (display time − machine time):
+ * время прибытия в overview/fleet-страницах — в ЧАСОВОМ ПОЯСЕ ИГРЫ (напр. UTC+3),
+ * а часы машины — UTC. Без offset "20:31" интерпретируется как машинное время
+ * и ETA получается на 3 часа неверной. Работаем в пространстве "игровых часов":
+ * nowGame = Date.now() + offsetMs.
  */
-function parseArrivalTimeMs(hhmmss) {
+function parseArrivalTimeMs(hhmmss, offsetMs = 0) {
   const parts = hhmmss.split(":").map(Number);
-  const target = new Date();
+  const nowGame = Date.now() + offsetMs;
+  const target = new Date(nowGame);
   target.setHours(parts[0] || 0, parts[1] || 0, parts[2] || 0, 0);
-  let diff = target.getTime() - Date.now();
+  let diff = target.getTime() - nowGame;
   if (diff < 0) diff += 24 * 3600 * 1000;
   return diff;
 }
 
 /**
  * Дополнить ETA атаки (если parseAttacks не нашёл счётчик).
+ * @returns {{ms: number|null, source: 'counter'|'time'|null}}
+ *   source="time" — ETA из абсолютного времени (зависит от offsetMs);
+ *   source="counter" — из реального pp-счётчика (offset не нужен).
  */
-function enrichEta(html, atk) {
-  if (atk.etaMs != null) return atk.etaMs;
+function enrichEta(html, atk, offsetMs = 0) {
+  if (atk.etaMs != null) return { ms: atk.etaMs, source: "counter" };
   const snippet = stripHtml(atk.snippet || "");
   const relM = snippet.match(/через\s+(\d+)\s*(мин|ч|минут|час)/i);
   if (relM) {
     const n = parseInt(relM[1], 10);
-    return /ч/i.test(relM[2]) ? n * 3600 * 1000 : n * 60 * 1000;
+    return { ms: /ч/i.test(relM[2]) ? n * 3600 * 1000 : n * 60 * 1000, source: "counter" };
   }
   const timeM = snippet.match(/\b(\d{1,2}:\d{2}(?::\d{2})?)\b/);
-  if (timeM) return parseArrivalTimeMs(timeM[1]);
-  if (html && atk.snippet) return parseMissionEtaMs(html, atk.snippet);
-  return null;
+  if (timeM) return { ms: parseArrivalTimeMs(timeM[1], offsetMs), source: "time" };
+  if (html && atk.snippet) {
+    const ms = parseMissionEtaMs(html, atk.snippet);
+    if (ms != null) return { ms, source: "counter" };
+  }
+  return { ms: null, source: null };
+}
+
+/**
+ * Сдвиг игрового часового пояса (display time − machine time), ms.
+ * Для миссий, у которых в тексте есть абсолютное время прибытия И рядом есть
+ * pp-счётчик (реальные секунды до прибытия): candidate = parseAsMachine(T) − (now + S).
+ */
+function deriveServerOffsetMs(html, missions) {
+  const now = Date.now();
+  const candidates = [];
+  for (const m of missions || []) {
+    const text = m.text || m.snippet || "";
+    const timeM = text.match(/\b(\d{1,2}:\d{2}(?::\d{2})?)\b/);
+    if (!timeM) continue;
+    const etaMs = parseMissionEtaMs(html, text);
+    if (etaMs == null) continue;
+    const parsed = parseArrivalTimeMs(timeM[1], 0); // как машинное время
+    if (parsed == null) continue;
+    const candidate = parsed - etaMs; // display − real = offset
+    if (Math.abs(candidate) < 14 * 3600 * 1000) candidates.push(candidate);
+  }
+  if (!candidates.length) return null;
+  candidates.sort((a, b) => a - b);
+  return Math.round(candidates[Math.floor(candidates.length / 2)] / 60000) * 60000;
+}
+
+/**
+ * Получить сдвиг игрового часового пояса (кэш в state на 6 часов).
+ * @returns {{ms: number, known: boolean}} known=false — сдвиг не выведен
+ * (ETA из абсолютного времени считается ненадёжной → срочная).
+ */
+async function getServerOffsetMs(context, state, homeCoords, html) {
+  const cached = Number.isFinite(state.safety.serverOffsetMs)
+    ? state.safety.serverOffsetMs
+    : null;
+  const fresh =
+    cached != null &&
+    Date.now() - (state.safety.serverOffsetAt || 0) < 6 * 3600 * 1000;
+  if (fresh) return { ms: cached, known: true };
+  try {
+    const ovHtml = html || (await fetchHtml(context, "/overview.php"));
+    const ovData = parseOverview(ovHtml);
+    const items = [
+      ...ovData.missions,
+      ...ovData.attacks.incoming.map((a) => ({ text: a.snippet })),
+    ];
+    const derived = deriveServerOffsetMs(ovHtml, items);
+    if (derived != null) {
+      state.safety.serverOffsetMs = derived;
+      state.safety.serverOffsetAt = Date.now();
+      console.log(
+        `🕒 [safety] Сдвиг игрового часового пояса: ${derived / 3600000} ч (кэш на 6 ч)`,
+      );
+      return { ms: derived, known: true };
+    }
+  } catch (e) {
+    console.warn(`⚠️ [safety] Не удалось вывести сдвиг часового пояса: ${e.message}`);
+  }
+  return { ms: cached != null ? cached : 0, known: false };
 }
 
 /**
  * Расширить входящие атаки ETA и текстом прибытия.
  */
-function expandIncoming(html, incoming) {
+function expandIncoming(html, incoming, offsetMs = 0) {
   return incoming.map((inc) => {
-    const etaMs = enrichEta(html, inc);
+    const r = enrichEta(html, inc, offsetMs);
+    const etaMs = r.ms;
     const snippet = stripHtml(inc.snippet || "");
     const relM = snippet.match(/через\s+(\d+)\s*(мин|ч|минут|час)/i);
     const timeM = snippet.match(/\b(\d{1,2}:\d{2}(?::\d{2})?)\b/);
     return {
       ...inc,
       etaMs,
+      etaSource: r.source,
       arrivalText: relM
         ? `через ${relM[1]} ${relM[2]}`
         : timeM
@@ -130,6 +207,11 @@ async function runSafetyCheck(context, config, missionsData) {
   }
 
   const html = missionsData._html || (await fetchHtml(context, "/overview.php"));
+  // Сдвиг игрового часового пояса (display time − machine time): времена прибытия
+  // в overview — в часовом поясе игры. На этой машине локальный TZ = EEST (UTC+3)
+  // = игровой, поэтому сдвиг выводится как 0; механизм нужен для переносимости.
+  const offset = await getServerOffsetMs(context, state, homeCoords, html);
+  const offsetMs = offset.ms;
   const allIncoming = expandIncoming(
     html,
     missionsData.mainMoonIncoming ||
@@ -137,6 +219,7 @@ async function runSafetyCheck(context, config, missionsData) {
         parseAttacks(html, missionsData.missions || [], config.attackKeywords || []).incoming,
         config,
       ),
+    offsetMs,
   );
 
   const otherAttacks = (missionsData.attacks?.incoming || []).filter((a) => {
@@ -158,7 +241,19 @@ async function runSafetyCheck(context, config, missionsData) {
 
   if (!allIncoming.length) {
     let returnedHome = 0;
+    const base3 = (c) => normalizeCoords(c).split(":").slice(0, 3).join(":");
     for (const [coords, ev] of Object.entries(state.safety.evacuated)) {
+      const fromN = normalizeCoords(ev.fromCoords || coords);
+      const toN = normalizeCoords(ev.moonCoords);
+      // 1) Флот в пути? — по overview (текст миссии с координатами и типом).
+      // Надёжный источник: запись «эвакуирован» НЕ удаляем, пока флот летит
+      // (раньше запись удалялась, пока флот ещё был в пути — бот терял его).
+      const inFlight = (missionsData.missions || []).find(
+        (m) =>
+          /остав/i.test(m.type || "") &&
+          (m.coords || []).some((c) => base3(c) === base3(fromN)) &&
+          (m.coords || []).some((c) => base3(c) === base3(toN)),
+      );
       let active = null;
       let fleetReadOk = true;
       const searchCp = ev.fromCp || homeMoonCp;
@@ -166,8 +261,6 @@ async function runSafetyCheck(context, config, missionsData) {
         try {
           const fleetHtml = await fetchHtml(context, `/fleet.php?cp=${searchCp}`);
           const missions = parseActiveMissions(fleetHtml);
-          const fromN = normalizeCoords(ev.fromCoords || coords);
-          const toN = normalizeCoords(ev.moonCoords);
           active = missions.find(
             (m) =>
               m.type && /остав/i.test(m.type) &&
@@ -193,6 +286,13 @@ async function runSafetyCheck(context, config, missionsData) {
         } else {
           console.warn(`❌ [safety] Отзыв миссии ${coords} не удался: ${res.error}`);
         }
+        continue;
+      }
+
+      if (inFlight) {
+        // Флот в пути (по overview), но на fleet-странице его не видно —
+        // ждём прибытия. Запись НЕ удаляем: флот ещё не на месте.
+        console.log(`🛡️ [safety] ${coords}*: флот в пути (по overview) — ждём прибытия`);
         continue;
       }
 
@@ -246,12 +346,18 @@ async function runSafetyCheck(context, config, missionsData) {
   }
 
   const attackedCoords = allIncoming.map((a) => a.coords).filter(Boolean);
-  const urgentAttacks = allIncoming.filter((a) => a.etaMs == null || a.etaMs <= warnMs);
+  // ETA из абсолютного времени БЕЗ выведенного сдвига часового пояса ненадёжна
+  // — считаем срочной (безопасное направление).
+  const isUrgent = (a) =>
+    a.etaMs == null || a.etaMs <= warnMs || (a.etaSource === "time" && !offset.known);
+  const urgentAttacks = allIncoming.filter(isUrgent);
 
   for (const atk of allIncoming) {
-    const urgent = atk.etaMs == null || atk.etaMs <= warnMs;
+    const urgent = isUrgent(atk);
     if (!urgent) {
       console.log(`🛡️ [safety] Атака на главную луну, прибытие ${atk.arrivalText} — пока не срочно (< ${Math.round(warnMs / 60000)} мин)`);
+    } else if (atk.etaSource === "time" && !offset.known) {
+      console.log(`🛡️ [safety] Атака на главную луну, прибытие ${atk.arrivalText} — сдвиг часового пояса не выведен, считаем срочной`);
     }
   }
 
@@ -335,5 +441,7 @@ module.exports = {
   expandIncoming,
   parseArrivalTimeMs,
   enrichEta,
+  deriveServerOffsetMs,
+  getServerOffsetMs,
   fleetAtDestination,
 };

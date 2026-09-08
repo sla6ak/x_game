@@ -140,27 +140,45 @@ function parseMissions(html) {
     });
   };
 
-  // --- Мобильный формат: миссии внутри <tr class="..."> ---
-  // <tr class="holding"> ... <div>...Задание: Экспедиция [10]</div> ... </tr>
+  // --- Мобильный формат: миссии в строках <tr> ---
+  // ВАЖНО: одна строка <tr class="flight"> может содержать НЕСКОЛЬКО div с
+  // «Задание:» (несколько флотов в одном направлении), и строки смешаны:
+  // <tr class="..."> и plain <tr> с маркером <!-- class="..." --> ПОСЛЕ div.
+  // Поэтому: находим ВСЕ вхождения «Задание:» и для каждого — ближайший
+  // ПРЕДЫДУЩИЙ маркер класса (<tr class="X"> или <!-- class="X" -->).
   //
-  // ВАЖНО: парсим ВСЕ <tr class="..."> строки, содержащие "Задание:", а не только
-  // holding/return. Входящий ЧУЖОЙ флот («Чужой флот ... Задание: Атаковать») может
-  // иметь ДРУГОЙ tr class (например "incoming"/"flight"). Если парсить только
-  // holding/return, бот вообще не увидит входящую атаку и safety-чек отработает
-  // с входящие=0 — именно так и произошло: чужой флот летел на луну, а бот не увидел.
-  const parts = html.split(/<tr class="([^"]+)">/);
-  for (let i = 1; i < parts.length; i += 2) {
-    const cls = parts[i];
-    const content = parts[i + 1] || "";
-    const z = content.indexOf("Задание:");
-    if (z < 0) continue;
-    const direction = classToDirection(cls);
-    const divStart = content.lastIndexOf("<div", z);
-    const divEnd = content.indexOf("</div>", z);
+  // Также парсим ЛЮБОЙ class (не только holding/return): входящий ЧУЖОЙ флот
+  // («Чужой флот ... Задание: Атаковать») может иметь class "incoming"/"flight".
+  const markers = [];
+  const markerRe = /<tr\s+class="([^"]+)">|<!--\s*class="([^"]+)"\s*-->/g;
+  let mm;
+  while ((mm = markerRe.exec(html)) !== null) {
+    markers.push({ index: mm.index, cls: mm[1] || mm[2] });
+  }
+  const taskRe = /Задание:/g;
+  let tm;
+  while ((tm = taskRe.exec(html)) !== null) {
+    const z = tm.index;
+    let cls = null;
+    for (let i = markers.length - 1; i >= 0; i--) {
+      if (markers[i].index <= z) {
+        cls = markers[i].cls;
+        break;
+      }
+      // Маркер слишком далеко — не наша строка.
+      if (z - markers[i].index > 9000) break;
+    }
+    const direction = cls
+      ? classToDirection(cls)
+      : /возвращается|возврат/i.test(html.substring(Math.max(0, z - 400), z))
+        ? "return"
+        : "flight";
+    const divStart = html.lastIndexOf("<div", z);
+    const divEnd = html.indexOf("</div>", z);
     const divHtml =
-      divStart >= 0 && divEnd > 0
-        ? content.substring(divStart, divEnd + 6)
-        : content.substring(Math.max(0, z - 400), z + 120);
+      divStart >= 0 && divEnd > z
+        ? html.substring(divStart, divEnd + 6)
+        : html.substring(Math.max(0, z - 400), z + 120);
     extract(direction, divHtml);
   }
 

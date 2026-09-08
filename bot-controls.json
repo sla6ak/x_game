@@ -1,5 +1,5 @@
 {
-  "farm": false,
+  "farm": true,
   "expedition": false,
   "safety": true,
   "expeditionShips": [
@@ -20,6 +20,6 @@
       "count": 7000000000
     }
   ],
-  "farmReserveSlots": 10,
+  "farmReserveSlots": 20,
   "farmShipName": "Линкор"
 }

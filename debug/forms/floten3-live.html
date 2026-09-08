@@ -1,0 +1,126 @@
+<html><head><style type="text/css">
+			#modal_header_left{
+      			background-position: -130px -52px;
+			}
+			#modal_header_left:hover{
+      			background-position: -130px -78px;
+			}
+		</style>
+
+		</head><body><div id="modal-content">
+			<div class="modal_header" id="modal_header">
+
+		    	<a title="⇐ Назад" class="modal_header_back"></a><!--
+		     --><a onclick="anchorOffset('modalDown')" title="Вниз ▼" id="modal_header_left"></a><!--
+		     --><div id="modal_header_center">Флот</div><!--
+		     --><a onclick="modalClose()" title="Закрыть ×" id="modal_header_right"></a><!--
+		     --><a title="Вперед ⇒" class="modal_header_forward"></a>
+
+			</div>
+			<span id="modal-header-fix"></span>
+
+			<center>
+			<div id="modalUp"></div>
+				<script type="text/javascript">
+var rpg_physic = 1;
+var art_accel = 1 * 0.01;
+var captain_skill_2 = 0;
+var gift_fly = 0;
+var speedfactor = 3;
+function getStorageFaktor() {
+    return 1;
+}
+
+			var nazad = [], timer = [];</script>
+<form action="floten3.php?fleet=0" method="post" name="floten3">
+<input type="hidden" name="thisresource1" value="3753100045780300">
+<input type="hidden" name="thisresource2" value="97236772613103">
+<input type="hidden" name="thisresource3" value="645525618253420">
+<input type="hidden" name="consumption" value="12">
+<input type="hidden" name="dist" value="35023">
+<input type="hidden" name="acs" value="0">
+<input type="hidden" name="speedfactor" value="3">
+<input type="hidden" name="thisgalaxy" value="1">
+<input type="hidden" name="thissystem" value="363">
+<input type="hidden" name="thisplanet" value="6">
+<input type="hidden" name="galaxy" value="1">
+<input type="hidden" name="system" value="918">
+<input type="hidden" name="planet" value="1">
+<input type="hidden" name="thisplanettype" value="3">
+<input type="hidden" name="planettype" value="3">
+<input type="hidden" name="mt" value="0"><input type="hidden" name="bt" value="0"><input type="hidden" name="speedallsmin" value="115000">
+<input type="hidden" name="speed" value="10">
+<input type="hidden" name="usedfleet" value="LGbkBagcBwVjAmgcBwR7sD==">
+<input type="hidden" name="maxepedition" value="6">
+<input type="hidden" name="curepedition" value="6">
+<input type="hidden" name="asteroid" value="0">
+<input type="hidden" name="target_mission" value="4"><script>var capFleet = 0;</script><input type="hidden" name="ship207" value="1">
+<input type="hidden" name="capacity207" value="1530">
+<input type="hidden" name="consumption207" value="500">
+<input type="hidden" name="speed207" value="115000">
+<input type="hidden" name="uran_defend" value="0"><input type="hidden" name="art_uskor" value="1"><input type="hidden" name="col_lvl" value="28"><input type="hidden" name="ally_b1" value=""><input type="hidden" name="race_potr" value="0"><input type="hidden" name="art_potr" value="4"><input type="hidden" name="captain_skill_1" value=""><input type="hidden" name="art_otrajat" value="1"><input type="hidden" name="client_time_1" value="0"><input type="hidden" name="client_time_2" value="0"><table width="570" class="shadow-hover"><tbody><tr><th colspan="6" class="c"></th></tr><tr><td class="c" colspan="3">Возврат на луну <a href="#galaxy.php?mode=3&amp;galaxy=1&amp;system=363&amp;planet=6">[1:363:6]</a></td><td class="c" colspan="3">Прибытие на луну <a href="#galaxy.php?mode=3&amp;galaxy=1&amp;system=918&amp;planet=1">[1:918:1]</a></td></tr><tr><th colspan="6" class="c"></th></tr><tr align="left" valign="top">
+<th width="265" colspan="3">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tbody>
+<tr height="20">
+<td class="c" colspan="3">Выбор миссии</td>
+</tr><tr><th colspan="3"></th>
+</tr><tr><th height="26"><input style="cursor: pointer; font-size: 12px;" id="inpuT_0" onchange="document.getElementsByName('target_mission')[0].value=3; document.getElementsByName('uran_defend')[0].value=0; shortInfo();" type="radio" name="mission" value="3"><label style="cursor: pointer; font-size: 12px;" for="inpuT_0">Транспорт</label><br></th></tr><tr><th height="26"><input style="cursor: pointer; font-size: 12px;" id="inpuT_1" onchange="document.getElementsByName('target_mission')[0].value=4; document.getElementsByName('uran_defend')[0].value=0; shortInfo();" type="radio" name="mission" value="4" checked="checked"><label style="cursor: pointer; font-size: 12px;" for="inpuT_1">Оставить</label>&nbsp;&nbsp;<font color="orange" title="Потребление топлива">-11%</font><br></th></tr></tbody>
+</table>
+</th>
+<th width="265" colspan="3">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tbody>
+<tr height="20">
+<td colspan="1" class="c">Ресурсы</td>
+<td colspan="3" class="c">Занятость трюмов</td>
+</tr><tr><th colspan="4"></th></tr><tr height="20">
+<th>Металл</th>
+<th width="25"><a onclick="maxResource('1');"><font color="#CDB5CD">max</font></a></th>
+<td class="c" align="center"><input style="text-align: center; width: 120px; font-size: 12px;" onfocus="javascript:if(this.value == '0') this.value='';" onblur="javascript:if(this.value == '') this.value='0';" id="resource1" name="resource1" alt="Металл 3753100045780300" size="12" maxlength="23" value="0" onkeyup="calculateTransportCapacity();" onchange="javascript:this.value=gap(this.value);" type="text"></td>
+<th width="25"><a onclick="minResource('1');"><font color="#CDB5CD">min</font></a></th>
+</tr><tr height="20">
+<th>Алмаз</th>
+<th width="25"><a onclick="maxResource('2');"><font color="#CDB5CD">max</font></a></th>
+<td class="c" align="center"><input style="text-align: center; width: 120px; font-size: 12px;" onfocus="javascript:if(this.value == '0') this.value='';" onblur="javascript:if(this.value == '') this.value='0';" name="resource2" alt="Алмаз 97236772613103" size="12" maxlength="23" value="0" onkeyup="calculateTransportCapacity();" onchange="javascript:this.value=gap(this.value);" type="text"></td>
+<th width="25"><a onclick="minResource('2');"><font color="#CDB5CD">min</font></a></th>
+</tr><tr height="20">
+<th>Уран</th>
+<th width="25"><a onclick="maxResource('3');"><font color="#CDB5CD">max</font></a></th>
+<td class="c" align="center"><input style="text-align: center; width: 120px; font-size: 12px;" onfocus="javascript:if(this.value == '0') this.value='';" onblur="javascript:if(this.value == '') this.value='0';" name="resource3" alt="Уран 645525618253420 size=" 12"="" maxlength="23" value="0" onkeyup="calculateTransportCapacity();" onchange="javascript:this.value=gap(this.value);" type="text"></td>
+<th width="25"><a onclick="minResource('3');"><font color="#CDB5CD">min</font></a></th>
+</tr><tr height="20">
+<th>Остаток</th>
+<th colspan="3"><div id="remainingresources">-</div></th>
+</tr><tr height="20">
+<th>Погрузка</th>
+<td class="c" align="center" colspan="3" style="font-size: 12px;">[ <a onclick="maxResources()"><font color="#CDB5CD">Взять все ресурсы</font></a> ]</td>
+</tr><tr height="20">
+</tr>
+</tbody>
+</table>
+</th>
+</tr><tr><th colspan="6" class="c"></th></tr><tr style="display: none"><th width="110"><div id="distance"></div></th><th colspan="2" width="155"><font color="#CDB5CD">Расстояние</font></th><th colspan="2" width="155"><font color="#CDB5CD">Скорость</font></th><th width="110"><div id="maxspeed"></div></th></tr><tr><th width="110"><div id="storage">-</div></th><th colspan="2" width="155"><font color="#CDB5CD">Вместимость</font></th><th colspan="2" width="155"><font color="#CDB5CD">Топливо</font></th><th width="110"><div id="consumption">-</div></th></tr><tr><th width="110"><div id="duration2">-</div></th><th colspan="2" width="155"><font color="#CDB5CD">Время в две стороны</font></th><th colspan="2" width="155"><font color="#CDB5CD">Время в одну сторону</font></th><th width="110"><div id="duration1">-</div></th></tr><tr><th colspan="6" class="c"></th></tr><tr><td width="112" class="c"><div id="date_fleet2"></div></td><td width="98" class="c"><font color="#CDB5CD">Возврат</font></td><td colspan="2" width="110" class="c"><input onclick="blockClick(this)" style="cursor: pointer; height: 26px; font-size: 14px;" accesskey="z" value="[ Отправить ]" type="submit" id="submit"></td>
+<td width="98" class="c"><font color="#CDB5CD">Прибытие</font></td><td width="112" class="c"><div id="date_fleet1"></div></td></tr>
+<tr><th colspan="6" class="c"></th></tr></tbody></table>
+</form>
+	<script>
+ 		document.getElementById('resource1').focus();
+ 	</script><script>shortInfo();</script>
+			<div id="modalDown"></div>
+			</center>
+
+			<div id="modal-footer-fix"></div>
+
+			<div class="modal_footer" id="modal_footer">
+
+				<a href="#" title="⇐ Назад" class="modal_header_back" style="margin-top: 1px;"></a><!--
+		     --><a class="modal_header_down" onclick="anchorOffset('modalUp')" title="Вверх ▲" id="modal_header_left" style="margin-top: 1px;"></a><!--
+		     --><div id="modal_header_center">Флот</div><!--
+		     --><a onclick="modalClose()" title="Закрыть ×" id="modal_header_right"></a><!--
+		     --><a href="#" title="Вперед ⇒" class="modal_header_forward"></a>
+
+			</div>
+		</div>
+    
+	</body></html>
